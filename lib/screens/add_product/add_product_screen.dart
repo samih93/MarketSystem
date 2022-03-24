@@ -26,7 +26,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  var addProductController;
+  var addProductController = Get.put(AddProductController());
 
   @override
   void dispose() {
@@ -56,6 +56,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               bottom: 10,
               child: _buildResult(),
             ),
+            Positioned(
+              top: 10,
+              child: _buildControlButton(),
+            ),
             if (barCode != null)
               Align(
                   alignment: Alignment.center,
@@ -69,49 +73,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         SizedBox(
                           height: 15,
                         ),
-                        Wrap(
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: defaultButton(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  text: "Save",
-                                  onpress: () {
-                                    if (_formkey.currentState!.validate()) {
-                                      print("valid");
-
-                                      addProductController.insertProductByModel(
-                                          model: ProductModel(
-                                              barcode: barCode!.code.toString(),
-                                              name: productNameController_text
-                                                  .text,
-                                              price: productPriceController_text
-                                                  .text));
-                                    } else {
-                                      print("invalid");
-                                    }
-                                  }),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: defaultButton(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  text: "Rescan",
-                                  onpress: () {
-                                    productNameController_text.clear();
-                                    productPriceController_text.clear();
-                                    qrViewcontroller!.resumeCamera();
-                                    setState(() {
-                                      barCode = null;
-                                    });
-                                  }),
-                            ),
-                          ],
-                        ),
+                        _buildSubmitRow(),
                       ],
                     ),
                   )),
@@ -196,5 +158,62 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 ],
               ),
             )),
+      );
+
+  _buildSubmitRow() => Wrap(
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: defaultButton(
+                width: MediaQuery.of(context).size.width * 0.4,
+                text: "Save",
+                onpress: () {
+                  if (_formkey.currentState!.validate()) {
+                    print("valid");
+
+                    addProductController.insertProductByModel(
+                        model: ProductModel(
+                            barcode: barCode!.code.toString(),
+                            name: productNameController_text.text,
+                            price: productPriceController_text.text));
+                    setState(() {
+                      barCode = null;
+                    });
+                    productNameController_text.clear();
+                    productPriceController_text.clear();
+                  } else {
+                    print("invalid");
+                  }
+                }),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            child: defaultButton(
+                width: MediaQuery.of(context).size.width * 0.4,
+                text: "Rescan",
+                onpress: () {
+                  productNameController_text.clear();
+                  productPriceController_text.clear();
+                  qrViewcontroller!.resumeCamera();
+                  setState(() {
+                    barCode = null;
+                  });
+                }),
+          ),
+        ],
+      );
+
+  _buildControlButton() => Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+              onPressed: () {
+                qrViewcontroller!.toggleFlash();
+              },
+              icon: Icon(
+                Icons.flash_on,
+                color: defaultColor,
+              ))
+        ],
       );
 }
