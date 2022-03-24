@@ -5,7 +5,7 @@ class MarketDbHelper {
   static final MarketDbHelper db = MarketDbHelper._();
   late Database database;
 
-  Future createDatabase() async {
+  Future<void> init() async {
     database = await openDatabase(
       'Market.db',
       version: 1,

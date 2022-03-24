@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/my_store/my_store_screen.dart';
+import 'package:marketsystem/screens/saleScreen/sale_screen.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 
 class MarketController extends GetxController {
-  MarketDbHelper db = MarketDbHelper.db;
+  MarketDbHelper marketdb = MarketDbHelper.db;
   @override
   Future<void> onInit() async {
     // TODO: implement onInit
-    await db.createDatabase();
     super.onInit();
   }
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/layout/market_layout.dart';
+import 'package:marketsystem/shared/local/marketdb_helper.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await MarketDbHelper.db.init();
   runApp(MyApp());
 }
 
@@ -10,6 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
