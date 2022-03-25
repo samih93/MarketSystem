@@ -9,9 +9,6 @@ class AddProductController extends GetxController {
   Future<void> onInit() async {
     // TODO: implement onInit
 
-    getAllProduct().then((value) {
-      print("products-------------------");
-    });
     super.onInit();
   }
 
@@ -29,29 +26,5 @@ class AddProductController extends GetxController {
     //     // update();
     //   });
     // });
-  }
-
-// NOTE get all
-  List<ProductModel> _list_ofProduct = [];
-  List<ProductModel> get list_ofProduct => _list_ofProduct;
-  Future<void> getAllProduct() async {
-    var dbm = await marketdb.database;
-
-    await dbm.rawQuery("select * from products").then((value) {
-      value.forEach((element) {
-        print(element);
-        //_list_ofProduct.add(ProductModel.fromJson(element));
-      });
-
-      _list_ofProduct.forEach((element) {
-        print(element.toJson());
-      });
-
-      // print("N  " + _neweventListMap.length.toString());
-      // print("D  " + _doneeventListMap.length.toString());
-      // print("A  " + _archiveeventListMap.length.toString());
-    }).then((value) {
-      update();
-    });
   }
 }

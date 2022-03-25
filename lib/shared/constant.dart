@@ -1,3 +1,3 @@
 import 'package:flutter/material.dart';
 
-final defaultColor = Colors.tealAccent[700];
+final defaultColor = Colors.blue;

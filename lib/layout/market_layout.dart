@@ -13,6 +13,9 @@ class MarketLayout extends StatelessWidget {
                 title: Text(
                   controller.appbar_title[controller.currentIndex].toString(),
                 ),
+                actions: [
+                  IconButton(onPressed: () {}, icon: Icon(Icons.search))
+                ],
               ),
               body: controller.screens[controller.currentIndex],
               bottomNavigationBar: BottomNavigationBar(

@@ -11,7 +11,7 @@ class ProductModel {
   ProductModel.fromJson(Map<String, dynamic> map) {
     this.barcode = map['barcode'];
     this.name = map['name'];
-    this.price = map['price'];
+    this.price = map['price'].toString();
   }
 
   toJson() {

@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_controller.dart';
+import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -27,6 +29,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   var addProductController = Get.put(AddProductController());
+  var marketController_needed = Get.find<MarketController>();
 
   @override
   void dispose() {
@@ -96,11 +99,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
         key: qrKey,
         onQRViewCreated: onQRViewCreatedCallback,
         overlay: QrScannerOverlayShape(
-            borderColor: defaultColor!,
+            borderColor: defaultColor,
             borderWidth: 7,
             borderLength: 20,
             borderRadius: 10,
-            cutOutSize: MediaQuery.of(context).size.width * 0.6),
+            cutOutSize: MediaQuery.of(context).size.width * 0.7),
       );
 
   void onQRViewCreatedCallback(QRViewController controller) {
@@ -171,16 +174,23 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   if (_formkey.currentState!.validate()) {
                     print("valid");
 
-                    addProductController.insertProductByModel(
-                        model: ProductModel(
-                            barcode: barCode!.code.toString(),
-                            name: productNameController_text.text,
-                            price: productPriceController_text.text));
-                    setState(() {
-                      barCode = null;
+                    addProductController
+                        .insertProductByModel(
+                            model: ProductModel(
+                                barcode: barCode!.code.toString(),
+                                name: productNameController_text.text,
+                                price: productPriceController_text.text))
+                        .then((value) {
+                      //NOTE after adding new product i need to get all product
+                      marketController_needed.getAllProduct().then((value) {
+                        setState(() {
+                          barCode = null;
+                        });
+                        productNameController_text.clear();
+                        productPriceController_text.clear();
+                        Get.off(ManageProductsScreen());
+                      });
                     });
-                    productNameController_text.clear();
-                    productPriceController_text.clear();
                   } else {
                     print("invalid");
                   }
