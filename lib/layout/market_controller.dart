@@ -65,7 +65,6 @@ class MarketController extends GetxController {
 
     await dbm.rawQuery("select * from products order by name").then((value) {
       value.forEach((element) {
-        print(element);
         _list_ofProduct.add(ProductModel.fromJson(element));
       });
 
