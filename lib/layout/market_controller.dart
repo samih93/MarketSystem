@@ -56,7 +56,10 @@ class MarketController extends GetxController {
   // NOTE get all
   List<ProductModel> _list_ofProduct = [];
   List<ProductModel> get list_ofProduct => _list_ofProduct;
+  bool isloadingGetProducts = false;
   Future<void> getAllProduct() async {
+    isloadingGetProducts = true;
+    update();
     _list_ofProduct = [];
     var dbm = await marketdb.database;
 
@@ -66,10 +69,11 @@ class MarketController extends GetxController {
         _list_ofProduct.add(ProductModel.fromJson(element));
       });
 
+      isloadingGetProducts = false;
+      update();
       _list_ofProduct.forEach((element) {
         print(element.toJson());
       });
-      update();
     });
   }
 }
