@@ -31,6 +31,9 @@ dependencies:
     sdk: flutter
   get: ^4.6.1
   sqflite: ^2.0.2
+  #Toast
+  fluttertoast: ^8.0.8
+
 
 # Qr Code 
   qr_flutter: ^4.0.0
