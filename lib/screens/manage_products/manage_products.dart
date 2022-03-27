@@ -12,18 +12,23 @@ class ManageProductsScreen extends StatelessWidget {
     return GetBuilder<MarketController>(
       init: MarketController(),
       builder: (marketController) => Scaffold(
-        body: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: DataTable(
-              columns: [...headertitles.map((e) => _build_header_item(e))],
-              rows: [
-                ...marketController.list_ofProduct.map((e) => _build_Row(e)),
-              ],
-            ),
-          ),
-        ),
+        body: marketController.isloadingGetProducts
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columns: [
+                      ...headertitles.map((e) => _build_header_item(e))
+                    ],
+                    rows: [
+                      ...marketController.list_ofProduct
+                          .map((e) => _build_Row(e)),
+                    ],
+                  ),
+                ),
+              ),
       ),
     );
   }
