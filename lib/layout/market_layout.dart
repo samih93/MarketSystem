@@ -7,7 +7,7 @@ class MarketLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MarketController>(
-        init: MarketController(),
+        init: Get.find<MarketController>(),
         builder: (controller) => Scaffold(
               appBar: AppBar(
                 title: Text(

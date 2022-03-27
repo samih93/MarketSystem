@@ -76,4 +76,23 @@ class MarketController extends GetxController {
       });
     });
   }
+
+  //NOTE delete Product
+
+  Future<void> deleteProduct(ProductModel model) async {
+    var dbm = await marketdb.database;
+    await dbm
+        .rawDelete("DELETE FROM products where barcode='${model.barcode}'")
+        .then((value) {
+      print('value deleted :' + value.toString());
+      ProductModel product = _list_ofProduct
+          .where((element) => element.barcode == model.barcode)
+          .first;
+      //NOTE check if new event contain barcode
+      if (!product.isBlank!) _list_ofProduct.remove(product);
+      update();
+    }).catchError((error) {
+      print(error.toString());
+    });
+  }
 }

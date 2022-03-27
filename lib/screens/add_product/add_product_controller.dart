@@ -24,7 +24,7 @@ class AddProductController extends GetxController {
         .rawQuery("select * from products where barcode='${model.barcode}'")
         .then((value) async {
       if (value.length > 0) {
-        statusMessage.value = "product Alreay Exist try ";
+        statusMessage.value = "product Alreay Exist try Again ";
         statusInsertMessage.value = ToastStatus.Error;
       } else {
         await dbm.insert("products", model.toJson());

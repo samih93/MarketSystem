@@ -3,13 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
+import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_controller.dart';
 import 'package:marketsystem/screens/manage_products/manage_products.dart';
+import 'package:marketsystem/shared/bindings/market_layout_binding.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -20,7 +23,7 @@ class AddProductScreen extends StatefulWidget {
 class _AddProductScreenState extends State<AddProductScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
-  Barcode? barCode;
+  Barcode? barCode = null;
 
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
@@ -29,7 +32,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   var add_product_controller_nedded = Get.put(AddProductController());
-  var marketController_needed = Get.find<MarketController>();
+  var marketController_needed = Get.put(MarketController());
 
   @override
   void dispose() {
@@ -181,19 +184,26 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 name: productNameController_text.text,
                                 price: productPriceController_text.text))
                         .then((value) {
-                      print("status MEssage :" +
-                          _controller.statusMessage.toString());
-                      print("status insert message :" +
-                          _controller.statusInsertMessage.toString());
-                      //NOTE after adding new product i need to get all product
-                      marketController_needed.getAllProduct().then((value) {
-                        setState(() {
-                          barCode = null;
+                      if (_controller.statusInsertMessage.value ==
+                          ToastStatus.Error) {
+                        showToast(
+                            message: _controller.statusMessage.toString(),
+                            status: _controller.statusInsertMessage.value);
+                      } else {
+                        //NOTE after adding new product i need to get all product
+                        marketController_needed.getAllProduct().then((value) {
+                          productNameController_text.clear();
+                          productPriceController_text.clear();
+                          marketController_needed.onchangeIndex(0);
+                          Get.off(MarketLayout());
+                          showToast(
+                              message: _controller.statusMessage.toString(),
+                              status: _controller.statusInsertMessage.value);
+                          // setState(() {
+                          //   barCode = null;
+                          // });
                         });
-                        productNameController_text.clear();
-                        productPriceController_text.clear();
-                        Get.off(ManageProductsScreen());
-                      });
+                      }
                     });
                   } else {
                     print("invalid");

@@ -10,7 +10,7 @@ class ManageProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<MarketController>(
-      init: MarketController(),
+      init: Get.find<MarketController>(),
       builder: (marketController) => Scaffold(
         body: marketController.isloadingGetProducts
             ? Center(child: CircularProgressIndicator())
@@ -24,7 +24,7 @@ class ManageProductsScreen extends StatelessWidget {
                     ],
                     rows: [
                       ...marketController.list_ofProduct
-                          .map((e) => _build_Row(e)),
+                          .map((e) => _build_Row(e, marketController)),
                     ],
                   ),
                 ),
@@ -41,7 +41,8 @@ class ManageProductsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )));
 
-  _build_Row(ProductModel model) => DataRow(cells: [
+  _build_Row(ProductModel model, MarketController _controller) =>
+      DataRow(cells: [
         DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.name.toString())),
         DataCell(Text(model.price.toString())),
@@ -57,7 +58,9 @@ class ManageProductsScreen extends StatelessWidget {
               width: 10,
             ),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                _controller.deleteProduct(model);
+              },
               icon: Icon(
                 Icons.delete,
               ),
