@@ -28,7 +28,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  var addProductController = Get.put(AddProductController());
+  var add_product_controller_nedded = Get.put(AddProductController());
   var marketController_needed = Get.find<MarketController>();
 
   @override
@@ -76,7 +76,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         SizedBox(
                           height: 15,
                         ),
-                        _buildSubmitRow(),
+                        _buildSubmitRow(controller),
                       ],
                     ),
                   )),
@@ -163,7 +163,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             )),
       );
 
-  _buildSubmitRow() => Wrap(
+  _buildSubmitRow(AddProductController _controller) => Wrap(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -174,13 +174,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   if (_formkey.currentState!.validate()) {
                     print("valid");
 
-                    addProductController
+                    _controller
                         .insertProductByModel(
                             model: ProductModel(
                                 barcode: barCode!.code.toString(),
                                 name: productNameController_text.text,
                                 price: productPriceController_text.text))
                         .then((value) {
+                      print("status MEssage :" +
+                          _controller.statusMessage.toString());
+                      print("status insert message :" +
+                          _controller.statusInsertMessage.toString());
                       //NOTE after adding new product i need to get all product
                       marketController_needed.getAllProduct().then((value) {
                         setState(() {
