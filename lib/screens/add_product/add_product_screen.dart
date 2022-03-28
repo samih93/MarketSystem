@@ -51,6 +51,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Add New Product"),
+      ),
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
