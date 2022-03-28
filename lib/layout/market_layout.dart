@@ -61,7 +61,7 @@ class MarketLayout extends StatelessWidget {
           //NOTE to open keyboard when pressing on search button
           focus: true,
           onchange: (value) {
-            if (value!.length > 2) {
+            if (value!.length > 1) {
               if (isforproduct) {
                 c.search_In_Products(value);
               } else {
