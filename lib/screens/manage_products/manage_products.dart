@@ -3,9 +3,13 @@ import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
+import 'package:marketsystem/screens/add_product/add_product_screen.dart';
+import 'package:marketsystem/screens/edit_product/edit_product.dart';
+import 'package:marketsystem/shared/constant.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ManageProductsScreen extends StatelessWidget {
-  List<String> headertitles = ['BarCode', 'Name', 'Price', 'Edit'];
+  List<String> headertitles = ['Name', 'BarCode', 'Price', 'Edit'];
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +22,27 @@ class ManageProductsScreen extends StatelessWidget {
                 scrollDirection: Axis.vertical,
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: [
-                      ...headertitles.map((e) => _build_header_item(e))
-                    ],
-                    rows: [
-                      ...marketController.list_ofProduct
-                          .map((e) => _build_Row(e, marketController)),
-                    ],
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: DataTable(
+                      headingTextStyle: TextStyle(color: defaultColor),
+                      border: TableBorder.all(width: 1, color: Colors.grey),
+                      columns: [
+                        ...headertitles.map((e) => _build_header_item(e))
+                      ],
+                      rows: [
+                        ...marketController.list_ofProduct.map(
+                            (e) => _build_Row(e, marketController, context)),
+                      ],
+                    ),
                   ),
                 ),
               ),
+        // floatingActionButton: FloatingActionButton(
+        //     child: Icon(Icons.add),
+        //     onPressed: () {
+        //       marketController.onchangeIndex(1);
+        //     }),
       ),
     );
   }
@@ -41,15 +55,18 @@ class ManageProductsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )));
 
-  _build_Row(ProductModel model, MarketController _controller) =>
+  _build_Row(ProductModel model, MarketController _controller,
+          BuildContext context) =>
       DataRow(cells: [
-        DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.name.toString())),
+        DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.price.toString())),
         DataCell(Row(
           children: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(EditProductScreen(model: model));
+              },
               icon: Icon(
                 Icons.edit,
               ),
@@ -59,7 +76,38 @@ class ManageProductsScreen extends StatelessWidget {
             ),
             IconButton(
               onPressed: () {
-                _controller.deleteProduct(model);
+                var alertStyle =
+                    AlertStyle(animationDuration: Duration(milliseconds: 1));
+                Alert(
+                  style: alertStyle,
+                  context: context,
+                  type: AlertType.error,
+                  title: "Delete Item",
+                  desc: "Are You Sure You Want To Delete '${model.name}'",
+                  buttons: [
+                    DialogButton(
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      color: Colors.blue.shade400,
+                    ),
+                    DialogButton(
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                      onPressed: () {
+                        _controller.deleteProduct(model);
+                        Get.back();
+                      },
+                      color: Colors.red.shade400,
+                    ),
+                  ],
+                ).show();
               },
               icon: Icon(
                 Icons.delete,

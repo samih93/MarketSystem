@@ -31,7 +31,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  var add_product_controller_nedded = Get.put(AddProductController());
   var marketController_needed = Get.put(MarketController());
 
   @override
@@ -51,50 +50,54 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<AddProductController>(
-      init: AddProductController(),
-      builder: (controller) => Scaffold(
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            _buildQr(context),
-            Positioned(
-              bottom: 10,
-              child: _buildResult(),
-            ),
-            Positioned(
-              top: 10,
-              child: _buildControlButton(),
-            ),
-            if (barCode != null)
-              Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _build_Form(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        _buildSubmitRow(controller),
-                      ],
-                    ),
-                  )),
-          ],
-        ),
+    return Scaffold(
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          _buildQr(context),
+          Positioned(
+            bottom: 10,
+            child: _buildResult(),
+          ),
+          Positioned(
+            top: 10,
+            child: _buildControlButton(),
+          ),
+          if (barCode != null)
+            Align(
+                alignment: Alignment.center,
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      _build_Form(),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      _buildSubmitRow(),
+                    ],
+                  ),
+                )),
+        ],
       ),
     );
   }
 
-  _buildResult() => Container(
-        decoration: BoxDecoration(color: Colors.white24),
-        padding: EdgeInsets.all(15),
-        child: SelectableText(
-          barCode != null ? barCode!.code.toString() : "Scanning...",
-          style: TextStyle(fontSize: 24, color: Colors.white),
+  _buildResult() => GestureDetector(
+        onTap: () {
+          setState(() {
+            this.barCode = Barcode(''.trim(), BarcodeFormat.codabar, []);
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(color: defaultColor),
+          padding: EdgeInsets.all(15),
+          child: Text(
+            "Continue Without Scan",
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
         ),
       );
 
@@ -128,8 +131,13 @@ class _AddProductScreenState extends State<AddProductScreen> {
               child: Column(
                 children: [
                   TextFormField(
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "barcode must not be empty";
+                      }
+                    },
                     initialValue: barCode!.code,
-                    enabled: false,
+                    enabled: barCode == '' ? false : true,
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                     ),
@@ -157,7 +165,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                           return "Price must not be empty";
                         }
                       },
-                      inputtype: TextInputType.name,
+                      inputtype: TextInputType.phone,
                       border: UnderlineInputBorder(),
                       hinttext: "Price...",
                       controller: productPriceController_text),
@@ -166,7 +174,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
             )),
       );
 
-  _buildSubmitRow(AddProductController _controller) => Wrap(
+  _buildSubmitRow() => Wrap(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -177,32 +185,33 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   if (_formkey.currentState!.validate()) {
                     print("valid");
 
-                    _controller
+                    marketController_needed
                         .insertProductByModel(
                             model: ProductModel(
                                 barcode: barCode!.code.toString(),
                                 name: productNameController_text.text,
                                 price: productPriceController_text.text))
                         .then((value) {
-                      if (_controller.statusInsertMessage.value ==
+                      if (marketController_needed.statusInsertMessage.value ==
                           ToastStatus.Error) {
                         showToast(
-                            message: _controller.statusMessage.toString(),
-                            status: _controller.statusInsertMessage.value);
+                            message: marketController_needed
+                                .statusInsertBodyMessage
+                                .toString(),
+                            status: marketController_needed
+                                .statusInsertMessage.value);
                       } else {
-                        //NOTE after adding new product i need to get all product
-                        marketController_needed.getAllProduct().then((value) {
-                          productNameController_text.clear();
-                          productPriceController_text.clear();
-                          marketController_needed.onchangeIndex(0);
-                          Get.off(MarketLayout());
-                          showToast(
-                              message: _controller.statusMessage.toString(),
-                              status: _controller.statusInsertMessage.value);
-                          // setState(() {
-                          //   barCode = null;
-                          // });
-                        });
+                        productNameController_text.clear();
+                        productPriceController_text.clear();
+                        marketController_needed.onchangeIndex(0);
+
+                        Get.off(MarketLayout());
+                        showToast(
+                            message: marketController_needed
+                                .statusInsertBodyMessage
+                                .toString(),
+                            status: marketController_needed
+                                .statusInsertMessage.value);
                       }
                     });
                   } else {
