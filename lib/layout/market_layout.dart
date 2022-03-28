@@ -65,7 +65,7 @@ class MarketLayout extends StatelessWidget {
               if (isforproduct) {
                 c.search_In_Products(value);
               } else {
-                c.search_In_Store();
+                c.search_In_Store(value);
               }
             }
           },

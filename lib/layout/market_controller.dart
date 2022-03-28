@@ -104,8 +104,23 @@ class MarketController extends GetxController {
   }
 
 //NOTE search for a item in my store
-  Future<void> search_In_Store() async {
-    print("store search..");
+  Future<List<ProductModel>> search_In_Store(String value) async {
+    isloadingGetProducts = true;
+    update();
+    _list_ofProduct = [];
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from products where name LIKE '%$value%'")
+        .then((value) {
+      value.forEach((element) {
+        _list_ofProduct.add(ProductModel.fromJson(element));
+      });
+
+      isloadingGetProducts = false;
+      update();
+    });
+    return _list_ofProduct;
   }
 
   clearSearch() {
