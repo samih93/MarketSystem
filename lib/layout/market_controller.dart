@@ -25,7 +25,7 @@ class MarketController extends GetxController {
 
   List<BottomNavigationBarItem> bottomItems = [
     BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Products"),
-    BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Product"),
+    // BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Product"),
     BottomNavigationBarItem(
         icon: Icon(Icons.production_quantity_limits), label: "Sale"),
     BottomNavigationBarItem(
@@ -35,14 +35,14 @@ class MarketController extends GetxController {
   //NOTE: ---------------------------Screens and Titles----------------------------
   final screens = [
     ManageProductsScreen(),
-    AddProductScreen(),
+    // AddProductScreen(),
     SaleScreen(),
     MyStoreScreen()
   ];
 
   final appbar_title = [
     'Manage Products',
-    'Add Product',
+    // 'Add Product',
     'Sale Screen',
     'My Store'
   ];
@@ -55,7 +55,7 @@ class MarketController extends GetxController {
 
   void onchangeIndex(int index) {
     _currentIndex = index;
-    if (index > 0 && index < 3) {
+    if (index == 1) {
       _issearching_InProducts = false;
       _issearching_InStore = false;
     }
@@ -80,7 +80,7 @@ class MarketController extends GetxController {
   onChangeSearchInStoreStatus(bool val) {
     _issearching_InStore = val;
     _issearching_InProducts = false;
-    _currentIndex = 3;
+    _currentIndex = 2;
     update();
   }
 
