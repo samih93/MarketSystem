@@ -14,7 +14,7 @@ class MarketDbHelper {
         db
             .execute(
                 "Create Table products(barcode TEXT ,name TEXT,price INTEGER)")
-            .then((value) => print('table created'))
+            .then((value) => print('products table created'))
             .catchError((onError) => print(onError.toString()));
       },
       onOpen: (database) {

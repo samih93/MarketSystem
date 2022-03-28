@@ -38,11 +38,11 @@ class ManageProductsScreen extends StatelessWidget {
                   ),
                 ),
               ),
-        // floatingActionButton: FloatingActionButton(
-        //     child: Icon(Icons.add),
-        //     onPressed: () {
-        //       marketController.onchangeIndex(1);
-        //     }),
+        floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              Get.to(AddProductScreen());
+            }),
       ),
     );
   }
