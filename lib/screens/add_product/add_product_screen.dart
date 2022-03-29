@@ -186,37 +186,44 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 text: "Save",
                 onpress: () {
                   if (_formkey.currentState!.validate()) {
-                    print("valid");
+                    int? price = int.tryParse(productPriceController_text.text);
+                    if (price != null) {
+                      print("valid");
 
-                    marketController_needed
-                        .insertProductByModel(
-                            model: ProductModel(
-                                barcode: barCode!.code.toString(),
-                                name: productNameController_text.text,
-                                price: productPriceController_text.text))
-                        .then((value) {
-                      if (marketController_needed.statusInsertMessage.value ==
-                          ToastStatus.Error) {
-                        showToast(
-                            message: marketController_needed
-                                .statusInsertBodyMessage
-                                .toString(),
-                            status: marketController_needed
-                                .statusInsertMessage.value);
-                      } else {
-                        productNameController_text.clear();
-                        productPriceController_text.clear();
-                        marketController_needed.onchangeIndex(0);
+                      marketController_needed
+                          .insertProductByModel(
+                              model: ProductModel(
+                                  barcode: barCode!.code.toString(),
+                                  name: productNameController_text.text,
+                                  price: productPriceController_text.text))
+                          .then((value) {
+                        if (marketController_needed.statusInsertMessage.value ==
+                            ToastStatus.Error) {
+                          showToast(
+                              message: marketController_needed
+                                  .statusInsertBodyMessage
+                                  .toString(),
+                              status: marketController_needed
+                                  .statusInsertMessage.value);
+                        } else {
+                          productNameController_text.clear();
+                          productPriceController_text.clear();
+                          marketController_needed.onchangeIndex(0);
 
-                        Get.off(MarketLayout());
-                        showToast(
-                            message: marketController_needed
-                                .statusInsertBodyMessage
-                                .toString(),
-                            status: marketController_needed
-                                .statusInsertMessage.value);
-                      }
-                    });
+                          Get.off(MarketLayout());
+                          showToast(
+                              message: marketController_needed
+                                  .statusInsertBodyMessage
+                                  .toString(),
+                              status: marketController_needed
+                                  .statusInsertMessage.value);
+                        }
+                      });
+                    } else {
+                      showToast(
+                          message: "Price Must be a number ",
+                          status: ToastStatus.Error);
+                    }
                   } else {
                     print("invalid");
                   }
