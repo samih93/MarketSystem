@@ -20,8 +20,10 @@ class MarketLayout extends StatelessWidget {
                             controller.appbar_title[controller.currentIndex]
                                 .toString(),
                           ),
-                actions: controller.issearchingInProducts == false ||
-                        controller.issearchingInStore
+                actions: (controller.currentIndex == 0 &&
+                            controller.issearchingInProducts == false) ||
+                        (controller.currentIndex == 2 &&
+                            controller.issearchingInStore == false)
                     ? [
                         IconButton(
                             onPressed: () {
@@ -43,7 +45,6 @@ class MarketLayout extends StatelessWidget {
                 selectedItemColor: defaultColor,
                 onTap: (index) {
                   print(index);
-                  //NOTE : if index equal 2 open NewPostScreen without change index
 
                   controller.onchangeIndex(index);
                 },

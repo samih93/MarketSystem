@@ -5,13 +5,9 @@ import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
-import 'package:marketsystem/screens/add_product/add_product_controller.dart';
-import 'package:marketsystem/screens/manage_products/manage_products.dart';
-import 'package:marketsystem/shared/bindings/market_layout_binding.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
-import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -208,9 +204,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         } else {
                           productNameController_text.clear();
                           productPriceController_text.clear();
-                          marketController_needed.onchangeIndex(0);
+                          // marketController_needed.onchangeIndex(0);
 
-                          Get.off(MarketLayout());
+                          Get.back();
                           showToast(
                               message: marketController_needed
                                   .statusInsertBodyMessage

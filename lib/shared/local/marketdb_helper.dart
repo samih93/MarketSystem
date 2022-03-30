@@ -18,13 +18,11 @@ class MarketDbHelper {
             .then((value) => print('products table created'))
             .catchError((onError) => print(onError.toString()));
 
-            //NOTE create table store
-            db
-            .execute(
-                "Create Table store(barcode TEXT ,name TEXT,price INTEGER,qty INTEGER)")
-            .then((value) => print('products store created'))
+        //NOTE create table store
+        db
+            .execute("Create Table store(barcode TEXT ,name TEXT,qty INTEGER)")
+            .then((value) => print('store table created'))
             .catchError((onError) => print(onError.toString()));
-
       },
       onOpen: (database) {
         print('database opened');

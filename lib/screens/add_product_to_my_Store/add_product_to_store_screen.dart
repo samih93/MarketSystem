@@ -3,6 +3,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
+import 'package:marketsystem/screens/my%20store/my_store.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/toast_message.dart';
@@ -117,19 +118,46 @@ class _AddProductToMyStoreScreenState extends State<AddProductToMyStoreScreen> {
                 ),
                 defaultButton(
                     text: "Save",
-                    onpress: () {
+                    onpress: () async {
                       if (_formkey.currentState!.validate()) {
                         int? qty =
                             int.tryParse(text_qty_controller.text.toString());
                         if (qty != null) {
+                          marketController
+                              .insertProductToStore(ProductModel.Store(
+                                  barcode: text_barcode_controller.text,
+                                  name: text_productNameController.text,
+                                  qty: text_qty_controller.text))
+                              .then((value) {
+                            print(marketController
+                                .statusInsertToStoreBodyMessage);
+                            if (marketController.statusInsertToStoreMessage ==
+                                ToastStatus.Error) {
+                              showToast(
+                                  message: marketController
+                                      .statusInsertToStoreBodyMessage
+                                      .toString(),
+                                  status: marketController
+                                      .statusInsertToStoreMessage.value);
+                            } else {
+                              text_productNameController.clear();
+                              text_barcode_controller.clear();
+                              text_qty_controller.clear();
+                              Get.back();
+                              showToast(
+                                  message: marketController
+                                      .statusInsertToStoreBodyMessage
+                                      .toString(),
+                                  status: marketController
+                                      .statusInsertToStoreMessage.value);
+                            }
+                          });
                         } else {
                           showToast(
                               message: "Quantity Must be a number ",
                               status: ToastStatus.Error);
                         }
                       }
-
-                      print(text_barcode_controller.text.toString());
                     }),
               ],
             ),

@@ -18,8 +18,13 @@ class MarketController extends GetxController {
     getAllProduct().then((value) {
       //NOTE set products list in temp list
       _original_List_Of_product = _list_ofProduct;
-      print("products-------------------");
+      print("--------finishing Get products------");
     });
+
+    getAllProductInStore().then((value) {
+      print("-----Finishing products In Store-------");
+    });
+
     super.onInit();
   }
 
@@ -27,25 +32,15 @@ class MarketController extends GetxController {
     BottomNavigationBarItem(icon: Icon(Icons.home_filled), label: "Products"),
     // BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Product"),
     BottomNavigationBarItem(
-        icon: Icon(Icons.production_quantity_limits), label: "Sale"),
+        icon: Icon(Icons.production_quantity_limits), label: "Sell"),
     BottomNavigationBarItem(
         icon: Icon(Icons.store_mall_directory_outlined), label: "My Store"),
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [
-    ManageProductsScreen(),
-    // AddProductScreen(),
-    SaleScreen(),
-    MyStoreScreen()
-  ];
+  final screens = [ManageProductsScreen(), SaleScreen(), MyStoreScreen()];
 
-  final appbar_title = [
-    'Manage Products',
-    // 'Add Product',
-    'Sale Screen',
-    'My Store'
-  ];
+  final appbar_title = ['Manage Products', 'Sell Screen', 'My Store'];
 
   // NOTE: --------------------- On Change Index Of Screens ------------------
 
@@ -69,7 +64,7 @@ class MarketController extends GetxController {
   onChangeSearchInProductsStatus(bool val) {
     _issearching_InProducts = val;
     _issearching_InStore = false;
-    _currentIndex = 0;
+    //_currentIndex = 0;
     update();
   }
 
@@ -160,7 +155,7 @@ class MarketController extends GetxController {
     });
   }
 
-  //NOTE insert Product
+  //NOTE insert new Product
 
   var statusInsertBodyMessage = "".obs;
   var statusInsertMessage = ToastStatus.Error.obs;
@@ -196,7 +191,7 @@ class MarketController extends GetxController {
       ProductModel product = _list_ofProduct
           .where((element) => element.barcode == model.barcode)
           .first;
-      //NOTE check if new event contain barcode
+      //NOTE check if new product contain barcode
       if (!product.isBlank!) _list_ofProduct.remove(product);
       update();
     }).catchError((error) {
@@ -213,7 +208,6 @@ class MarketController extends GetxController {
         .rawUpdate(
             "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}' where  barcode='${model.barcode}'")
         .then((value) async {
-      // NOTE if current index ==0 i have two option done or archive
       ProductModel product = _list_ofProduct
           .where((element) => element.barcode == model.barcode)
           .first;
@@ -229,6 +223,98 @@ class MarketController extends GetxController {
         statusUpdateMessage = ToastStatus.Success;
         update();
       }
+    }).catchError((error) {
+      print(error.toString());
+    });
+  }
+
+// NOTE insert product to store
+
+  var statusInsertToStoreBodyMessage = "".obs;
+  var statusInsertToStoreMessage = ToastStatus.Error.obs;
+
+  Future<void> insertProductToStore(ProductModel model) async {
+    //   print(model.toJson_ToStore());
+    var dbm = await marketdb.database;
+    await dbm
+        .rawQuery("select * FROM store where barcode='${model.barcode}'")
+        .then((value) async {
+      if (value.length > 0) {
+        ProductModel productModel = ProductModel.fromJson_Store(value[0]);
+        model.qty = (int.parse(model.qty.toString()) +
+                int.parse(productModel.qty.toString()))
+            .toString();
+        await dbm
+            .rawUpdate(
+                "UPDATE store SET qty= '${model.qty}' where  barcode='${model.barcode}'")
+            .then((value) {
+          ProductModel product = _list_ofProduct_inStore
+              .where((element) => element.barcode == model.barcode)
+              .first;
+          if (!product.isBlank!) {
+            // remove old one befor update
+            _list_ofProduct_inStore.remove(product);
+            //set new product object
+            product.qty = model.qty;
+            // add updated product to list
+            _list_ofProduct_inStore.add(product);
+
+            statusInsertToStoreBodyMessage.value =
+                "Updated successfully To Store";
+            statusInsertToStoreMessage.value = ToastStatus.Success;
+          }
+        });
+      } else {
+        await dbm.insert("store", model.toJson_Store());
+        statusInsertToStoreBodyMessage.value = "inserted successfully To Store";
+        statusInsertToStoreMessage.value = ToastStatus.Success;
+        _list_ofProduct_inStore.add(model);
+      }
+      update();
+
+      //NOTE check if new product contain barcode
+      // if (!product.isBlank!)
+    });
+    // .catchError((error) {
+    //   statusInsertToStoreBodyMessage.value = error.toString();
+    //   statusInsertToStoreMessage.value = ToastStatus.Error;
+    // });
+  }
+
+  // NOTE get all product in my store
+  List<ProductModel> _list_ofProduct_inStore = [];
+  List<ProductModel> get list_ofProduct_inStore => _list_ofProduct_inStore;
+
+  bool isloadingGetProductsInStore = false;
+  Future<void> getAllProductInStore() async {
+    isloadingGetProductsInStore = true;
+    update();
+    _list_ofProduct_inStore = [];
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from store order by name limit 200")
+        .then((value) {
+      value.forEach((element) {
+        _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
+      });
+
+      isloadingGetProductsInStore = false;
+      update();
+      _list_ofProduct_inStore.forEach((element) {
+        print(element.toJson());
+      });
+    });
+  }
+
+  //NOTE delete record from store
+
+  Future<void> deleteProductFromStore(String barcode) async {
+    var dbm = await marketdb.database;
+    await dbm
+        .rawDelete("DELETE FROM store where barcode='${barcode}'")
+        .then((value) {
+      print('value deleted :' + value.toString());
     }).catchError((error) {
       print(error.toString());
     });
