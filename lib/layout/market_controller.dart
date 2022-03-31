@@ -22,6 +22,7 @@ class MarketController extends GetxController {
     });
 
     getAllProductInStore().then((value) {
+      _original_List_Of_product_in_store = _list_ofProduct_inStore;
       print("-----Finishing products In Store-------");
     });
 
@@ -100,29 +101,56 @@ class MarketController extends GetxController {
 
 //NOTE search for a item in my store
 
-  List<ProductModel> _list_of_store = [];
-  List<ProductModel> get list_of_store => _list_of_store;
-  Future<List<ProductModel>> search_In_Store(String value) async {
+  List<ProductModel> _list_of_product = [];
+  Future<List<ProductModel>> autocomplete_Search_forProduct(
+      String value) async {
+    print('test');
     // isloadingGetProducts = true;
     update();
-    _list_of_store = [];
+    _list_of_product = [];
     var dbm = await marketdb.database;
 
     await dbm
         .rawQuery("select * from products where name LIKE '%$value%'")
         .then((value) {
       value.forEach((element) {
-        _list_of_store.add(ProductModel.fromJson(element));
+        _list_of_product.add(ProductModel.fromJson(element));
       });
 
       //  isloadingGetProducts = false;
       update();
     });
-    return _list_of_store;
+    return _list_of_product;
+  }
+
+  Future<void> search_In_Store(String value) async {
+    print('test');
+    // isloadingGetProducts = true;
+    update();
+    _list_ofProduct_inStore = [];
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from store where name LIKE '%$value%'")
+        .then((value) {
+      value.forEach((element) {
+        _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
+      });
+
+      //  isloadingGetProducts = false;
+      update();
+    });
   }
 
   clearSearch() {
     _list_ofProduct = _original_List_Of_product;
+    _issearching_InProducts = false;
+    _issearching_InStore = false;
+    update();
+  }
+
+  clearSearch_inStoreScreen() {
+    _list_ofProduct_inStore = _original_List_Of_product_in_store;
     _issearching_InProducts = false;
     _issearching_InStore = false;
     update();
@@ -234,12 +262,14 @@ class MarketController extends GetxController {
   var statusInsertToStoreMessage = ToastStatus.Error.obs;
 
   Future<void> insertProductToStore(ProductModel model) async {
-    //   print(model.toJson_ToStore());
+    print("bar :" + model.barcode.toString());
     var dbm = await marketdb.database;
     await dbm
-        .rawQuery("select * FROM store where barcode='${model.barcode}'")
+        .rawQuery(
+            "select * FROM store where barcode='${model.barcode}' order by barcode")
         .then((value) async {
       if (value.length > 0) {
+        print(value.toList().toString());
         ProductModel productModel = ProductModel.fromJson_Store(value[0]);
         model.qty = (int.parse(model.qty.toString()) +
                 int.parse(productModel.qty.toString()))
@@ -262,6 +292,7 @@ class MarketController extends GetxController {
             statusInsertToStoreBodyMessage.value =
                 "Updated successfully To Store";
             statusInsertToStoreMessage.value = ToastStatus.Success;
+            update();
           }
         });
       } else {
@@ -284,6 +315,7 @@ class MarketController extends GetxController {
   // NOTE get all product in my store
   List<ProductModel> _list_ofProduct_inStore = [];
   List<ProductModel> get list_ofProduct_inStore => _list_ofProduct_inStore;
+  List<ProductModel> _original_List_Of_product_in_store = [];
 
   bool isloadingGetProductsInStore = false;
   Future<void> getAllProductInStore() async {
