@@ -55,7 +55,7 @@ class _AddProductToMyStoreScreenState extends State<AddProductToMyStoreScreen> {
                                 hintText: "Select Product ...")),
                         suggestionsCallback: (pattern) async {
                           return await marketController
-                              .search_In_Store(pattern);
+                              .autocomplete_Search_forProduct(pattern);
                         },
                         itemBuilder: (context, suggestion) {
                           return ListTile(
