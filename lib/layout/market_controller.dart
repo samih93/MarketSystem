@@ -26,6 +26,7 @@ class MarketController extends GetxController {
       print("-----Finishing products In Store-------");
     });
 
+    //  deleteProductFromStore('5287001375015');
     super.onInit();
   }
 
