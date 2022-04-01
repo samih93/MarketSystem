@@ -82,7 +82,11 @@ class MarketLayout extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              c.clearSearch();
+              if (isforproduct) {
+                c.clearSearch();
+              } else {
+                c.clearSearch_inStoreScreen();
+              }
             },
           )),
     );
