@@ -119,6 +119,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
           this.barCode = barcode;
           qrViewcontroller?.pauseCamera();
+          //NOTE when scan is finished write the barcode in textbarcode controller
+          productbarcodeController_text.text = barcode.code.toString();
         }));
   }
 
@@ -135,7 +137,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         return "barcode must not be empty";
                       }
                     },
-                    initialValue: barCode!.code,
+                    controller: productbarcodeController_text,
+                    //initialValue: barCode!.code,
                     enabled: barCode == '' ? false : true,
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
@@ -189,7 +192,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       marketController_needed
                           .insertProductByModel(
                               model: ProductModel(
-                                  barcode: barCode!.code.toString(),
+                                  barcode: productbarcodeController_text.text,
                                   name: productNameController_text.text,
                                   price: productPriceController_text.text))
                           .then((value) {
