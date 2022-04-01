@@ -12,27 +12,19 @@ class MarketLayout extends StatelessWidget {
         builder: (controller) => Scaffold(
               appBar: AppBar(
                 title: controller.issearchingInProducts
-                    ? _buildSearchField(controller, 'search in products...',
-                        isforproduct: true)
-                    : controller.issearchingInStore
-                        ? _buildSearchField(controller, "search in store...")
-                        : Text(
-                            controller.appbar_title[controller.currentIndex]
-                                .toString(),
-                          ),
-                actions: (controller.currentIndex == 0 &&
-                            controller.issearchingInProducts == false) ||
-                        (controller.currentIndex == 2 &&
-                            controller.issearchingInStore == false)
+                    ? _buildSearchField(
+                        controller,
+                        'search in products...',
+                      )
+                    : Text(
+                        controller.appbar_title[controller.currentIndex]
+                            .toString(),
+                      ),
+                actions: controller.issearchingInProducts == false
                     ? [
                         IconButton(
                             onPressed: () {
-                              // NOTE check to search in store all time expect current index 0
-                              if (controller.currentIndex == 0) {
-                                controller.onChangeSearchInProductsStatus(true);
-                              } else {
-                                controller.onChangeSearchInStoreStatus(true);
-                              }
+                              controller.onChangeSearchInProductsStatus(true);
                             },
                             icon: Icon(Icons.search))
                       ]
@@ -54,8 +46,10 @@ class MarketLayout extends StatelessWidget {
             ));
   }
 
-  _buildSearchField(MarketController c, String hint,
-      {bool isforproduct = false}) {
+  _buildSearchField(
+    MarketController c,
+    String hint,
+  ) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: defaultTextFormField(
@@ -63,11 +57,7 @@ class MarketLayout extends StatelessWidget {
           focus: true,
           onchange: (value) {
             if (value!.length > 1) {
-              if (isforproduct) {
-                c.search_In_Products(value);
-              } else {
-                c.search_In_Store(value);
-              }
+              c.search_In_Products(value);
             }
           },
           inputtype: TextInputType.name,
@@ -82,11 +72,7 @@ class MarketLayout extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              if (isforproduct) {
-                c.clearSearch();
-              } else {
-                c.clearSearch_inStoreScreen();
-              }
+              c.clearSearch();
             },
           )),
     );

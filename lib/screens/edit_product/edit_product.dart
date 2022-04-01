@@ -12,6 +12,7 @@ class EditProductScreen extends StatelessWidget {
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
   var productPriceController_text = TextEditingController();
+  var productQtyController_text = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   var marketController = Get.find<MarketController>();
@@ -21,6 +22,7 @@ class EditProductScreen extends StatelessWidget {
     productNameController_text.text = model.name.toString();
     productbarcodeController_text.text = model.barcode.toString();
     productPriceController_text.text = model.price.toString();
+    productQtyController_text.text = model.qty.toString();
     return Scaffold(
       appBar: AppBar(
         title: Text("${model.name}"),
@@ -29,12 +31,14 @@ class EditProductScreen extends StatelessWidget {
               onPressed: () {
                 if (_formkey.currentState!.validate()) {
                   int? price = int.tryParse(productPriceController_text.text);
-                  if (price != null) {
+                  int? qty = int.tryParse(productQtyController_text.text);
+                  if (price != null && qty != null) {
                     marketController
                         .updateProduct(ProductModel(
                             barcode: model.barcode,
                             name: productNameController_text.text,
-                            price: productPriceController_text.text))
+                            price: productPriceController_text.text,
+                            qty: productQtyController_text.text))
                         .then((value) {
                       Get.back();
                       showToast(
@@ -43,7 +47,7 @@ class EditProductScreen extends StatelessWidget {
                     });
                   } else {
                     showToast(
-                        message: "Price Must be a number ",
+                        message: "Price Or Qty Must be a number ",
                         status: ToastStatus.Error);
                   }
                 }
@@ -99,6 +103,19 @@ class EditProductScreen extends StatelessWidget {
                       border: UnderlineInputBorder(),
                       hinttext: "Price...",
                       controller: productPriceController_text),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  defaultTextFormField(
+                      onvalidate: (value) {
+                        if (value!.isEmpty) {
+                          return "Qty must not be empty";
+                        }
+                      },
+                      inputtype: TextInputType.phone,
+                      border: UnderlineInputBorder(),
+                      hinttext: "Qty...",
+                      controller: productQtyController_text),
                 ],
               ),
             )),

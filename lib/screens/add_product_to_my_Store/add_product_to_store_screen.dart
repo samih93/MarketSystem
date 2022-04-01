@@ -119,45 +119,45 @@ class _AddProductToMyStoreScreenState extends State<AddProductToMyStoreScreen> {
                 defaultButton(
                     text: "Save",
                     onpress: () async {
-                      if (_formkey.currentState!.validate()) {
-                        int? qty =
-                            int.tryParse(text_qty_controller.text.toString());
-                        if (qty != null) {
-                          marketController
-                              .insertProductToStore(ProductModel.Store(
-                                  barcode: text_barcode_controller.text,
-                                  name: text_productNameController.text,
-                                  qty: text_qty_controller.text))
-                              .then((value) {
-                            print(marketController
-                                .statusInsertToStoreBodyMessage);
-                            if (marketController.statusInsertToStoreMessage ==
-                                ToastStatus.Error) {
-                              showToast(
-                                  message: marketController
-                                      .statusInsertToStoreBodyMessage
-                                      .toString(),
-                                  status: marketController
-                                      .statusInsertToStoreMessage.value);
-                            } else {
-                              text_productNameController.clear();
-                              text_barcode_controller.clear();
-                              text_qty_controller.clear();
-                              Get.back();
-                              showToast(
-                                  message: marketController
-                                      .statusInsertToStoreBodyMessage
-                                      .toString(),
-                                  status: marketController
-                                      .statusInsertToStoreMessage.value);
-                            }
-                          });
-                        } else {
-                          showToast(
-                              message: "Quantity Must be a number ",
-                              status: ToastStatus.Error);
-                        }
-                      }
+                      // if (_formkey.currentState!.validate()) {
+                      //   int? qty =
+                      //       int.tryParse(text_qty_controller.text.toString());
+                      //   if (qty != null) {
+                      //     marketController
+                      //         .insertProductToStore(ProductModel.Store(
+                      //             barcode: text_barcode_controller.text,
+                      //             name: text_productNameController.text,
+                      //             qty: text_qty_controller.text))
+                      //         .then((value) {
+                      //       print(marketController
+                      //           .statusInsertToStoreBodyMessage);
+                      //       if (marketController.statusInsertToStoreMessage ==
+                      //           ToastStatus.Error) {
+                      //         showToast(
+                      //             message: marketController
+                      //                 .statusInsertToStoreBodyMessage
+                      //                 .toString(),
+                      //             status: marketController
+                      //                 .statusInsertToStoreMessage.value);
+                      //       } else {
+                      //         text_productNameController.clear();
+                      //         text_barcode_controller.clear();
+                      //         text_qty_controller.clear();
+                      //         Get.back();
+                      //         showToast(
+                      //             message: marketController
+                      //                 .statusInsertToStoreBodyMessage
+                      //                 .toString(),
+                      //             status: marketController
+                      //                 .statusInsertToStoreMessage.value);
+                      //       }
+                      //     });
+                      //   } else {
+                      //     showToast(
+                      //         message: "Quantity Must be a number ",
+                      //         status: ToastStatus.Error);
+                      //   }
+                      // }
                     }),
               ],
             ),

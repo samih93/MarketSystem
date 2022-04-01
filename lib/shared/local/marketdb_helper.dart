@@ -14,15 +14,15 @@ class MarketDbHelper {
         // NOTE create table product
         db
             .execute(
-                "Create Table products(barcode TEXT ,name TEXT,price INTEGER)")
+                "Create Table products(barcode TEXT ,name TEXT,price INTEGER,qty INTEGER)")
             .then((value) => print('products table created'))
             .catchError((onError) => print(onError.toString()));
 
-        //NOTE create table store
-        db
-            .execute("Create Table store(barcode TEXT ,name TEXT,qty INTEGER)")
-            .then((value) => print('store table created'))
-            .catchError((onError) => print(onError.toString()));
+        //        //NOTE create table store
+        // db
+        //     .execute("Create Table transactions(barcode TEXT ,name TEXT,qty INTEGER)")
+        //     .then((value) => print('store table created'))
+        //     .catchError((onError) => print(onError.toString()));
       },
       onOpen: (database) {
         print('database opened');

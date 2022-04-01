@@ -9,6 +9,7 @@ import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -95,30 +96,7 @@ class _SellScreenState extends State<SellScreen> {
                               ),
                             ),
                           ),
-                          Container(
-                            color: Colors.white,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  "Total Price : ",
-                                  style: TextStyle(
-                                      color: Colors.red[300], fontSize: 20),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text(
-                                  marketController.totalprice.toString() +
-                                      " LL",
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            ),
-                          ),
+                          _buildTotalPrice(marketController),
                           Container(
                             height: 10,
                             color: Colors.white,
@@ -163,30 +141,19 @@ class _SellScreenState extends State<SellScreen> {
                         content: Column(
                           children: <Widget>[
                             Text(
-                              'Total : ${marketController_needed.totalprice.toString()}',
+                              'Total : ${marketController_needed.totalprice.toString()} LL',
                               style: TextStyle(fontSize: 20),
                             ),
-                            TextField(
-                              onSubmitted: ((value) {
-                                setState(() {
-                                  restOfCash = (double.parse(value) -
-                                          marketController_needed.totalprice)
-                                      .toString();
-                                });
-                              }),
-                              controller: receivedCashController,
-                              keyboardType: TextInputType.phone,
-                              decoration: InputDecoration(
-                                labelText: 'Received Cash',
-                              ),
-                            ),
-                            Text("Rest : $restOfCash"),
                           ],
                         ),
                         buttons: [
                           DialogButton(
                             onPressed: () {
-                              //Navigator.pop(context);
+                              marketController_needed.clearBasket();
+                              setState(() {
+                                barCode = null;
+                              });
+                              Navigator.pop(context);
                             },
                             child: Text(
                               "Enter",
@@ -305,4 +272,27 @@ class _SellScreenState extends State<SellScreen> {
               .fetchProductBybarCode(barcode.code.toString());
         }));
   }
+
+  _buildTotalPrice(MarketController controller) => Container(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              "Total Price : ",
+              style: TextStyle(color: Colors.red[300], fontSize: 20),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Text(
+              controller.totalprice.toString() + " LL",
+              style: TextStyle(fontSize: 20),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+          ],
+        ),
+      );
 }

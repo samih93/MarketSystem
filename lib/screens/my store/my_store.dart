@@ -29,7 +29,7 @@ class MyStoreScreen extends StatelessWidget {
                               ...headertitles.map((e) => _build_header_item(e))
                             ],
                             rows: [
-                              ...marketController.list_ofProduct_inStore.map(
+                              ...marketController.list_ofProduct.map(
                                   (e) =>
                                       _build_Row(e, marketController, context)),
                             ],

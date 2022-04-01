@@ -24,6 +24,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
   var productPriceController_text = TextEditingController();
+  var productQtyController = TextEditingController();
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -171,6 +172,16 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       border: UnderlineInputBorder(),
                       hinttext: "Price...",
                       controller: productPriceController_text),
+                  defaultTextFormField(
+                      onvalidate: (value) {
+                        if (value!.isEmpty) {
+                          return "Qty must not be empty";
+                        }
+                      },
+                      inputtype: TextInputType.phone,
+                      border: UnderlineInputBorder(),
+                      hinttext: "qty...",
+                      controller: productQtyController),
                 ],
               ),
             )),
@@ -186,7 +197,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 onpress: () {
                   if (_formkey.currentState!.validate()) {
                     int? price = int.tryParse(productPriceController_text.text);
-                    if (price != null) {
+                    int? qty = int.tryParse(productQtyController.text);
+                    if (price != null && qty != null) {
                       print("valid");
 
                       marketController_needed
@@ -194,7 +206,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               model: ProductModel(
                                   barcode: productbarcodeController_text.text,
                                   name: productNameController_text.text,
-                                  price: productPriceController_text.text))
+                                  price: productPriceController_text.text,
+                                  qty: productQtyController.text))
                           .then((value) {
                         if (marketController_needed.statusInsertMessage.value ==
                             ToastStatus.Error) {
@@ -220,7 +233,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       });
                     } else {
                       showToast(
-                          message: "Price Must be a number ",
+                          message: "Price Or Qty Must be a number ",
                           status: ToastStatus.Error);
                     }
                   } else {

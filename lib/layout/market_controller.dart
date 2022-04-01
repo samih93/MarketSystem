@@ -21,10 +21,10 @@ class MarketController extends GetxController {
       print("--------finishing Get products------");
     });
 
-    getAllProductInStore().then((value) {
-      _original_List_Of_product_in_store = _list_ofProduct_inStore;
-      print("-----Finishing products In Store-------");
-    });
+    // getAllProductInStore().then((value) {
+    //   _original_List_Of_product_in_store = _list_ofProduct_inStore;
+    //   print("-----Finishing products In Store-------");
+    // });
 
     //  deleteProductFromStore('5287001375015');
     super.onInit();
@@ -52,10 +52,8 @@ class MarketController extends GetxController {
 
   void onchangeIndex(int index) {
     _currentIndex = index;
-    if (index == 1) {
-      _issearching_InProducts = false;
-      _issearching_InStore = false;
-    }
+    _issearching_InProducts = false;
+
     update();
   }
 
@@ -65,21 +63,20 @@ class MarketController extends GetxController {
   bool get issearchingInProducts => _issearching_InProducts;
   onChangeSearchInProductsStatus(bool val) {
     _issearching_InProducts = val;
-    _issearching_InStore = false;
     //_currentIndex = 0;
     update();
   }
 
-  //NOTE on change Search Status in products
-  bool _issearching_InStore = false;
+  // //NOTE on change Search Status in products
+  // bool _issearching_InStore = false;
 
-  bool get issearchingInStore => _issearching_InStore;
-  onChangeSearchInStoreStatus(bool val) {
-    _issearching_InStore = val;
-    _issearching_InProducts = false;
-    _currentIndex = 2;
-    update();
-  }
+  // bool get issearchingInStore => _issearching_InStore;
+  // onChangeSearchInStoreStatus(bool val) {
+  //   _issearching_InStore = val;
+  //   _issearching_InProducts = false;
+  //   _currentIndex = 2;
+  //   update();
+  // }
 
 //NOTE search for item in products
   Future<void> search_In_Products(String value) async {
@@ -124,38 +121,37 @@ class MarketController extends GetxController {
     return _list_of_product;
   }
 
-  Future<void> search_In_Store(String value) async {
-    print('test');
-    // isloadingGetProducts = true;
-    update();
-    _list_ofProduct_inStore = [];
-    var dbm = await marketdb.database;
+  // Future<void> search_In_Store(String value) async {
+  //   print('test');
+  //   // isloadingGetProducts = true;
+  //   update();
+  //   _list_ofProduct_inStore = [];
+  //   var dbm = await marketdb.database;
 
-    await dbm
-        .rawQuery("select * from store where name LIKE '%$value%'")
-        .then((value) {
-      value.forEach((element) {
-        _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
-      });
+  //   await dbm
+  //       .rawQuery("select * from store where name LIKE '%$value%'")
+  //       .then((value) {
+  //     value.forEach((element) {
+  //       _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
+  //     });
 
-      //  isloadingGetProducts = false;
-      update();
-    });
-  }
+  //     //  isloadingGetProducts = false;
+  //     update();
+  //   });
+  // }
 
   clearSearch() {
     _list_ofProduct = _original_List_Of_product;
     _issearching_InProducts = false;
-    _issearching_InStore = false;
     update();
   }
 
-  clearSearch_inStoreScreen() {
-    _list_ofProduct_inStore = _original_List_Of_product_in_store;
-    _issearching_InProducts = false;
-    _issearching_InStore = false;
-    update();
-  }
+  // clearSearch_inStoreScreen() {
+  //   _list_ofProduct_inStore = _original_List_Of_product_in_store;
+  //   _issearching_InProducts = false;
+  //   _issearching_InStore = false;
+  //   update();
+  // }
 
   // NOTE get all
   List<ProductModel> _list_ofProduct = [];
@@ -196,6 +192,7 @@ class MarketController extends GetxController {
         .then((value) async {
       if (value.length > 0) {
         statusInsertBodyMessage.value = "product Alreay Exist try Again ";
+        // !  need to update
         statusInsertMessage.value = ToastStatus.Error;
       } else {
         await dbm.insert("products", model.toJson());
@@ -257,101 +254,101 @@ class MarketController extends GetxController {
     });
   }
 
-// NOTE insert product to store
+// // NOTE insert product to store
 
-  var statusInsertToStoreBodyMessage = "".obs;
-  var statusInsertToStoreMessage = ToastStatus.Error.obs;
+//   var statusInsertToStoreBodyMessage = "".obs;
+//   var statusInsertToStoreMessage = ToastStatus.Error.obs;
 
-  Future<void> insertProductToStore(ProductModel model) async {
-    print("bar :" + model.barcode.toString());
-    var dbm = await marketdb.database;
-    await dbm
-        .rawQuery(
-            "select * FROM store where barcode='${model.barcode}' order by barcode")
-        .then((value) async {
-      if (value.length > 0) {
-        print(value.toList().toString());
-        ProductModel productModel = ProductModel.fromJson_Store(value[0]);
-        model.qty = (int.parse(model.qty.toString()) +
-                int.parse(productModel.qty.toString()))
-            .toString();
-        await dbm
-            .rawUpdate(
-                "UPDATE store SET qty= '${model.qty}' where  barcode='${model.barcode}'")
-            .then((value) {
-          ProductModel product = _list_ofProduct_inStore
-              .where((element) => element.barcode == model.barcode)
-              .first;
-          if (!product.isBlank!) {
-            // remove old one befor update
-            _list_ofProduct_inStore.remove(product);
-            //set new product object
-            product.qty = model.qty;
-            // add updated product to list
-            _list_ofProduct_inStore.add(product);
+//   Future<void> insertProductToStore(ProductModel model) async {
+//     print("bar :" + model.barcode.toString());
+//     var dbm = await marketdb.database;
+//     await dbm
+//         .rawQuery(
+//             "select * FROM store where barcode='${model.barcode}' order by barcode")
+//         .then((value) async {
+//       if (value.length > 0) {
+//         print(value.toList().toString());
+//         ProductModel productModel = ProductModel.fromJson_Store(value[0]);
+//         model.qty = (int.parse(model.qty.toString()) +
+//                 int.parse(productModel.qty.toString()))
+//             .toString();
+//         await dbm
+//             .rawUpdate(
+//                 "UPDATE store SET qty= '${model.qty}' where  barcode='${model.barcode}'")
+//             .then((value) {
+//           ProductModel product = _list_ofProduct_inStore
+//               .where((element) => element.barcode == model.barcode)
+//               .first;
+//           if (!product.isBlank!) {
+//             // remove old one befor update
+//             _list_ofProduct_inStore.remove(product);
+//             //set new product object
+//             product.qty = model.qty;
+//             // add updated product to list
+//             _list_ofProduct_inStore.add(product);
 
-            statusInsertToStoreBodyMessage.value =
-                "Updated successfully To Store";
-            statusInsertToStoreMessage.value = ToastStatus.Success;
-            update();
-          }
-        });
-      } else {
-        await dbm.insert("store", model.toJson_Store());
-        statusInsertToStoreBodyMessage.value = "inserted successfully To Store";
-        statusInsertToStoreMessage.value = ToastStatus.Success;
-        _list_ofProduct_inStore.add(model);
-      }
-      update();
+//             statusInsertToStoreBodyMessage.value =
+//                 "Updated successfully To Store";
+//             statusInsertToStoreMessage.value = ToastStatus.Success;
+//             update();
+//           }
+//         });
+//       } else {
+//         await dbm.insert("store", model.toJson_Store());
+//         statusInsertToStoreBodyMessage.value = "inserted successfully To Store";
+//         statusInsertToStoreMessage.value = ToastStatus.Success;
+//         _list_ofProduct_inStore.add(model);
+//       }
+//       update();
 
-      //NOTE check if new product contain barcode
-      // if (!product.isBlank!)
-    });
-    // .catchError((error) {
-    //   statusInsertToStoreBodyMessage.value = error.toString();
-    //   statusInsertToStoreMessage.value = ToastStatus.Error;
-    // });
-  }
+//       //NOTE check if new product contain barcode
+//       // if (!product.isBlank!)
+//     });
+//     // .catchError((error) {
+//     //   statusInsertToStoreBodyMessage.value = error.toString();
+//     //   statusInsertToStoreMessage.value = ToastStatus.Error;
+//     // });
+//   }
 
-  // NOTE get all product in my store
-  List<ProductModel> _list_ofProduct_inStore = [];
-  List<ProductModel> get list_ofProduct_inStore => _list_ofProduct_inStore;
-  List<ProductModel> _original_List_Of_product_in_store = [];
+  // // NOTE get all product in my store
+  // List<ProductModel> _list_ofProduct_inStore = [];
+  // List<ProductModel> get list_ofProduct_inStore => _list_ofProduct_inStore;
+  // List<ProductModel> _original_List_Of_product_in_store = [];
 
-  bool isloadingGetProductsInStore = false;
-  Future<void> getAllProductInStore() async {
-    isloadingGetProductsInStore = true;
-    update();
-    _list_ofProduct_inStore = [];
-    var dbm = await marketdb.database;
+  // bool isloadingGetProductsInStore = false;
+  // Future<void> getAllProductInStore() async {
+  //   isloadingGetProductsInStore = true;
+  //   update();
+  //   _list_ofProduct_inStore = [];
+  //   var dbm = await marketdb.database;
 
-    await dbm
-        .rawQuery("select * from store order by name limit 200")
-        .then((value) {
-      value.forEach((element) {
-        _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
-      });
+  //   await dbm
+  //       .rawQuery("select * from store order by name limit 200")
+  //       .then((value) {
+  //     value.forEach((element) {
+  //       _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
+  //     });
 
-      isloadingGetProductsInStore = false;
-      update();
-      _list_ofProduct_inStore.forEach((element) {
-        print(element.toJson());
-      });
-    });
-  }
+  //     isloadingGetProductsInStore = false;
+  //     update();
+  //     _list_ofProduct_inStore.forEach((element) {
+  //       print(element.toJson());
+  //     });
+  //   });
+  // }
 
-  //NOTE delete record from store
+  // //NOTE delete record from store
 
-  Future<void> deleteProductFromStore(String barcode) async {
-    var dbm = await marketdb.database;
-    await dbm
-        .rawDelete("DELETE FROM store where barcode='${barcode}'")
-        .then((value) {
-      print('value deleted :' + value.toString());
-    }).catchError((error) {
-      print(error.toString());
-    });
-  }
+  // Future<void> deleteProductFromStore(String barcode) async {
+  //   var dbm = await marketdb.database;
+  //   await dbm
+  //       .rawDelete("DELETE FROM store where barcode='${barcode}'")
+  //       .then((value) {
+  //     print('value deleted :' + value.toString());
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //   });
+  // }
 
   //NOTE fetch  product by barcode and then add to list of sell
   List<ProductModel> basket_products = [];
@@ -365,6 +362,9 @@ class MarketController extends GetxController {
         .then((value) {
       value.forEach((element) {
         basket_products.add(ProductModel.fromJson(element));
+      });
+      basket_products.forEach((element) {
+        element.qty = "1";
       });
       //  isloadingGetProducts = false;
       gettotalPrice();
@@ -400,5 +400,11 @@ class MarketController extends GetxController {
     basket_products.remove(product);
     update();
     gettotalPrice();
+  }
+
+  clearBasket() {
+    basket_products = [];
+    totalprice = 0;
+    update();
   }
 }
