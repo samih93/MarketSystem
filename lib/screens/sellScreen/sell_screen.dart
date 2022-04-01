@@ -24,8 +24,11 @@ class _SellScreenState extends State<SellScreen> {
   Barcode? barCode = null;
 
   var qtyController = TextEditingController();
+  var receivedCashController = TextEditingController();
 
   var marketController_needed = Get.find<MarketController>();
+
+  String restOfCash = "";
 
   @override
   void dispose() {
@@ -153,7 +156,46 @@ class _SellScreenState extends State<SellScreen> {
               child: defaultButton(
                   width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
-                  onpress: () {}),
+                  onpress: () {
+                    Alert(
+                        context: context,
+                        title: "Cash",
+                        content: Column(
+                          children: <Widget>[
+                            Text(
+                              'Total : ${marketController_needed.totalprice.toString()}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            TextField(
+                              onSubmitted: ((value) {
+                                setState(() {
+                                  restOfCash = (double.parse(value) -
+                                          marketController_needed.totalprice)
+                                      .toString();
+                                });
+                              }),
+                              controller: receivedCashController,
+                              keyboardType: TextInputType.phone,
+                              decoration: InputDecoration(
+                                labelText: 'Received Cash',
+                              ),
+                            ),
+                            Text("Rest : $restOfCash"),
+                          ],
+                        ),
+                        buttons: [
+                          DialogButton(
+                            onPressed: () {
+                              //Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Enter",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          )
+                        ]).show();
+                  }),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -203,7 +245,6 @@ class _SellScreenState extends State<SellScreen> {
               style: TextStyle(
                   color: defaultColor, decoration: TextDecoration.underline),
             ), onTap: () {
-          print('nb 1 is pressed');
           Alert(
               context: context,
               title: "Enter Qty",
