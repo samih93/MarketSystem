@@ -6,6 +6,7 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/edit_product/edit_product.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ManageProductsScreen extends StatelessWidget {

@@ -6,7 +6,7 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/screens/my%20store/my_store.dart';
-import 'package:marketsystem/screens/saleScreen/sale_screen.dart';
+import 'package:marketsystem/screens/sellScreen/sell_screen.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 
@@ -40,7 +40,7 @@ class MarketController extends GetxController {
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [ManageProductsScreen(), SaleScreen(), MyStoreScreen()];
+  final screens = [ManageProductsScreen(), SellScreen(), MyStoreScreen()];
 
   final appbar_title = ['Manage Products', 'Sell Screen', 'My Store'];
 
@@ -351,5 +351,54 @@ class MarketController extends GetxController {
     }).catchError((error) {
       print(error.toString());
     });
+  }
+
+  //NOTE fetch  product by barcode and then add to list of sell
+  List<ProductModel> basket_products = [];
+
+  Future<void> fetchProductBybarCode(String barcode) async {
+    // isloadingGetProducts = true;
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from products where barcode = '$barcode'")
+        .then((value) {
+      value.forEach((element) {
+        basket_products.add(ProductModel.fromJson(element));
+      });
+      //  isloadingGetProducts = false;
+      gettotalPrice();
+
+      update();
+    });
+  }
+
+  onchangeQtyInBasket(String barcode, String qty) {
+    basket_products.forEach((element) {
+      if (element.barcode == barcode) element.qty = qty;
+    });
+    update();
+    basket_products.forEach((element) {
+      print(element.qty);
+    });
+    gettotalPrice();
+  }
+
+  double totalprice = 0;
+  gettotalPrice() {
+    totalprice = 0;
+    basket_products.forEach((element) {
+      totalprice += int.parse(element.qty.toString()) *
+          int.parse(element.price.toString());
+    });
+    update();
+  }
+
+  deleteProductFromBasket(String barcode) {
+    ProductModel product =
+        basket_products.where((element) => element.barcode == barcode).first;
+    basket_products.remove(product);
+    update();
+    gettotalPrice();
   }
 }

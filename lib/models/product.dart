@@ -4,7 +4,7 @@ class ProductModel {
   String? barcode;
   String? name;
   String? price;
-  String? qty;
+  String? qty = "1";
 
   ProductModel(
       {required this.barcode, required this.name, required this.price});

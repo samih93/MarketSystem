@@ -119,7 +119,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
     qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
           this.barCode = barcode;
           qrViewcontroller?.pauseCamera();
-          //NOTE when scan is finished write the barcode in textbarcode controller
+          //NOTE when scan is finished write the barcode in controller
           productbarcodeController_text.text = barcode.code.toString();
         }));
   }
