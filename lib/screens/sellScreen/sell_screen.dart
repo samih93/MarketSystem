@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beep/flutter_beep.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
@@ -29,8 +30,8 @@ class _SellScreenState extends State<SellScreen> {
 
   var marketController_needed = Get.find<MarketController>();
 
-  String restOfCash = "";
-
+  bool _iscashSuccess = false;
+  
   @override
   void dispose() {
     // TODO: implement dispose
@@ -48,77 +49,99 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (barCode != null) print("barcod : ${barCode!.code.toString()}");
     return GetBuilder<MarketController>(
       init: Get.find<MarketController>(),
       builder: (marketController) => Scaffold(
         body: marketController.isloadingGetProducts
             ? Center(child: CircularProgressIndicator())
-            : Stack(
-                alignment: Alignment.topCenter,
-                children: [
-                  _buildQr(context),
+            : _iscashSuccess
+                ? Align(
+                    alignment: Alignment.center,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _iscashSuccess = false;
+                          qrViewcontroller!.resumeCamera();
+                        });
+                      },
+                      child: CircleAvatar(
+                        backgroundColor: Colors.green.shade500,
+                        radius: 80,
+                        child: Icon(
+                          Icons.done,
+                          size: 80,
+                        ),
+                      ),
+                    ),
+                  )
+                : Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      _buildQr(context),
 
-                  Positioned(
-                    top: 10,
-                    child: _buildControlButton(),
-                  ),
-                  if (barCode != null)
-                    Align(
-                      alignment: Alignment.center,
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Container(
-                              width: double.infinity,
-                              color: Colors.white,
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.vertical,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.horizontal,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(15.0),
-                                    child: DataTable(
-                                      headingTextStyle:
-                                          TextStyle(color: defaultColor),
-                                      border: TableBorder.all(
-                                          width: 1, color: Colors.grey),
-                                      columns: [
-                                        ...headertitles
-                                            .map((e) => _build_header_item(e))
-                                      ],
-                                      rows: [
-                                        ...marketController.basket_products
-                                            .map((e) => _build_Row(e, context)),
-                                      ],
+                      Positioned(
+                        top: 10,
+                        child: _buildControlButton(),
+                      ),
+                      if (barCode != null)
+                        Align(
+                          alignment: Alignment.center,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  color: Colors.white,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: DataTable(
+                                          headingTextStyle:
+                                              TextStyle(color: defaultColor),
+                                          border: TableBorder.all(
+                                              width: 1, color: Colors.grey),
+                                          columns: [
+                                            ...headertitles.map(
+                                                (e) => _build_header_item(e))
+                                          ],
+                                          rows: [
+                                            ...marketController.basket_products
+                                                .map((e) =>
+                                                    _build_Row(e, context)),
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
+                              _buildTotalPrice(marketController),
+                              Container(
+                                height: 10,
+                                color: Colors.white,
+                              ),
+                              _buildSubmitRow(),
+                            ],
                           ),
-                          _buildTotalPrice(marketController),
-                          Container(
-                            height: 10,
-                            color: Colors.white,
-                          ),
-                          _buildSubmitRow(),
-                        ],
-                      ),
-                    ),
-                  // DataTable(
-                  //   headingTextStyle: TextStyle(color: defaultColor),
-                  //   border: TableBorder.all(width: 1, color: Colors.grey),
-                  //   columns: [
-                  //     ...headertitles.map((e) => _build_header_item(e))
-                  //   ],
-                  //   rows: [
-                  //     ...marketController.list_ofProduct_inStore.map(
-                  //         (e) =>
-                  //             _build_Row(e, marketController, context)),
-                  //   ],
-                  // ),
-                ],
-              ),
+                        ),
+                      // DataTable(
+                      //   headingTextStyle: TextStyle(color: defaultColor),
+                      //   border: TableBorder.all(width: 1, color: Colors.grey),
+                      //   columns: [
+                      //     ...headertitles.map((e) => _build_header_item(e))
+                      //   ],
+                      //   rows: [
+                      //     ...marketController.list_ofProduct_inStore.map(
+                      //         (e) =>
+                      //             _build_Row(e, marketController, context)),
+                      //   ],
+                      // ),
+                    ],
+                  ),
       ),
     );
   }
@@ -152,7 +175,9 @@ class _SellScreenState extends State<SellScreen> {
                               marketController_needed.clearBasket();
                               setState(() {
                                 barCode = null;
+                                _iscashSuccess = true;
                               });
+
                               Navigator.pop(context);
                             },
                             child: Text(
@@ -268,6 +293,7 @@ class _SellScreenState extends State<SellScreen> {
     qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
           this.barCode = barcode;
           qrViewcontroller?.pauseCamera();
+          FlutterBeep.beep();
           marketController_needed
               .fetchProductBybarCode(barcode.code.toString());
         }));

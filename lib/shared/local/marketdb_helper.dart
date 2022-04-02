@@ -20,7 +20,7 @@ class MarketDbHelper {
 
         //        //NOTE create table store
         // db
-        //     .execute("Create Table transactions(barcode TEXT ,name TEXT,qty INTEGER)")
+        //     .execute("Create Table factures(id INTEGER PRIMARY KEY AUTOINCREMENT ,price INTEGER,facturedate TEXT)")
         //     .then((value) => print('store table created'))
         //     .catchError((onError) => print(onError.toString()));
       },

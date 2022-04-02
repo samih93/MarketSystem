@@ -7,6 +7,7 @@ import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/screens/my%20store/my_store.dart';
 import 'package:marketsystem/screens/sellScreen/sell_screen.dart';
+import 'package:marketsystem/screens/settings/settings_screen.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 
@@ -36,13 +37,13 @@ class MarketController extends GetxController {
     BottomNavigationBarItem(
         icon: Icon(Icons.production_quantity_limits), label: "Sell"),
     BottomNavigationBarItem(
-        icon: Icon(Icons.store_mall_directory_outlined), label: "My Store"),
+        icon: Icon(Icons.store_mall_directory_outlined), label: "Settings"),
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [ManageProductsScreen(), SellScreen(), MyStoreScreen()];
+  final screens = [ManageProductsScreen(), SellScreen(), SettingsScreen()];
 
-  final appbar_title = ['Manage Products', 'Sell Screen', 'My Store'];
+  final appbar_title = ['Manage Products', 'Sell Screen', 'Settings'];
 
   // NOTE: --------------------- On Change Index Of Screens ------------------
 
@@ -66,17 +67,6 @@ class MarketController extends GetxController {
     //_currentIndex = 0;
     update();
   }
-
-  // //NOTE on change Search Status in products
-  // bool _issearching_InStore = false;
-
-  // bool get issearchingInStore => _issearching_InStore;
-  // onChangeSearchInStoreStatus(bool val) {
-  //   _issearching_InStore = val;
-  //   _issearching_InProducts = false;
-  //   _currentIndex = 2;
-  //   update();
-  // }
 
 //NOTE search for item in products
   Future<void> search_In_Products(String value) async {
@@ -121,37 +111,11 @@ class MarketController extends GetxController {
     return _list_of_product;
   }
 
-  // Future<void> search_In_Store(String value) async {
-  //   print('test');
-  //   // isloadingGetProducts = true;
-  //   update();
-  //   _list_ofProduct_inStore = [];
-  //   var dbm = await marketdb.database;
-
-  //   await dbm
-  //       .rawQuery("select * from store where name LIKE '%$value%'")
-  //       .then((value) {
-  //     value.forEach((element) {
-  //       _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
-  //     });
-
-  //     //  isloadingGetProducts = false;
-  //     update();
-  //   });
-  // }
-
   clearSearch() {
     _list_ofProduct = _original_List_Of_product;
     _issearching_InProducts = false;
     update();
   }
-
-  // clearSearch_inStoreScreen() {
-  //   _list_ofProduct_inStore = _original_List_Of_product_in_store;
-  //   _issearching_InProducts = false;
-  //   _issearching_InStore = false;
-  //   update();
-  // }
 
   // NOTE get all
   List<ProductModel> _list_ofProduct = [];
@@ -253,102 +217,6 @@ class MarketController extends GetxController {
       print(error.toString());
     });
   }
-
-// // NOTE insert product to store
-
-//   var statusInsertToStoreBodyMessage = "".obs;
-//   var statusInsertToStoreMessage = ToastStatus.Error.obs;
-
-//   Future<void> insertProductToStore(ProductModel model) async {
-//     print("bar :" + model.barcode.toString());
-//     var dbm = await marketdb.database;
-//     await dbm
-//         .rawQuery(
-//             "select * FROM store where barcode='${model.barcode}' order by barcode")
-//         .then((value) async {
-//       if (value.length > 0) {
-//         print(value.toList().toString());
-//         ProductModel productModel = ProductModel.fromJson_Store(value[0]);
-//         model.qty = (int.parse(model.qty.toString()) +
-//                 int.parse(productModel.qty.toString()))
-//             .toString();
-//         await dbm
-//             .rawUpdate(
-//                 "UPDATE store SET qty= '${model.qty}' where  barcode='${model.barcode}'")
-//             .then((value) {
-//           ProductModel product = _list_ofProduct_inStore
-//               .where((element) => element.barcode == model.barcode)
-//               .first;
-//           if (!product.isBlank!) {
-//             // remove old one befor update
-//             _list_ofProduct_inStore.remove(product);
-//             //set new product object
-//             product.qty = model.qty;
-//             // add updated product to list
-//             _list_ofProduct_inStore.add(product);
-
-//             statusInsertToStoreBodyMessage.value =
-//                 "Updated successfully To Store";
-//             statusInsertToStoreMessage.value = ToastStatus.Success;
-//             update();
-//           }
-//         });
-//       } else {
-//         await dbm.insert("store", model.toJson_Store());
-//         statusInsertToStoreBodyMessage.value = "inserted successfully To Store";
-//         statusInsertToStoreMessage.value = ToastStatus.Success;
-//         _list_ofProduct_inStore.add(model);
-//       }
-//       update();
-
-//       //NOTE check if new product contain barcode
-//       // if (!product.isBlank!)
-//     });
-//     // .catchError((error) {
-//     //   statusInsertToStoreBodyMessage.value = error.toString();
-//     //   statusInsertToStoreMessage.value = ToastStatus.Error;
-//     // });
-//   }
-
-  // // NOTE get all product in my store
-  // List<ProductModel> _list_ofProduct_inStore = [];
-  // List<ProductModel> get list_ofProduct_inStore => _list_ofProduct_inStore;
-  // List<ProductModel> _original_List_Of_product_in_store = [];
-
-  // bool isloadingGetProductsInStore = false;
-  // Future<void> getAllProductInStore() async {
-  //   isloadingGetProductsInStore = true;
-  //   update();
-  //   _list_ofProduct_inStore = [];
-  //   var dbm = await marketdb.database;
-
-  //   await dbm
-  //       .rawQuery("select * from store order by name limit 200")
-  //       .then((value) {
-  //     value.forEach((element) {
-  //       _list_ofProduct_inStore.add(ProductModel.fromJson_Store(element));
-  //     });
-
-  //     isloadingGetProductsInStore = false;
-  //     update();
-  //     _list_ofProduct_inStore.forEach((element) {
-  //       print(element.toJson());
-  //     });
-  //   });
-  // }
-
-  // //NOTE delete record from store
-
-  // Future<void> deleteProductFromStore(String barcode) async {
-  //   var dbm = await marketdb.database;
-  //   await dbm
-  //       .rawDelete("DELETE FROM store where barcode='${barcode}'")
-  //       .then((value) {
-  //     print('value deleted :' + value.toString());
-  //   }).catchError((error) {
-  //     print(error.toString());
-  //   });
-  // }
 
   //NOTE fetch  product by barcode and then add to list of sell
   List<ProductModel> basket_products = [];
