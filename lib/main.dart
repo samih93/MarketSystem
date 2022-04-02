@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
+import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/shared/bindings/market_layout_binding.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MarketLayout(),
+      home: SplashScreen(),
     );
   }
 }
