@@ -13,9 +13,10 @@ class ProductsController extends ChangeNotifier {
   List<ProductModel> _original_List_Of_product = [];
 
   bool isloadingGetProducts = false;
+  
   Future<void> getAllProduct() async {
     isloadingGetProducts = true;
-    // notifyListeners();
+     notifyListeners();
     _list_ofProduct = [];
     var dbm = await marketdb.database;
 
@@ -28,9 +29,6 @@ class ProductsController extends ChangeNotifier {
 
       isloadingGetProducts = false;
       notifyListeners();
-      _list_ofProduct.forEach((element) {
-        print(element.toJson());
-      });
     });
   }
   //NOTE delete Product
@@ -74,6 +72,7 @@ class ProductsController extends ChangeNotifier {
         //NOTE Add new product to list
         _list_ofProduct.add(model);
       }
+      print('inserted');
       notifyListeners();
     });
   }

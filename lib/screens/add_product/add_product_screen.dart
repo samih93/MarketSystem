@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:marketsystem/controllers/products_provider.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
@@ -49,14 +49,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (BuildContext context) {
-            return ProductsController();
-          },
-        ),
-      ],
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => ProductsController(),
       child: Scaffold(
         appBar: AppBar(
           title: Text("Add New Product"),
@@ -207,7 +201,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
               child: defaultButton(
                   width: MediaQuery.of(context).size.width * 0.4,
                   text: "Save",
-                  onpress: () {
+                  onpress: () async {
                     if (_formkey.currentState!.validate()) {
                       int? price =
                           int.tryParse(productPriceController_text.text);

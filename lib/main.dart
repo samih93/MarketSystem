@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:marketsystem/controllers/layout_provider.dart';
+import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: MarketLayout(),
+        home: SplashScreen(),
       ),
     );
   }

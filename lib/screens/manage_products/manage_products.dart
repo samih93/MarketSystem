@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:marketsystem/controllers/products_provider.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
@@ -23,10 +23,6 @@ class ManageProductsScreen extends StatelessWidget {
       child: Scaffold(
         body:
             Consumer<ProductsController>(builder: (context, controller, child) {
-          print("checking list ");
-          controller.list_ofProduct.forEach((element) {
-            print(element.name);
-          });
           return controller.isloadingGetProducts
               ? Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
@@ -43,7 +39,7 @@ class ManageProductsScreen extends StatelessWidget {
                         ],
                         rows: [
                           ...controller.list_ofProduct
-                              .map((e) => _build_Row(e, context)),
+                              .map((e) => _build_Row(e, context, controller)),
                         ],
                       ),
                     ),
@@ -67,7 +63,9 @@ class ManageProductsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )));
 
-  _build_Row(ProductModel model, BuildContext context) => DataRow(cells: [
+  _build_Row(ProductModel model, BuildContext context,
+          ProductsController controller) =>
+      DataRow(cells: [
         DataCell(Text(model.name.toString())),
         DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.price.toString())),
@@ -112,7 +110,8 @@ class ManageProductsScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       onPressed: () {
-                        //_controller.deleteProduct(model);
+                        Provider.of<ProductsController>(context, listen: false)
+                            .deleteProduct(model);
                         Get.back();
                       },
                       color: Colors.red.shade400,
