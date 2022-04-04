@@ -15,7 +15,7 @@ class ProductsController extends ChangeNotifier {
   bool isloadingGetProducts = false;
   Future<void> getAllProduct() async {
     isloadingGetProducts = true;
-    notifyListeners();
+    // notifyListeners();
     _list_ofProduct = [];
     var dbm = await marketdb.database;
 

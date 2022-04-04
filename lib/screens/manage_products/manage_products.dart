@@ -18,11 +18,15 @@ class ManageProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (create) {
-        return ProductsController();
+        return ProductsController()..getAllProduct();
       },
       child: Scaffold(
         body:
             Consumer<ProductsController>(builder: (context, controller, child) {
+          print("checking list ");
+          controller.list_ofProduct.forEach((element) {
+            print(element.name);
+          });
           return controller.isloadingGetProducts
               ? Center(child: CircularProgressIndicator())
               : SingleChildScrollView(
