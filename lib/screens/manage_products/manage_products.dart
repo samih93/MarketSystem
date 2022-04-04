@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/products_provider.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/edit_product/edit_product.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -14,31 +16,36 @@ class ManageProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<MarketController>(
-      init: Get.find<MarketController>(),
-      builder: (marketController) => Scaffold(
-        body: marketController.isloadingGetProducts
-            ? Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: DataTable(
-                      headingTextStyle: TextStyle(color: defaultColor),
-                      border: TableBorder.all(width: 1, color: Colors.grey),
-                      columns: [
-                        ...headertitles.map((e) => _build_header_item(e))
-                      ],
-                      rows: [
-                        ...marketController.list_ofProduct.map(
-                            (e) => _build_Row(e, marketController, context)),
-                      ],
+    return ChangeNotifierProvider(
+      create: (create) {
+        return ProductsController();
+      },
+      child: Scaffold(
+        body:
+            Consumer<ProductsController>(builder: (context, controller, child) {
+          return controller.isloadingGetProducts
+              ? Center(child: CircularProgressIndicator())
+              : SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: DataTable(
+                        headingTextStyle: TextStyle(color: defaultColor),
+                        border: TableBorder.all(width: 1, color: Colors.grey),
+                        columns: [
+                          ...headertitles.map((e) => _build_header_item(e))
+                        ],
+                        rows: [
+                          ...controller.list_ofProduct
+                              .map((e) => _build_Row(e, context)),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
+                );
+        }),
         floatingActionButton: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
@@ -56,9 +63,7 @@ class ManageProductsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )));
 
-  _build_Row(ProductModel model, MarketController _controller,
-          BuildContext context) =>
-      DataRow(cells: [
+  _build_Row(ProductModel model, BuildContext context) => DataRow(cells: [
         DataCell(Text(model.name.toString())),
         DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.price.toString())),
@@ -103,7 +108,7 @@ class ManageProductsScreen extends StatelessWidget {
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       onPressed: () {
-                        _controller.deleteProduct(model);
+                        //_controller.deleteProduct(model);
                         Get.back();
                       },
                       color: Colors.red.shade400,

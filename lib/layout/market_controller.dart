@@ -144,51 +144,6 @@ class MarketController extends GetxController {
     });
   }
 
-  //NOTE insert new Product
-
-  var statusInsertBodyMessage = "".obs;
-  var statusInsertMessage = ToastStatus.Error.obs;
-  //  add evenstatusInsertMessaget by model
-  Future<void> insertProductByModel({required ProductModel model}) async {
-    var dbm = await marketdb.database;
-    await marketdb.database
-        .rawQuery("select * from products where barcode='${model.barcode}'")
-        .then((value) async {
-      if (value.length > 0) {
-        statusInsertBodyMessage.value = "product Alreay Exist try Again ";
-        // !  need to update
-        statusInsertMessage.value = ToastStatus.Error;
-      } else {
-        await dbm.insert("products", model.toJson());
-        statusInsertBodyMessage.value = "product inserted successfully";
-        statusInsertMessage.value = ToastStatus.Success;
-
-        //NOTE Add new product to list
-        _list_ofProduct.add(model);
-      }
-      update();
-    });
-  }
-
-  //NOTE delete Product
-
-  Future<void> deleteProduct(ProductModel model) async {
-    var dbm = await marketdb.database;
-    await dbm
-        .rawDelete("DELETE FROM products where barcode='${model.barcode}'")
-        .then((value) {
-      print('value deleted :' + value.toString());
-      ProductModel product = _list_ofProduct
-          .where((element) => element.barcode == model.barcode)
-          .first;
-      //NOTE check if new product contain barcode
-      if (!product.isBlank!) _list_ofProduct.remove(product);
-      update();
-    }).catchError((error) {
-      print(error.toString());
-    });
-  }
-
 //NOTE update product
   var statusUpdateBodyMessage = "";
   var statusUpdateMessage = ToastStatus.Error;
