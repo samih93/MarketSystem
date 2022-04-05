@@ -137,4 +137,62 @@ class ProductsController extends ChangeNotifier {
       notifyListeners();
     });
   }
+
+  //NOTE fetch  product by barcode and then add to list of sell
+  List<ProductModel> basket_products = [];
+
+  Future<void> fetchProductBybarCode(String barcode) async {
+    // isloadingGetProducts = true;
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from products where barcode = '$barcode'")
+        .then((value) {
+      value.forEach((element) {
+        basket_products.add(ProductModel.fromJson(element));
+      });
+      basket_products.forEach((element) {
+        element.qty = "1";
+      });
+      //  isloadingGetProducts = false;
+      gettotalPrice();
+
+      notifyListeners();
+    });
+  }
+
+  onchangeQtyInBasket(String barcode, String qty) {
+    basket_products.forEach((element) {
+      if (element.barcode == barcode) element.qty = qty;
+    });
+    notifyListeners();
+    basket_products.forEach((element) {
+      print(element.qty);
+    });
+    gettotalPrice();
+  }
+
+  double totalprice = 0;
+  gettotalPrice() {
+    totalprice = 0;
+    basket_products.forEach((element) {
+      totalprice += int.parse(element.qty.toString()) *
+          int.parse(element.price.toString());
+    });
+    notifyListeners();
+  }
+
+  deleteProductFromBasket(String barcode) {
+    ProductModel product =
+        basket_products.where((element) => element.barcode == barcode).first;
+    basket_products.remove(product);
+    notifyListeners();
+    gettotalPrice();
+  }
+
+  clearBasket() {
+    basket_products = [];
+    totalprice = 0;
+    notifyListeners();
+  }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
@@ -11,6 +12,7 @@ import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
@@ -27,8 +29,6 @@ class _SellScreenState extends State<SellScreen> {
 
   var qtyController = TextEditingController();
   var receivedCashController = TextEditingController();
-
-  var marketController_needed = Get.find<MarketController>();
 
   bool _iscashSuccess = false;
 
@@ -49,104 +49,101 @@ class _SellScreenState extends State<SellScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (barCode != null) print("barcod : ${barCode!.code.toString()}");
-    return GetBuilder<MarketController>(
-      init: Get.find<MarketController>(),
-      builder: (marketController) => Scaffold(
-        body: marketController.isloadingGetProducts
-            ? Center(child: CircularProgressIndicator())
-            : _iscashSuccess
-                ? Align(
-                    alignment: Alignment.center,
-                    child: GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _iscashSuccess = false;
-                          qrViewcontroller!.resumeCamera();
-                        });
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: Colors.green.shade500,
-                        radius: 80,
-                        child: Icon(
-                          Icons.done,
-                          size: 80,
-                        ),
+    var prod_controller = Provider.of<ProductsController>(context);
+    return Scaffold(
+      body: prod_controller.isloadingGetProducts
+          ? Center(child: CircularProgressIndicator())
+          : _iscashSuccess
+              ? Align(
+                  alignment: Alignment.center,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _iscashSuccess = false;
+                        qrViewcontroller!.resumeCamera();
+                      });
+                    },
+                    child: CircleAvatar(
+                      backgroundColor: Colors.green.shade500,
+                      radius: 80,
+                      child: Icon(
+                        Icons.done,
+                        size: 80,
                       ),
                     ),
-                  )
-                : Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      _buildQr(context),
+                  ),
+                )
+              : Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    _buildQr(context),
 
-                      Positioned(
-                        top: 10,
-                        child: _buildControlButton(),
-                      ),
-                      if (barCode != null)
-                        Align(
-                          alignment: Alignment.center,
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: Container(
-                                  width: double.infinity,
-                                  color: Colors.white,
+                    Positioned(
+                      top: 10,
+                      child: _buildControlButton(),
+                    ),
+                    if (barCode != null)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                color: Colors.white,
+                                child: SingleChildScrollView(
+                                  scrollDirection: Axis.vertical,
                                   child: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: SingleChildScrollView(
-                                      scrollDirection: Axis.horizontal,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: DataTable(
-                                          headingTextStyle:
-                                              TextStyle(color: defaultColor),
-                                          border: TableBorder.all(
-                                              width: 1, color: Colors.grey),
-                                          columns: [
-                                            ...headertitles.map(
-                                                (e) => _build_header_item(e))
-                                          ],
-                                          rows: [
-                                            ...marketController.basket_products
-                                                .map((e) =>
-                                                    _build_Row(e, context)),
-                                          ],
-                                        ),
+                                    scrollDirection: Axis.horizontal,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: DataTable(
+                                        headingTextStyle:
+                                            TextStyle(color: defaultColor),
+                                        border: TableBorder.all(
+                                            width: 1, color: Colors.grey),
+                                        columns: [
+                                          ...headertitles
+                                              .map((e) => _build_header_item(e))
+                                        ],
+                                        rows: [
+                                          ...prod_controller.basket_products
+                                              .map((e) =>
+                                                  _build_Row(e, context)),
+                                        ],
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              _buildTotalPrice(marketController),
-                              Container(
-                                height: 10,
-                                color: Colors.white,
-                              ),
-                              _buildSubmitRow(),
-                            ],
-                          ),
+                            ),
+                            _buildTotalPrice(prod_controller),
+                            Container(
+                              height: 10,
+                              color: Colors.white,
+                            ),
+                            _buildSubmitRow(prod_controller),
+                          ],
                         ),
-                      // DataTable(
-                      //   headingTextStyle: TextStyle(color: defaultColor),
-                      //   border: TableBorder.all(width: 1, color: Colors.grey),
-                      //   columns: [
-                      //     ...headertitles.map((e) => _build_header_item(e))
-                      //   ],
-                      //   rows: [
-                      //     ...marketController.list_ofProduct_inStore.map(
-                      //         (e) =>
-                      //             _build_Row(e, marketController, context)),
-                      //   ],
-                      // ),
-                    ],
-                  ),
-      ),
+                      ),
+                    // DataTable(
+                    //   headingTextStyle: TextStyle(color: defaultColor),
+                    //   border: TableBorder.all(width: 1, color: Colors.grey),
+                    //   columns: [
+                    //     ...headertitles.map((e) => _build_header_item(e))
+                    //   ],
+                    //   rows: [
+                    //     ...prod_controller.list_ofProduct_inStore.map(
+                    //         (e) =>
+                    //             _build_Row(e, marketController, context)),
+                    //   ],
+                    // ),
+                  ],
+                ),
     );
   }
 
-  _buildSubmitRow() => Container(
+  _buildSubmitRow(ProductsController controller) => Container(
         width: double.infinity,
         color: Colors.white,
         child: Row(
@@ -164,7 +161,7 @@ class _SellScreenState extends State<SellScreen> {
                         content: Column(
                           children: <Widget>[
                             Text(
-                              'Total : ${marketController_needed.totalprice.toString()} LL',
+                              'Total : ${controller.totalprice.toString()} LL',
                               style: TextStyle(fontSize: 20),
                             ),
                           ],
@@ -172,7 +169,7 @@ class _SellScreenState extends State<SellScreen> {
                         buttons: [
                           DialogButton(
                             onPressed: () {
-                              marketController_needed.clearBasket();
+                              controller.clearBasket();
                               setState(() {
                                 barCode = null;
                                 _iscashSuccess = true;
@@ -254,7 +251,7 @@ class _SellScreenState extends State<SellScreen> {
               buttons: [
                 DialogButton(
                   onPressed: () {
-                    marketController_needed.onchangeQtyInBasket(
+                    context.read<ProductsController>().onchangeQtyInBasket(
                         model.barcode.toString(), qtyController.text);
                     Navigator.pop(context);
                     qtyController.clear();
@@ -268,7 +265,8 @@ class _SellScreenState extends State<SellScreen> {
         }),
         DataCell(IconButton(
             onPressed: () {
-              marketController_needed
+              context
+                  .read<ProductsController>()
                   .deleteProductFromBasket(model.barcode.toString());
             },
             icon: Icon(Icons.close))),
@@ -288,18 +286,20 @@ class _SellScreenState extends State<SellScreen> {
   void onQRViewCreatedCallback(QRViewController controller) {
     setState(() {
       this.qrViewcontroller = controller;
+      //this.context = context;
     });
 
     qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
           this.barCode = barcode;
           qrViewcontroller?.pauseCamera();
           FlutterBeep.beep();
-          marketController_needed
+          context
+              .read<ProductsController>()
               .fetchProductBybarCode(barcode.code.toString());
         }));
   }
 
-  _buildTotalPrice(MarketController controller) => Container(
+  _buildTotalPrice(ProductsController controller) => Container(
         color: Colors.white,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end,

@@ -23,48 +23,45 @@ class EditProductScreen extends StatelessWidget {
     productbarcodeController_text.text = model.barcode.toString();
     productPriceController_text.text = model.price.toString();
     productQtyController_text.text = model.qty.toString();
-    return Consumer<ProductsController>(
-        builder: (context, prod_controller, child) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text("${model.name}"),
-          actions: [
-            OutlinedButton(
-                onPressed: () {
-                  if (_formkey.currentState!.validate()) {
-                    int? price = int.tryParse(productPriceController_text.text);
-                    int? qty = int.tryParse(productQtyController_text.text);
-                    if (price != null && qty != null) {
-                      print(
-                          'QTY : ' + productQtyController_text.text.toString());
-                      prod_controller
-                          .updateProduct(ProductModel(
-                              barcode: model.barcode,
-                              name: productNameController_text.text,
-                              price: productPriceController_text.text,
-                              qty: productQtyController_text.text))
-                          .then((value) {
-                        Get.back();
-                        showToast(
-                            message: prod_controller.statusUpdateBodyMessage,
-                            status: prod_controller.statusUpdateMessage);
-                      });
-                    } else {
+    var prod_controller = Provider.of<ProductsController>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("${model.name}"),
+        actions: [
+          OutlinedButton(
+              onPressed: () {
+                if (_formkey.currentState!.validate()) {
+                  int? price = int.tryParse(productPriceController_text.text);
+                  int? qty = int.tryParse(productQtyController_text.text);
+                  if (price != null && qty != null) {
+                    print('QTY : ' + productQtyController_text.text.toString());
+                    prod_controller
+                        .updateProduct(ProductModel(
+                            barcode: model.barcode,
+                            name: productNameController_text.text,
+                            price: productPriceController_text.text,
+                            qty: productQtyController_text.text))
+                        .then((value) {
+                      Get.back();
                       showToast(
-                          message: "Price Or Qty Must be a number ",
-                          status: ToastStatus.Error);
-                    }
+                          message: prod_controller.statusUpdateBodyMessage,
+                          status: prod_controller.statusUpdateMessage);
+                    });
+                  } else {
+                    showToast(
+                        message: "Price Or Qty Must be a number ",
+                        status: ToastStatus.Error);
                   }
-                },
-                child: Text(
-                  "Save",
-                  style: TextStyle(color: Colors.white),
-                ))
-          ],
-        ),
-        body: _build_Form(),
-      );
-    });
+                }
+              },
+              child: Text(
+                "Save",
+                style: TextStyle(color: Colors.white),
+              ))
+        ],
+      ),
+      body: _build_Form(),
+    );
   }
 
   _build_Form() => SingleChildScrollView(
