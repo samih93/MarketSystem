@@ -78,7 +78,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         SizedBox(
                           height: 15,
                         ),
-                        _buildSubmitRow(),
+                        _buildSubmitRow(context),
                       ],
                     ),
                   )),
@@ -190,76 +190,74 @@ class _AddProductScreenState extends State<AddProductScreen> {
             )),
       );
 
-  _buildSubmitRow() =>
-      Consumer<ProductsController>(builder: (context, controller, child) {
-        return Wrap(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: defaultButton(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  text: "Save",
-                  onpress: () async {
-                    if (_formkey.currentState!.validate()) {
-                      int? price =
-                          int.tryParse(productPriceController_text.text);
-                      int? qty = int.tryParse(productQtyController.text);
-                      if (price != null && qty != null) {
-                        print("valid");
+  _buildSubmitRow(BuildContext context) {
+    var controller = Provider.of<ProductsController>(context);
+    return Wrap(
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: defaultButton(
+              width: MediaQuery.of(context).size.width * 0.4,
+              text: "Save",
+              onpress: () async {
+                if (_formkey.currentState!.validate()) {
+                  int? price = int.tryParse(productPriceController_text.text);
+                  int? qty = int.tryParse(productQtyController.text);
+                  if (price != null && qty != null) {
+                    print("valid");
 
-                        controller
-                            .insertProductByModel(
-                                model: ProductModel(
-                                    barcode: productbarcodeController_text.text,
-                                    name: productNameController_text.text,
-                                    price: productPriceController_text.text,
-                                    qty: productQtyController.text))
-                            .then((value) {
-                          if (controller.statusInsertMessage ==
-                              ToastStatus.Error) {
-                            showToast(
-                                message: controller.statusInsertBodyMessage
-                                    .toString(),
-                                status: controller.statusInsertMessage);
-                          } else {
-                            productNameController_text.clear();
-                            productPriceController_text.clear();
-                            // marketController_needed.onchangeIndex(0);
-
-                            Get.back();
-                            showToast(
-                                message: controller.statusInsertBodyMessage
-                                    .toString(),
-                                status: controller.statusInsertMessage);
-                          }
-                        });
-                      } else {
+                    controller
+                        .insertProductByModel(
+                            model: ProductModel(
+                                barcode: productbarcodeController_text.text,
+                                name: productNameController_text.text,
+                                price: productPriceController_text.text,
+                                qty: productQtyController.text))
+                        .then((value) {
+                      if (controller.statusInsertMessage == ToastStatus.Error) {
                         showToast(
-                            message: "Price Or Qty Must be a number ",
-                            status: ToastStatus.Error);
+                            message:
+                                controller.statusInsertBodyMessage.toString(),
+                            status: controller.statusInsertMessage);
+                      } else {
+                        productNameController_text.clear();
+                        productPriceController_text.clear();
+                        // marketController_needed.onchangeIndex(0);
+
+                        Get.back();
+                        showToast(
+                            message:
+                                controller.statusInsertBodyMessage.toString(),
+                            status: controller.statusInsertMessage);
                       }
-                    } else {
-                      print("invalid");
-                    }
-                  }),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
-              child: defaultButton(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  text: "Rescan",
-                  onpress: () {
-                    productNameController_text.clear();
-                    productPriceController_text.clear();
-                    qrViewcontroller!.resumeCamera();
-                    setState(() {
-                      barCode = null;
                     });
-                  }),
-            ),
-          ],
-        );
-      });
+                  } else {
+                    showToast(
+                        message: "Price Or Qty Must be a number ",
+                        status: ToastStatus.Error);
+                  }
+                } else {
+                  print("invalid");
+                }
+              }),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: defaultButton(
+              width: MediaQuery.of(context).size.width * 0.4,
+              text: "Rescan",
+              onpress: () {
+                productNameController_text.clear();
+                productPriceController_text.clear();
+                qrViewcontroller!.resumeCamera();
+                setState(() {
+                  barCode = null;
+                });
+              }),
+        ),
+      ],
+    );
+  }
 
   _buildControlButton() => Row(
         mainAxisAlignment: MainAxisAlignment.center,

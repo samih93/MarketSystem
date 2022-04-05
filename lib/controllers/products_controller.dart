@@ -7,12 +7,6 @@ import 'package:marketsystem/shared/toast_message.dart';
 class ProductsController extends ChangeNotifier {
   MarketDbHelper marketdb = MarketDbHelper.db;
 
-  ProductsController() {
-    getAllProduct().then((value) {
-      print("get products");
-    });
-  }
-
   // NOTE get all
   List<ProductModel> _list_ofProduct = [];
   List<ProductModel> get list_ofProduct => _list_ofProduct;
@@ -33,6 +27,7 @@ class ProductsController extends ChangeNotifier {
         _list_ofProduct.add(ProductModel.fromJson(element));
       });
 
+      _original_List_Of_product = _list_ofProduct;
       isloadingGetProducts = false;
       notifyListeners();
     });
@@ -114,6 +109,32 @@ class ProductsController extends ChangeNotifier {
       }
     }).catchError((error) {
       print(error.toString());
+    });
+  }
+
+// NOTE Clear Search
+  clearSearch() {
+    _list_ofProduct = _original_List_Of_product;
+    // _issearching_InProducts = false;
+    notifyListeners();
+  }
+
+  //NOTE search for item in products
+  Future<void> search_In_Products(String value) async {
+    isloadingGetProducts = true;
+    notifyListeners();
+    _list_ofProduct = [];
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from products where name LIKE '%$value%'")
+        .then((value) {
+      value.forEach((element) {
+        _list_ofProduct.add(ProductModel.fromJson(element));
+      });
+
+      isloadingGetProducts = false;
+      notifyListeners();
     });
   }
 }

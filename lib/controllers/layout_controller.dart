@@ -38,7 +38,7 @@ class LayoutController extends ChangeNotifier {
   bool get issearchingInProducts => _issearching_InProducts;
   onChangeSearchInProductsStatus(bool val) {
     _issearching_InProducts = val;
-    //_currentIndex = 0;
+    _currentIndex = 0;
     notifyListeners();
   }
 }

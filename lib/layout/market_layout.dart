@@ -10,44 +10,45 @@ import 'package:provider/provider.dart';
 class MarketLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<LayoutController>(builder: (context, controller, child) {
-      return Scaffold(
-        appBar: AppBar(
-          title: controller.issearchingInProducts
-              ? _buildSearchField(
-                  'search in products...',
-                )
-              : Text(
-                  controller.appbar_title[controller.currentIndex].toString(),
-                ),
-          actions: controller.issearchingInProducts == false
-              ? [
-                  IconButton(
-                      onPressed: () {
-                        controller.onChangeSearchInProductsStatus(true);
-                      },
-                      icon: Icon(Icons.search))
-                ]
-              : [],
-        ),
-        body: controller.screens[controller.currentIndex],
-        bottomNavigationBar: BottomNavigationBar(
-          elevation: 30,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: defaultColor,
-          onTap: (index) {
-            print(index);
+    var controller = Provider.of<LayoutController>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: controller.issearchingInProducts
+            ? _buildSearchField(
+                context,
+                'search in products...',
+              )
+            : Text(
+                controller.appbar_title[controller.currentIndex].toString(),
+              ),
+        actions: controller.issearchingInProducts == false
+            ? [
+                IconButton(
+                    onPressed: () {
+                      controller.onChangeSearchInProductsStatus(true);
+                    },
+                    icon: Icon(Icons.search))
+              ]
+            : [],
+      ),
+      body: controller.screens[controller.currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 30,
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: defaultColor,
+        onTap: (index) {
+          print(index);
 
-            controller.onchangeIndex(index);
-          },
-          currentIndex: controller.currentIndex,
-          items: controller.bottomItems,
-        ),
-      );
-    });
+          controller.onchangeIndex(index);
+        },
+        currentIndex: controller.currentIndex,
+        items: controller.bottomItems,
+      ),
+    );
   }
 
   _buildSearchField(
+    BuildContext context,
     String hint,
   ) {
     return Container(
@@ -57,6 +58,7 @@ class MarketLayout extends StatelessWidget {
           focus: true,
           onchange: (value) {
             if (value!.length > 1) {
+              context.read<ProductsController>().search_In_Products(value);
               //c.search_In_Products(value);
             }
           },
@@ -72,7 +74,10 @@ class MarketLayout extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              //  c.clearSearch();
+              context.read<ProductsController>().clearSearch();
+              context
+                  .read<LayoutController>()
+                  .onChangeSearchInProductsStatus(false);
             },
           )),
     );

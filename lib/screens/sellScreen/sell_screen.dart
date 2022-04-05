@@ -31,7 +31,7 @@ class _SellScreenState extends State<SellScreen> {
   var marketController_needed = Get.find<MarketController>();
 
   bool _iscashSuccess = false;
-  
+
   @override
   void dispose() {
     // TODO: implement dispose
