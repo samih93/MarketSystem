@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    context.read<ProductsController>().getAllProduct();
     return AnimatedSplashScreen(
       duration: 2000,
       splash: 'assets/splash_screen.png',

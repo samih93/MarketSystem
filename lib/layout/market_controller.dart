@@ -16,11 +16,11 @@ class MarketController extends GetxController {
   @override
   Future<void> onInit() async {
     // TODO: implement onInit
-    getAllProduct().then((value) {
-      //NOTE set products list in temp list
-      _original_List_Of_product = _list_ofProduct;
-      print("--------finishing Get products------");
-    });
+    // getAllProduct().then((value) {
+    //   //NOTE set products list in temp list
+    //   _original_List_Of_product = _list_ofProduct;
+    //   print("--------finishing Get products------");
+    // });
 
     // getAllProductInStore().then((value) {
     //   _original_List_Of_product_in_store = _list_ofProduct_inStore;

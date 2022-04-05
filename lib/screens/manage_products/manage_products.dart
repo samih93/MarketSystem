@@ -16,42 +16,36 @@ class ManageProductsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (create) {
-        return ProductsController()..getAllProduct();
-      },
-      child: Scaffold(
-        body:
-            Consumer<ProductsController>(builder: (context, controller, child) {
-          return controller.isloadingGetProducts
-              ? Center(child: CircularProgressIndicator())
-              : SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: DataTable(
-                        headingTextStyle: TextStyle(color: defaultColor),
-                        border: TableBorder.all(width: 1, color: Colors.grey),
-                        columns: [
-                          ...headertitles.map((e) => _build_header_item(e))
-                        ],
-                        rows: [
-                          ...controller.list_ofProduct
-                              .map((e) => _build_Row(e, context, controller)),
-                        ],
-                      ),
+    return Scaffold(
+      body: Consumer<ProductsController>(builder: (context, controller, child) {
+        return controller.isloadingGetProducts
+            ? Center(child: CircularProgressIndicator())
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: DataTable(
+                      headingTextStyle: TextStyle(color: defaultColor),
+                      border: TableBorder.all(width: 1, color: Colors.grey),
+                      columns: [
+                        ...headertitles.map((e) => _build_header_item(e))
+                      ],
+                      rows: [
+                        ...controller.list_ofProduct
+                            .map((e) => _build_Row(e, context)),
+                      ],
                     ),
                   ),
-                );
-        }),
-        floatingActionButton: FloatingActionButton(
-            child: Icon(Icons.add),
-            onPressed: () {
-              Get.to(AddProductScreen());
-            }),
-      ),
+                ),
+              );
+      }),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            Get.to(AddProductScreen());
+          }),
     );
   }
 
@@ -63,9 +57,7 @@ class ManageProductsScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           )));
 
-  _build_Row(ProductModel model, BuildContext context,
-          ProductsController controller) =>
-      DataRow(cells: [
+  _build_Row(ProductModel model, BuildContext context) => DataRow(cells: [
         DataCell(Text(model.name.toString())),
         DataCell(Text(model.barcode.toString())),
         DataCell(Text(model.price.toString())),
@@ -74,7 +66,7 @@ class ManageProductsScreen extends StatelessWidget {
           children: [
             IconButton(
               onPressed: () {
-                Get.to(EditProductScreen(model: model));
+                Get.to(() => EditProductScreen(model: model));
               },
               icon: Icon(
                 Icons.edit,

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/toast_message.dart';
+import 'package:provider/provider.dart';
 
 class EditProductScreen extends StatelessWidget {
   ProductModel model;
@@ -15,51 +17,54 @@ class EditProductScreen extends StatelessWidget {
   var productQtyController_text = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  var marketController = Get.find<MarketController>();
-
   @override
   Widget build(BuildContext context) {
     productNameController_text.text = model.name.toString();
     productbarcodeController_text.text = model.barcode.toString();
     productPriceController_text.text = model.price.toString();
     productQtyController_text.text = model.qty.toString();
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("${model.name}"),
-        actions: [
-          OutlinedButton(
-              onPressed: () {
-                if (_formkey.currentState!.validate()) {
-                  int? price = int.tryParse(productPriceController_text.text);
-                  int? qty = int.tryParse(productQtyController_text.text);
-                  if (price != null && qty != null) {
-                    marketController
-                        .updateProduct(ProductModel(
-                            barcode: model.barcode,
-                            name: productNameController_text.text,
-                            price: productPriceController_text.text,
-                            qty: productQtyController_text.text))
-                        .then((value) {
-                      Get.back();
+    return Consumer<ProductsController>(
+        builder: (context, prod_controller, child) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("${model.name}"),
+          actions: [
+            OutlinedButton(
+                onPressed: () {
+                  if (_formkey.currentState!.validate()) {
+                    int? price = int.tryParse(productPriceController_text.text);
+                    int? qty = int.tryParse(productQtyController_text.text);
+                    if (price != null && qty != null) {
+                      print(
+                          'QTY : ' + productQtyController_text.text.toString());
+                      prod_controller
+                          .updateProduct(ProductModel(
+                              barcode: model.barcode,
+                              name: productNameController_text.text,
+                              price: productPriceController_text.text,
+                              qty: productQtyController_text.text))
+                          .then((value) {
+                        Get.back();
+                        showToast(
+                            message: prod_controller.statusUpdateBodyMessage,
+                            status: prod_controller.statusUpdateMessage);
+                      });
+                    } else {
                       showToast(
-                          message: marketController.statusUpdateBodyMessage,
-                          status: marketController.statusUpdateMessage);
-                    });
-                  } else {
-                    showToast(
-                        message: "Price Or Qty Must be a number ",
-                        status: ToastStatus.Error);
+                          message: "Price Or Qty Must be a number ",
+                          status: ToastStatus.Error);
+                    }
                   }
-                }
-              },
-              child: Text(
-                "Save",
-                style: TextStyle(color: Colors.white),
-              ))
-        ],
-      ),
-      body: _build_Form(),
-    );
+                },
+                child: Text(
+                  "Save",
+                  style: TextStyle(color: Colors.white),
+                ))
+          ],
+        ),
+        body: _build_Form(),
+      );
+    });
   }
 
   _build_Form() => SingleChildScrollView(

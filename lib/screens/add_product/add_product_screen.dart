@@ -30,8 +30,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
-  var marketController_needed = Get.put(MarketController());
-
   @override
   void dispose() {
     // TODO: implement dispose

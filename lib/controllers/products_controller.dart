@@ -7,16 +7,22 @@ import 'package:marketsystem/shared/toast_message.dart';
 class ProductsController extends ChangeNotifier {
   MarketDbHelper marketdb = MarketDbHelper.db;
 
+  ProductsController() {
+    getAllProduct().then((value) {
+      print("get products");
+    });
+  }
+
   // NOTE get all
   List<ProductModel> _list_ofProduct = [];
   List<ProductModel> get list_ofProduct => _list_ofProduct;
   List<ProductModel> _original_List_Of_product = [];
 
   bool isloadingGetProducts = false;
-  
+
   Future<void> getAllProduct() async {
     isloadingGetProducts = true;
-     notifyListeners();
+    notifyListeners();
     _list_ofProduct = [];
     var dbm = await marketdb.database;
 
@@ -64,6 +70,7 @@ class ProductsController extends ChangeNotifier {
         statusInsertBodyMessage = "product Alreay Exist try Again ";
         // !  need to update
         statusInsertMessage = ToastStatus.Error;
+        // await updateProduct(model);
       } else {
         await dbm.insert("products", model.toJson());
         statusInsertBodyMessage = "product inserted successfully";
@@ -74,6 +81,39 @@ class ProductsController extends ChangeNotifier {
       }
       print('inserted');
       notifyListeners();
+    });
+  }
+
+  //NOTE update product
+  var statusUpdateBodyMessage = "";
+  var statusUpdateMessage = ToastStatus.Error;
+  Future<void> updateProduct(ProductModel model) async {
+    var dbm = await marketdb.database;
+    await dbm
+        .rawUpdate(
+            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}' where  barcode='${model.barcode}'")
+        .then((value) async {
+      ProductModel product = _list_ofProduct
+          .where((element) => element.barcode == model.barcode)
+          .first;
+      if (!product.isBlank!) {
+        // remove old one befor update
+        _list_ofProduct.remove(product);
+        //set new product object
+        product.name = model.name;
+        product.price = model.price;
+        product.qty = model.qty;
+        // add updated product to list
+        _list_ofProduct.add(product);
+        statusUpdateBodyMessage = " ${model.name} updated Successfully";
+        statusUpdateMessage = ToastStatus.Success;
+        _list_ofProduct.forEach((element) {
+          print(element.toJson());
+        });
+        notifyListeners();
+      }
+    }).catchError((error) {
+      print(error.toString());
     });
   }
 }
