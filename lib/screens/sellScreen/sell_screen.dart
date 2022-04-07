@@ -56,20 +56,35 @@ class _SellScreenState extends State<SellScreen> {
           : _iscashSuccess
               ? Align(
                   alignment: Alignment.center,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _iscashSuccess = false;
-                        qrViewcontroller!.resumeCamera();
-                      });
-                    },
-                    child: CircleAvatar(
-                      backgroundColor: Colors.green.shade500,
-                      radius: 80,
-                      child: Icon(
-                        Icons.done,
-                        size: 80,
-                      ),
+                  child: Container(
+                    width: double.infinity,
+                    color: defaultColor.shade300,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 50,
+                          child: Icon(
+                            Icons.done,
+                            size: 50,
+                            color: defaultColor,
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        Text("Order Completed!",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white)),
+                        Text(
+                          "Your Order was Completed successfully",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        SizedBox(
+                          height: 50,
+                        ),
+                        _continueButton(),
+                      ],
                     ),
                   ),
                 )
@@ -169,7 +184,8 @@ class _SellScreenState extends State<SellScreen> {
                         buttons: [
                           DialogButton(
                             onPressed: () {
-                              controller.clearBasket();
+                              controller.addFacture();
+                             // controller.clearBasket();
                               setState(() {
                                 barCode = null;
                                 _iscashSuccess = true;
@@ -319,6 +335,37 @@ class _SellScreenState extends State<SellScreen> {
               width: 10,
             ),
           ],
+        ),
+      );
+
+  _continueButton() => GestureDetector(
+        onTap: () {
+          setState(() {
+            _iscashSuccess = false;
+            qrViewcontroller!.resumeCamera();
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(6),
+            color: Colors.white,
+          ),
+          width: MediaQuery.of(context).size.width * 0.4,
+          padding: EdgeInsets.all(10),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+            Text(
+              'Continue',
+              style: TextStyle(color: defaultColor, letterSpacing: 2),
+            ),
+            Container(
+              child: Icon(Icons.navigate_next, color: Colors.white),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(6),
+                color: defaultColor,
+              ),
+            ),
+          ]),
         ),
       );
 }
