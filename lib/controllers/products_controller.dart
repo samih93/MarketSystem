@@ -187,7 +187,7 @@ class ProductsController extends ChangeNotifier {
   }
 
 //NOTE get Product by barcode
-  Future<ProductModel> _getProductbyBarcode(String barcode) async {
+  Future<ProductModel> getProductbyBarcode(String barcode) async {
     var dbm = await marketdb.database;
     ProductModel? model;
 
@@ -255,7 +255,7 @@ class ProductsController extends ChangeNotifier {
           facture_id: facture_id);
 
       ProductModel productModel =
-          await _getProductbyBarcode(element.barcode.toString());
+          await getProductbyBarcode(element.barcode.toString());
       int newqty = int.parse(productModel.qty.toString()) -
           int.parse(element.qty.toString());
 
