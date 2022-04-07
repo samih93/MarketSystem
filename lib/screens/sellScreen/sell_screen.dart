@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/layout/market_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -185,7 +184,7 @@ class _SellScreenState extends State<SellScreen> {
                           DialogButton(
                             onPressed: () {
                               controller.addFacture();
-                             // controller.clearBasket();
+                              // controller.clearBasket();
                               setState(() {
                                 barCode = null;
                                 _iscashSuccess = true;

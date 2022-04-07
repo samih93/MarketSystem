@@ -64,9 +64,19 @@ class ProductsController extends ChangeNotifier {
         .rawQuery("select * from products where barcode='${model.barcode}'")
         .then((value) async {
       if (value.length > 0) {
-        statusInsertBodyMessage = "product Alreay Exist try Again ";
+        ProductModel productModel = ProductModel.fromJson(value[0]);
+        int newqty = int.parse(model.qty.toString()) +
+            int.parse(productModel.qty.toString());
+        productModel.qty = newqty.toString();
+        productModel.price = model.price;
+        await updateProduct(productModel).then((value) {
+          statusInsertBodyMessage = " ${model.name} updated Successfully";
+          statusInsertMessage = ToastStatus.Success;
+        });
+
+        //   statusInsertBodyMessage = "product Alreay Exist try Again ";
         // !  need to update
-        statusInsertMessage = ToastStatus.Error;
+        // statusInsertMessage = ToastStatus.Error;
         // await updateProduct(model);
       } else {
         await dbm.insert("products", model.toJson());
@@ -88,30 +98,43 @@ class ProductsController extends ChangeNotifier {
     var dbm = await marketdb.database;
     await dbm
         .rawUpdate(
-            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}' where  barcode='${model.barcode}'")
+            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}', qty='${model.qty}' where  barcode='${model.barcode}'")
         .then((value) async {
-      ProductModel product = _list_ofProduct
-          .where((element) => element.barcode == model.barcode)
-          .first;
-      if (!product.isBlank!) {
-        // remove old one befor update
-        _list_ofProduct.remove(product);
-        //set new product object
-        product.name = model.name;
-        product.price = model.price;
-        product.qty = model.qty;
-        // add updated product to list
-        _list_ofProduct.add(product);
-        statusUpdateBodyMessage = " ${model.name} updated Successfully";
-        statusUpdateMessage = ToastStatus.Success;
-        _list_ofProduct.forEach((element) {
-          print(element.toJson());
-        });
-        notifyListeners();
-      }
+      statusUpdateBodyMessage = " ${model.name} updated Successfully";
+      statusUpdateMessage = ToastStatus.Success;
+      // ! remove and add the new product in productList
+      _updateProductInUI(model);
     }).catchError((error) {
       print(error.toString());
     });
+  }
+
+// NOTE fetch item by barcode and the update it
+  _updateProductInUI(ProductModel model) {
+    _list_ofProduct.forEach((element) {
+      if (element.barcode == model.barcode) {
+        element.name = model.name;
+        element.price = model.price;
+        element.qty = model.qty;
+      }
+    });
+    notifyListeners();
+
+// ! this is for check in list for a item wihtout loop in all list
+    // ProductModel product = _list_ofProduct
+    //     .where((element) => element.barcode == model.barcode)
+    //     .first;
+    // if (!product.isBlank!) {
+    //   // remove old one befor update
+    //   _list_ofProduct.remove(product);
+    //   //set new product object
+    //   product.name = model.name;
+    //   product.price = model.price;
+    //   product.qty = model.qty;
+    //   // add updated product to list
+    //   _list_ofProduct.add(product);
+    // }
+    //!------------------------------------------------
   }
 
 // NOTE Clear Search
@@ -161,6 +184,21 @@ class ProductsController extends ChangeNotifier {
 
       notifyListeners();
     });
+  }
+
+//NOTE get Product by barcode
+  Future<ProductModel> _getProductbyBarcode(String barcode) async {
+    var dbm = await marketdb.database;
+    ProductModel? model;
+
+    await dbm
+        .rawQuery("select * from products where barcode = '$barcode'")
+        .then((value) {
+      value.forEach((element) {
+        model = ProductModel.fromJson(element);
+      });
+    });
+    return model!;
   }
 
   onchangeQtyInBasket(String barcode, String qty) {
@@ -216,10 +254,23 @@ class ProductsController extends ChangeNotifier {
           qty: element.qty,
           facture_id: facture_id);
 
-      await dbm
-          .insert('detailsfacture', detailsFactureModel.toJson())
-          .then((value) {
-        print('details facture inserted');
+      ProductModel productModel =
+          await _getProductbyBarcode(element.barcode.toString());
+      int newqty = int.parse(productModel.qty.toString()) -
+          int.parse(element.qty.toString());
+
+// NOTE  updated each product in my store depend on basket items
+      await dbm.rawUpdate("update products set qty=? where barcode=?",
+          ['$newqty', '${element.barcode}']).then((value) async {
+        // NOTE update items in my current list of products without getting data again from database
+        productModel.qty = newqty.toString();
+        _updateProductInUI(productModel);
+        await dbm
+            .insert('detailsfacture', detailsFactureModel.toJson())
+            .then((value) {
+          print('details facture inserted');
+          clearBasket();
+        });
       });
     });
   }
