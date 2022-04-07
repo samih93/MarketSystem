@@ -47,43 +47,45 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => ProductsController(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text("Add New Product"),
-        ),
-        body: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            _buildQr(context),
-            Positioned(
-              bottom: 10,
-              child: _buildResult(),
-            ),
-            Positioned(
-              top: 10,
-              child: _buildControlButton(),
-            ),
-            if (barCode != null)
-              Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                    color: Colors.white,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        _build_Form(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        _buildSubmitRow(context),
-                      ],
-                    ),
-                  )),
-          ],
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Add New Product"),
+      ),
+      body: Stack(
+        alignment: Alignment.topCenter,
+        children: [
+          _buildQr(context),
+          Positioned(
+            bottom: 10,
+            child: _buildResult(),
+          ),
+          Positioned(
+            top: 10,
+            child: _buildControlButton(),
+          ),
+          if (barCode != null)
+            Align(
+                alignment: Alignment.center,
+                child: Container(
+                  color: Colors.white,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Consumer<ProductsController>(
+                        builder: (BuildContext context, productcontroller,
+                            Widget? child) {
+                          return _build_Form(productcontroller);
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      _buildSubmitRow(context),
+                    ],
+                  ),
+                )),
+        ],
       ),
     );
   }
@@ -120,77 +122,108 @@ class _AddProductScreenState extends State<AddProductScreen> {
       this.qrViewcontroller = controller;
     });
 
-    qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
-          this.barCode = barcode;
-          qrViewcontroller?.pauseCamera();
-          FlutterBeep.beep();
+    qrViewcontroller?.scannedDataStream.listen((barcode) {
+      setState(() {
+        this.barCode = barcode;
+        qrViewcontroller?.pauseCamera();
+        FlutterBeep.beep();
 
-          //NOTE when scan is finished write the barcode in controller
-          productbarcodeController_text.text = barcode.code.toString();
-        }));
+        //NOTE when scan is finished write the barcode in controller
+        // context
+        //     .read<ProductsController>()
+        //     .getProductbyBarcode(barcode.toString())
+        //     .then((value) {
+        //   if (context.watch<ProductsController>().isProductExist) {
+        //     print('exist');
+        //   } else {
+        //     print('not exist');
+        //   }
+        // });
+        //print(context.watch<ProductsController>().isProductExist.toString());
+
+        productbarcodeController_text.text = barcode.code.toString();
+        // productNameController_text.text = productModel.name.toString();
+      });
+    });
   }
 
-  _build_Form() => SingleChildScrollView(
-        child: Form(
-            key: _formkey,
-            child: Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Column(
-                children: [
-                  TextFormField(
-                    validator: (value) {
+  _build_Form(ProductsController controller) {
+    if (barCode != null && barCode!.code != '') {
+      //NOTE check if product exist
+      controller
+          .getProductbyBarcode(productbarcodeController_text.text.toString())
+          .then((value) {
+        if (value != null) {
+          productNameController_text.text = value.name.toString();
+        }
+
+        // print("name :" + value.name.toString());
+      });
+    }
+
+    return SingleChildScrollView(
+      child: Form(
+          key: _formkey,
+          child: Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              children: [
+                TextFormField(
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "barcode must not be empty";
+                    }
+                  },
+                  controller: productbarcodeController_text,
+                  //initialValue: barCode!.code,
+                  readOnly: barCode!.code != '' ? true : false,
+                  style: TextStyle(
+                    fontWeight: FontWeight.normal,
+                  ),
+                  decoration: InputDecoration(hintText: "Barcode..."),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                defaultTextFormField(
+                    onvalidate: (value) {
                       if (value!.isEmpty) {
-                        return "barcode must not be empty";
+                        return "Name must not be empty";
                       }
                     },
-                    controller: productbarcodeController_text,
-                    //initialValue: barCode!.code,
-                    enabled: barCode == '' ? false : true,
-                    style: TextStyle(
-                      fontWeight: FontWeight.normal,
-                    ),
-                    decoration: InputDecoration(hintText: "Barcode..."),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  defaultTextFormField(
-                      onvalidate: (value) {
-                        if (value!.isEmpty) {
-                          return "Name must not be empty";
-                        }
-                      },
-                      inputtype: TextInputType.name,
-                      border: UnderlineInputBorder(),
-                      hinttext: "Name...",
-                      controller: productNameController_text),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  defaultTextFormField(
-                      onvalidate: (value) {
-                        if (value!.isEmpty) {
-                          return "Price must not be empty";
-                        }
-                      },
-                      inputtype: TextInputType.phone,
-                      border: UnderlineInputBorder(),
-                      hinttext: "Price...",
-                      controller: productPriceController_text),
-                  defaultTextFormField(
-                      onvalidate: (value) {
-                        if (value!.isEmpty) {
-                          return "Qty must not be empty";
-                        }
-                      },
-                      inputtype: TextInputType.phone,
-                      border: UnderlineInputBorder(),
-                      hinttext: "qty...",
-                      controller: productQtyController),
-                ],
-              ),
-            )),
-      );
+                    readonly: controller.isProductExist ? true : false,
+                    inputtype: TextInputType.name,
+                    border: UnderlineInputBorder(),
+                    hinttext: "Name...",
+                    controller: productNameController_text),
+                SizedBox(
+                  height: 5,
+                ),
+                defaultTextFormField(
+                    onvalidate: (value) {
+                      if (value!.isEmpty) {
+                        return "Price must not be empty";
+                      }
+                    },
+                    inputtype: TextInputType.phone,
+                    border: UnderlineInputBorder(),
+                    hinttext: "Price...",
+                    controller: productPriceController_text),
+                defaultTextFormField(
+                    onvalidate: (value) {
+                      if (value!.isEmpty) {
+                        return "Qty must not be empty";
+                      }
+                    },
+                    inputtype: TextInputType.phone,
+                    border: UnderlineInputBorder(),
+                    hinttext: "qty...",
+                    controller: productQtyController),
+              ],
+            ),
+          )),
+    );
+  }
 
   _buildSubmitRow(BuildContext context) {
     var controller = Provider.of<ProductsController>(context);

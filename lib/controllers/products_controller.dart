@@ -187,18 +187,22 @@ class ProductsController extends ChangeNotifier {
   }
 
 //NOTE get Product by barcode
-  Future<ProductModel> getProductbyBarcode(String barcode) async {
+
+  bool isProductExist = false;
+  Future<ProductModel?> getProductbyBarcode(String barcode) async {
     var dbm = await marketdb.database;
     ProductModel? model;
 
     await dbm
         .rawQuery("select * from products where barcode = '$barcode'")
         .then((value) {
+      isProductExist = true;
+      notifyListeners();
       value.forEach((element) {
         model = ProductModel.fromJson(element);
       });
     });
-    return model!;
+    return model;
   }
 
   onchangeQtyInBasket(String barcode, String qty) {
@@ -248,22 +252,27 @@ class ProductsController extends ChangeNotifier {
     print('facture inserted $facture_id');
 
     basket_products.forEach((element) async {
+      int totalprice = (int.parse(element.qty.toString()) *
+          int.parse(element.price.toString()));
       DetailsFactureModel detailsFactureModel = DetailsFactureModel(
           barcode: element.barcode,
           name: element.name,
           qty: element.qty,
+          price: totalprice.toString(),
           facture_id: facture_id);
 
-      ProductModel productModel =
+      ProductModel? productModel =
           await getProductbyBarcode(element.barcode.toString());
-      int newqty = int.parse(productModel.qty.toString()) -
-          int.parse(element.qty.toString());
+      int newqty = 0;
+      if (productModel != null)
+        newqty = int.parse(productModel.qty.toString()) -
+            int.parse(element.qty.toString());
 
 // NOTE  updated each product in my store depend on basket items
       await dbm.rawUpdate("update products set qty=? where barcode=?",
           ['$newqty', '${element.barcode}']).then((value) async {
         // NOTE update items in my current list of products without getting data again from database
-        productModel.qty = newqty.toString();
+        productModel!.qty = newqty.toString();
         _updateProductInUI(productModel);
         await dbm
             .insert('detailsfacture', detailsFactureModel.toJson())

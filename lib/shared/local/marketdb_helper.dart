@@ -27,7 +27,7 @@ class MarketDbHelper {
 
         db
             .execute(
-                "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,facture_id INTEGER)")
+                "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,price INTEGER,facture_id INTEGER)")
             .then((value) => print('detailsfactures table created'))
             .catchError((onError) => print(onError.toString()));
       },
