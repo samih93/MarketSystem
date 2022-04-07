@@ -14,11 +14,11 @@ class DetailsFactureModel {
       required this.facture_id});
 
   DetailsFactureModel.fromJson(Map<String, dynamic> map) {
-    id = map['id'];
+    //id = map['id'] as String;
     barcode = map['barcode'];
     name = map['name'];
-    qty = map['qty'];
-    price = map['price'];
+    qty = map['qty'] as String;
+    price = map['price'] as String;
     facture_id = map['facture_id'];
   }
 
