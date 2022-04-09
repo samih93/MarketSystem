@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/screens/reports/today_report.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'dart:io';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -9,9 +10,16 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: _report_item(context),
+      ),
+    );
+  }
+
+  _report_item(BuildContext context) => GestureDetector(
         onTap: () {
-          Get.to(TodayReportScreen());
+          //Get.to(TodayReportScreen());
         },
         child: Container(
           width: MediaQuery.of(context).size.width * 0.45,
@@ -31,7 +39,5 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
+      );
 }
