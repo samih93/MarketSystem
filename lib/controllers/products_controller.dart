@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/facture.dart';
 import 'package:marketsystem/models/product.dart';
+import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 
@@ -245,14 +246,14 @@ class ProductsController extends ChangeNotifier {
     var dbm = await marketdb.database;
 
     //NOTE first add a facture to table facture and get insert id
-    FactureModel factureModel = FactureModel(
-        price: totalprice.toString(), facturedate: DateTime.now().toString());
+    FactureModel factureModel =
+        FactureModel(price: totalprice.toString(), facturedate: gettodayDate());
 
     facture_id = await dbm.insert("factures", factureModel.toJson());
     print('facture inserted $facture_id');
 
     basket_products.forEach((element) async {
-      int totalprice = (int.parse(element.qty.toString()) *
+      int totalprice = (int.parse(element.qty.toString().trim()) *
           int.parse(element.price.toString()));
       DetailsFactureModel detailsFactureModel = DetailsFactureModel(
           barcode: element.barcode,

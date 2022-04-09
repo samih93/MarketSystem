@@ -14,15 +14,24 @@ class TodayReportScreen extends StatelessWidget {
       child: Consumer<FactureController>(
           builder: (BuildContext context, facturecontroller, Widget? child) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text("Today Report"),
+          ),
           body: ListView.separated(
               itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(facturecontroller
-                      .list_of_detailsFacture[index].name
-                      .toString()),
-                  trailing: Text(facturecontroller
-                      .list_of_detailsFacture[index].price
-                      .toString()),
+                return Container(
+                  height: 100,
+                  child: ListTile(
+                    title: Text(facturecontroller
+                        .list_of_detailsFacture[index].name
+                        .toString()),
+                    trailing: Container(
+                      width: 50,
+                      child: Text(facturecontroller
+                          .list_of_detailsFacture[index].qty
+                          .toString()),
+                    ),
+                  ),
                 );
               },
               separatorBuilder: (context, index) {

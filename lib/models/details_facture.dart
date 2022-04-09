@@ -5,6 +5,7 @@ class DetailsFactureModel {
   String? qty;
   String? price;
   int? facture_id;
+  String? facturedate;
 
   DetailsFactureModel(
       {required this.barcode,
@@ -14,12 +15,13 @@ class DetailsFactureModel {
       required this.facture_id});
 
   DetailsFactureModel.fromJson(Map<String, dynamic> map) {
-    //id = map['id'] as String;
+    id = map['id'] != null ? map['id'].toString() : "";
     barcode = map['barcode'];
     name = map['name'];
-    qty = map['qty'] as String;
-    price = map['price'] as String;
+    qty = map['qty'] != null ? map['qty'].toString() : "";
+    price = map['price'] != null ? map['price'].toString() : "";
     facture_id = map['facture_id'];
+    facturedate = map['facturedate'];
   }
 
   toJson() {
@@ -29,6 +31,7 @@ class DetailsFactureModel {
       'qty': qty,
       'price': price,
       'facture_id': facture_id,
+      //'facturedate': facturedate ?? '',
     };
   }
 }
