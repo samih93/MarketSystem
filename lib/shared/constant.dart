@@ -12,3 +12,7 @@ gettodayDate() {
       now.year.toString();
   return today;
 }
+
+double screenWidth(BuildContext context) {
+  return MediaQuery.of(context).size.width;
+}
