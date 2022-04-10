@@ -25,6 +25,10 @@ class PdfApi {
 
   static Future<File> generateTodayReport(
       List<DetailsFactureModel> list) async {
+    double finalprice = 0;
+    list.forEach((element) {
+      finalprice += double.parse(element.price.toString());
+    });
     final pdf = Document();
 
     final customfont =
@@ -35,63 +39,71 @@ class PdfApi {
         build: (context) => <Widget>[
               _build_header(gettodayDate()),
               SizedBox(height: 10),
-              Center(
-                  child: Column(children: <Widget>[
-                Container(
-                  margin: EdgeInsets.all(20),
-                  child: Table(
-                    //defaultColumnWidth: FixedColumnWidth(120.0),
-                    //defaultColumnWidth: FixedColumnWidth(screenWidth(_)*.3),
+              Table(
+                tableWidth: TableWidth.max,
+                //defaultColumnWidth: FixedColumnWidth(120.0),
+                //defaultColumnWidth: FixedColumnWidth(screenWidth(_)*.3),
 
-                    border: TableBorder.all(
-                        color: PdfColors.grey,
-                        style: BorderStyle.solid,
-                        width: 1),
-                    children: [
-                      TableRow(children: [
-                        Column(children: [
-                          Text('Product Name', style: TextStyle(fontSize: 20.0))
-                        ]),
-                        Column(children: [
-                          Text('Qty', style: TextStyle(fontSize: 20.0))
-                        ]),
-                        Column(children: [
-                          Text('Total Price', style: TextStyle(fontSize: 20.0))
-                        ]),
-                      ]),
-                      ...list.map((e) => TableRow(children: [
-                            Column(
-                              children: [
-                                Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: Text(e.name.toString(),
-                                      style: TextStyle(font: customfont)),
-                                ),
-                              ],
+                border: TableBorder.all(
+                    color: PdfColors.grey, style: BorderStyle.solid, width: 1),
+                children: [
+                  TableRow(children: [
+                    Column(children: [
+                      Text('Product Name', style: TextStyle(fontSize: 20.0))
+                    ]),
+                    Column(children: [
+                      Text('Qty', style: TextStyle(fontSize: 20.0))
+                    ]),
+                    Column(children: [
+                      Text('Total Price', style: TextStyle(fontSize: 20.0))
+                    ]),
+                  ]),
+                  ...list.map((e) => TableRow(children: [
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.name.toString(),
+                                  style: TextStyle(font: customfont)),
                             ),
-                            Column(
-                              children: [
-                                Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: Text(e.qty.toString(),
-                                      style: TextStyle(font: customfont)),
-                                ),
-                              ],
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.qty.toString(),
+                                  style: TextStyle(font: customfont)),
                             ),
-                            Column(
-                              children: [
-                                Directionality(
-                                  textDirection: TextDirection.rtl,
-                                  child: Text(e.price.toString(),
-                                      style: TextStyle(font: customfont)),
-                                ),
-                              ],
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.price.toString(),
+                                  style: TextStyle(font: customfont)),
                             ),
-                          ]))
-                    ],
+                          ],
+                        ),
+                      ]))
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Total  : ",
+                    style: TextStyle(color: PdfColors.red, fontSize: 30),
                   ),
-                ),
-              ])),
+                  SizedBox(width: 5),
+                  Text("$finalprice",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                ],
+              ),
+              SizedBox(height: 20),
             ],
         footer: (context) => Container(
             alignment: Alignment.bottomRight,
