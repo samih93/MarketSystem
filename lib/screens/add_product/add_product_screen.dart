@@ -23,6 +23,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   QRViewController? qrViewcontroller;
   Barcode? barCode = null;
 
+//For fields if has data
+
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
   var productPriceController_text = TextEditingController();
@@ -47,6 +49,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var productController = Provider.of<ProductsController>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Add New Product"),
@@ -72,12 +75,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Consumer<ProductsController>(
-                        builder: (BuildContext context, productcontroller,
-                            Widget? child) {
-                          return _build_Form(productcontroller);
-                        },
-                      ),
+                      _build_Form(productController),
                       SizedBox(
                         height: 15,
                       ),
@@ -148,6 +146,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   _build_Form(ProductsController controller) {
+    print('testtttttttttttt');
+
     if (barCode != null && barCode!.code != '') {
       //NOTE check if product exist
       controller
@@ -155,6 +155,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
           .then((value) {
         if (value != null) {
           productNameController_text.text = value.name.toString();
+          print('testtttttttttttt');
+          print(
+              "------------------${context.watch<ProductsController>().isProductExist}--------------");
         }
 
         // print("name :" + value.name.toString());
