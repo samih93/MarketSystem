@@ -49,7 +49,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var productController = Provider.of<ProductsController>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Add New Product"),
@@ -75,7 +74,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      _build_Form(productController),
+                      _build_Form(context),
                       SizedBox(
                         height: 15,
                       ),
@@ -91,7 +90,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   _buildResult() => GestureDetector(
         onTap: () {
           setState(() {
-            this.barCode = Barcode(''.trim(), BarcodeFormat.codabar, []);
+            this.barCode = Barcode(null, BarcodeFormat.codabar, []);
           });
         },
         child: Container(
@@ -126,41 +125,24 @@ class _AddProductScreenState extends State<AddProductScreen> {
         qrViewcontroller?.pauseCamera();
         FlutterBeep.beep();
 
-        //NOTE when scan is finished write the barcode in controller
-        // context
-        //     .read<ProductsController>()
-        //     .getProductbyBarcode(barcode.toString())
-        //     .then((value) {
-        //   if (context.watch<ProductsController>().isProductExist) {
-        //     print('exist');
-        //   } else {
-        //     print('not exist');
-        //   }
-        // });
-        //print(context.watch<ProductsController>().isProductExist.toString());
-
         productbarcodeController_text.text = barcode.code.toString();
-        // productNameController_text.text = productModel.name.toString();
       });
     });
   }
 
-  _build_Form(ProductsController controller) {
-    print('testtttttttttttt');
-
-    if (barCode != null && barCode!.code != '') {
+  _build_Form(BuildContext context) {
+    if (barCode != null) {
       //NOTE check if product exist
-      controller
+      context
+          .read<ProductsController>()
           .getProductbyBarcode(productbarcodeController_text.text.toString())
           .then((value) {
         if (value != null) {
           productNameController_text.text = value.name.toString();
-          print('testtttttttttttt');
-          print(
-              "------------------${context.watch<ProductsController>().isProductExist}--------------");
+          productPriceController_text.text = value.price.toString();
         }
-
-        // print("name :" + value.name.toString());
+        print("is product exist " +
+            context.read<ProductsController>().isProductExist.toString());
       });
     }
 
@@ -179,7 +161,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   },
                   controller: productbarcodeController_text,
                   //initialValue: barCode!.code,
-                  readOnly: barCode!.code != '' ? true : false,
+                  readOnly: (barCode!.code != null) ? true : false,
                   style: TextStyle(
                     fontWeight: FontWeight.normal,
                   ),
@@ -194,7 +176,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                         return "Name must not be empty";
                       }
                     },
-                    readonly: controller.isProductExist ? true : false,
+                    readonly: context.read<ProductsController>().isProductExist
+                        ? true
+                        : false,
                     inputtype: TextInputType.name,
                     border: UnderlineInputBorder(),
                     hinttext: "Name...",
@@ -229,7 +213,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
   }
 
   _buildSubmitRow(BuildContext context) {
-    var controller = Provider.of<ProductsController>(context);
     return Wrap(
       children: [
         Padding(
@@ -244,7 +227,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   if (price != null && qty != null) {
                     print("valid");
 
-                    controller
+                    context
+                        .read<ProductsController>()
                         .insertProductByModel(
                             model: ProductModel(
                                 barcode: productbarcodeController_text.text,
@@ -252,21 +236,34 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 price: productPriceController_text.text,
                                 qty: productQtyController.text))
                         .then((value) {
-                      if (controller.statusInsertMessage == ToastStatus.Error) {
+                      if (context
+                              .read<ProductsController>()
+                              .statusInsertMessage ==
+                          ToastStatus.Error) {
                         showToast(
-                            message:
-                                controller.statusInsertBodyMessage.toString(),
-                            status: controller.statusInsertMessage);
+                            message: context
+                                .read<ProductsController>()
+                                .statusInsertBodyMessage
+                                .toString(),
+                            status: context
+                                .read<ProductsController>()
+                                .statusInsertMessage);
                       } else {
+                        productbarcodeController_text.clear();
                         productNameController_text.clear();
                         productPriceController_text.clear();
+                        productQtyController.clear();
                         // marketController_needed.onchangeIndex(0);
 
                         Get.back();
                         showToast(
-                            message:
-                                controller.statusInsertBodyMessage.toString(),
-                            status: controller.statusInsertMessage);
+                            message: context
+                                .read<ProductsController>()
+                                .statusInsertBodyMessage
+                                .toString(),
+                            status: context
+                                .read<ProductsController>()
+                                .statusInsertMessage);
                       }
                     });
                   } else {

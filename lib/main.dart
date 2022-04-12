@@ -9,10 +9,13 @@ import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MarketDbHelper.db.init();
+  await MarketDbHelper.db.init().then((value) async {
+    await getDatabasesPath().then((value) => print(value + "/Market.db"));
+  });
 
   runApp(MultiProvider(
     providers: [

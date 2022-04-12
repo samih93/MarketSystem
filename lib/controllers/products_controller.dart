@@ -6,6 +6,7 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ProductsController extends ChangeNotifier {
   MarketDbHelper marketdb = MarketDbHelper.db;
@@ -88,6 +89,7 @@ class ProductsController extends ChangeNotifier {
         _list_ofProduct.add(model);
       }
       print('inserted');
+      //isProductExist = false;
       notifyListeners();
     });
   }
@@ -197,11 +199,17 @@ class ProductsController extends ChangeNotifier {
     await dbm
         .rawQuery("select * from products where barcode = '$barcode'")
         .then((value) {
-      isProductExist = true;
+      print("product lenght " + value.length.toString());
+      if (value.length > 0) {
+        isProductExist = true;
+        value.forEach((element) {
+          model = ProductModel.fromJson(element);
+        });
+      } else {
+        isProductExist = false;
+      }
+      print("is product exist in provider " + isProductExist.toString());
       notifyListeners();
-      value.forEach((element) {
-        model = ProductModel.fromJson(element);
-      });
     });
     return model;
   }

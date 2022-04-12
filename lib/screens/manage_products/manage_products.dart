@@ -17,6 +17,7 @@ class ManageProductsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Consumer<ProductsController>(builder: (context, controller, child) {
+        print('manageScreen');
         return controller.isloadingGetProducts
             ? Center(child: CircularProgressIndicator())
             : SingleChildScrollView(
