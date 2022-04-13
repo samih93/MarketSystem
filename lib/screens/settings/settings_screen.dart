@@ -94,13 +94,8 @@ class SettingsScreen extends StatelessWidget {
                             .getReportByDate(datecontroller.text)
                             .then((value) {
                           print(value.length.toString());
+                          generate_reportByDay(value);
                         });
-
-                        // print(context
-                        //     .read<FactureController>()
-                        //     .list_of_detailsFacture[0]
-                        //     .toJson());
-                        //generate_reportByDay(reportData);
 
                         Navigator.pop(context);
                       },
