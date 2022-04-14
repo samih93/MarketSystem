@@ -28,6 +28,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
   var productPriceController_text = TextEditingController();
+  var productTotalPriceController_text = TextEditingController();
   var productQtyController = TextEditingController();
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
@@ -141,8 +142,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
           productNameController_text.text = value.name.toString();
           productPriceController_text.text = value.price.toString();
         }
-        print("is product exist " +
-            context.read<ProductsController>().isProductExist.toString());
+        // print("is product exist " +
+        //     context.read<ProductsController>().isProductExist.toString());
       });
     }
 
@@ -196,6 +197,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     border: UnderlineInputBorder(),
                     hinttext: "Price...",
                     controller: productPriceController_text),
+                SizedBox(
+                  height: 5,
+                ),
                 defaultTextFormField(
                     onvalidate: (value) {
                       if (value!.isEmpty) {
@@ -206,6 +210,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     border: UnderlineInputBorder(),
                     hinttext: "qty...",
                     controller: productQtyController),
+                SizedBox(
+                  height: 5,
+                ),
+                defaultTextFormField(
+                    onvalidate: (value) {
+                      if (value!.isEmpty) {
+                        return "Total Price must not be empty";
+                      }
+                    },
+                    inputtype: TextInputType.phone,
+                    border: UnderlineInputBorder(),
+                    hinttext: "Total Price...",
+                    controller: productTotalPriceController_text),
               ],
             ),
           )),
@@ -234,6 +251,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 barcode: productbarcodeController_text.text,
                                 name: productNameController_text.text,
                                 price: productPriceController_text.text,
+                                totalprice:
+                                    productTotalPriceController_text.text,
                                 qty: productQtyController.text))
                         .then((value) {
                       if (context

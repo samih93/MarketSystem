@@ -13,6 +13,7 @@ class EditProductScreen extends StatelessWidget {
   var productbarcodeController_text = TextEditingController();
   var productNameController_text = TextEditingController();
   var productPriceController_text = TextEditingController();
+  var productTotalPriceController_text = TextEditingController();
   var productQtyController_text = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
@@ -32,13 +33,16 @@ class EditProductScreen extends StatelessWidget {
                 if (_formkey.currentState!.validate()) {
                   int? price = int.tryParse(productPriceController_text.text);
                   int? qty = int.tryParse(productQtyController_text.text);
-                  if (price != null && qty != null) {
+                  int? totalprice =
+                      int.tryParse(productQtyController_text.text);
+                  if (price != null && qty != null && totalprice != null) {
                     print('QTY : ' + productQtyController_text.text.toString());
                     prod_controller
                         .updateProduct(ProductModel(
                             barcode: model.barcode,
                             name: productNameController_text.text,
                             price: productPriceController_text.text,
+                            totalprice: productTotalPriceController_text.text,
                             qty: productQtyController_text.text))
                         .then((value) {
                       Get.back();
@@ -48,7 +52,7 @@ class EditProductScreen extends StatelessWidget {
                     });
                   } else {
                     showToast(
-                        message: "Price Or Qty Must be a number ",
+                        message: "Price,Total Price Or Qty Must be a number ",
                         status: ToastStatus.Error);
                   }
                 }

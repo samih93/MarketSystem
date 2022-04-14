@@ -31,6 +31,10 @@ class ProductsController extends ChangeNotifier {
         _list_ofProduct.add(ProductModel.fromJson(element));
       });
 
+      _list_ofProduct.forEach((element) {
+        print(element.toJson());
+      });
+
       _original_List_Of_product = _list_ofProduct;
       isloadingGetProducts = false;
       notifyListeners();
@@ -69,8 +73,12 @@ class ProductsController extends ChangeNotifier {
         ProductModel productModel = ProductModel.fromJson(value[0]);
         int newqty = int.parse(model.qty.toString()) +
             int.parse(productModel.qty.toString());
+
+        int totalprice = int.parse(model.totalprice.toString()) +
+            int.parse(productModel.totalprice.toString());
         productModel.qty = newqty.toString();
         productModel.price = model.price;
+        productModel.totalprice = totalprice.toString();
         await updateProduct(productModel).then((value) {
           statusInsertBodyMessage = " ${model.name} updated Successfully";
           statusInsertMessage = ToastStatus.Success;
@@ -101,7 +109,7 @@ class ProductsController extends ChangeNotifier {
     var dbm = await marketdb.database;
     await dbm
         .rawUpdate(
-            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}', qty='${model.qty}' where  barcode='${model.barcode}'")
+            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}', qty='${model.qty}' , totalprice='${model.totalprice}' where  barcode='${model.barcode}'")
         .then((value) async {
       statusUpdateBodyMessage = " ${model.name} updated Successfully";
       statusUpdateMessage = ToastStatus.Success;
