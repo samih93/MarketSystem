@@ -8,7 +8,7 @@ class MarketDbHelper {
   Future<void> init() async {
     database = await openDatabase(
       'Market.db',
-      version: 2,
+      version: 1,
       onCreate: (db, version) {
         print("database created");
         // NOTE create table product

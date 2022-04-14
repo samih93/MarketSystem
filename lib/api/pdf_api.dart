@@ -23,8 +23,8 @@ class PdfApi {
     return saveDocument(name: 'my_example.pdf', doc: pdf);
   }
 
-  static Future<File> generateTodayReport(
-      List<DetailsFactureModel> list) async {
+  static Future<File> generateReportByDate(
+      List<DetailsFactureModel> list, String reportDate) async {
     double finalprice = 0;
     list.forEach((element) {
       finalprice += double.parse(element.price.toString());
@@ -34,10 +34,10 @@ class PdfApi {
     final customfont =
         Font.ttf(await rootBundle.load("assets/Hacen Tunisia.ttf"));
 
-    String today = gettodayDate();
+    // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(gettodayDate()),
+              _build_header(reportDate),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -109,7 +109,7 @@ class PdfApi {
             alignment: Alignment.bottomRight,
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
-    return saveDocument(name: 'report_${today}.pdf', doc: pdf);
+    return saveDocument(name: 'report_${reportDate}.pdf', doc: pdf);
   }
 
   static Future<File> saveDocument({

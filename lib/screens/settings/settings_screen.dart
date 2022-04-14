@@ -94,7 +94,8 @@ class SettingsScreen extends StatelessWidget {
                             .getReportByDate(datecontroller.text)
                             .then((value) {
                           print(value.length.toString());
-                          generate_reportByDay(value);
+                          generate_reportByDay(
+                              value, datecontroller.text.toString());
                         });
 
                         Navigator.pop(context);
@@ -130,8 +131,9 @@ class SettingsScreen extends StatelessWidget {
         ),
       );
 
-  Future<void> generate_reportByDay(List<DetailsFactureModel> list) async {
-    final pdfFile = await PdfApi.generateTodayReport(list);
+  Future<void> generate_reportByDay(
+      List<DetailsFactureModel> list, String reportDate) async {
+    final pdfFile = await PdfApi.generateReportByDate(list, reportDate);
     PdfApi.openFile(pdfFile);
   }
 }
