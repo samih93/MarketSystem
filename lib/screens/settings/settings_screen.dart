@@ -13,6 +13,7 @@ class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = ["Report By Day", "Report by Month"];
 
   var datecontroller = TextEditingController();
+  var enddatecontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FactureController>(
@@ -94,8 +95,7 @@ class SettingsScreen extends StatelessWidget {
                             .getReportByDate(datecontroller.text)
                             .then((value) {
                           print(value.length.toString());
-                          generate_reportByDay(
-                              value, datecontroller.text.toString());
+                          _openReport(value, datecontroller.text.toString());
                         });
 
                         Navigator.pop(context);
@@ -108,7 +108,85 @@ class SettingsScreen extends StatelessWidget {
                   ]).show();
               break;
             case 1:
-              print('case 2 ');
+              Alert(
+                  context: context,
+                  title: "Enter Date",
+                  content: Column(
+                    children: <Widget>[
+                      defaultTextFormField(
+                          readonly: true,
+                          controller: datecontroller,
+                          inputtype: TextInputType.datetime,
+                          prefixIcon: Icon(Icons.date_range),
+                          ontap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.parse('2022-01-01'),
+                                    lastDate: DateTime.parse('2040-01-01'))
+                                .then((value) {
+                              //Todo: handle date to string
+                              //print(DateFormat.yMMMd().format(value!));
+                              var tdate = value.toString().split(' ');
+                              datecontroller.text = tdate[0];
+                            });
+                          },
+                          onvalidate: (value) {
+                            if (value!.isEmpty) {
+                              return "date must not be empty";
+                            }
+                          },
+                          text: "date"),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      defaultTextFormField(
+                          readonly: true,
+                          controller: enddatecontroller,
+                          inputtype: TextInputType.datetime,
+                          prefixIcon: Icon(Icons.date_range),
+                          ontap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.parse('2022-01-01'),
+                                    lastDate: DateTime.parse('2040-01-01'))
+                                .then((value) {
+                              //Todo: handle date to string
+                              //print(DateFormat.yMMMd().format(value!));
+                              var tdate = value.toString().split(' ');
+                              datecontroller.text = tdate[0];
+                            });
+                          },
+                          onvalidate: (value) {
+                            if (value!.isEmpty) {
+                              return "end date must not be empty";
+                            }
+                          },
+                          text: "end date"),
+                    ],
+                  ),
+                  buttons: [
+                    DialogButton(
+                      onPressed: () async {
+                        print(datecontroller.text);
+                        await context
+                            .read<FactureController>()
+                            .getReportBetweenTwoDates(
+                                datecontroller.text, enddatecontroller.text)
+                            .then((value) {
+                          print(value.length.toString());
+                          _openReport(value, datecontroller.text.toString());
+                        });
+
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
+                  ]).show();
           }
         },
         child: Container(
@@ -131,7 +209,7 @@ class SettingsScreen extends StatelessWidget {
         ),
       );
 
-  Future<void> generate_reportByDay(
+  Future<void> _openReport(
       List<DetailsFactureModel> list, String reportDate) async {
     final pdfFile = await PdfApi.generateReportByDate(list, reportDate);
     PdfApi.openFile(pdfFile);
