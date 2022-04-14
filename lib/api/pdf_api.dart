@@ -49,13 +49,19 @@ class PdfApi {
                 children: [
                   TableRow(children: [
                     Column(children: [
-                      Text('Product Name', style: TextStyle(fontSize: 20.0))
+                      Text('Product Name',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                     Column(children: [
-                      Text('Qty', style: TextStyle(fontSize: 20.0))
+                      Text('Qty',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                     Column(children: [
-                      Text('Total Price', style: TextStyle(fontSize: 20.0))
+                      Text('Total Price',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                   ]),
                   ...list.map((e) => TableRow(children: [
@@ -64,7 +70,8 @@ class PdfApi {
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(e.name.toString(),
-                                  style: TextStyle(font: customfont)),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
                             ),
                           ],
                         ),
@@ -139,7 +146,10 @@ class PdfApi {
         child: Center(
           child: Text(
             "Report $title",
-            style: TextStyle(color: PdfColors.white, fontSize: 25),
+            style: TextStyle(
+              color: PdfColors.white,
+              fontSize: 25,
+            ),
           ),
         ),
       ),
