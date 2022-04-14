@@ -17,10 +17,12 @@ class FactureController extends ChangeNotifier {
 
     await dbm
         .rawQuery(
-            "select * from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'")
+            "select df.barcode , df.name, SUM(df.qty) as qty , SUM(df.price) as price  from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'  group by df.barcode order by df.name")
         .then((value) {
       if (value.length > 0)
         value.forEach((element) {
+          //print(object)
+          print(element['barcode']);
           _list_of_detailsFacture.add(DetailsFactureModel.fromJson(element));
         });
       _list_of_detailsFacture.forEach((element) => print(element.toJson()));
