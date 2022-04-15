@@ -6,3 +6,14 @@ TextStyle get headerProductTable {
     fontSize: 25,
   );
 }
+
+LinearGradient get myLinearGradient {
+  return LinearGradient(
+    colors: [
+      const Color(0xFF3366FF),
+      const Color(0xFF00CCFF),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}

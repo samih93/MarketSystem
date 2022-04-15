@@ -11,7 +11,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ManageProductsScreen extends StatelessWidget {
-  List<String> headertitles = ['Name', 'BarCode', 'Price', 'Qty', 'Edit'];
+  List<String> headertitles = ['Name', 'BarCode', 'Price per item', 'Qty', 'Edit'];
 
   @override
   Widget build(BuildContext context) {

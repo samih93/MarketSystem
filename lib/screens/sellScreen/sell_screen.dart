@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
@@ -31,6 +32,11 @@ class _SellScreenState extends State<SellScreen> {
 
   bool _iscashSuccess = false;
 
+  var text_productNameController = TextEditingController();
+  var text_barcode_controller = TextEditingController();
+
+  GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  bool _isEnable = true;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -91,7 +97,10 @@ class _SellScreenState extends State<SellScreen> {
                   alignment: Alignment.topCenter,
                   children: [
                     _buildQr(context),
-
+                    Positioned(
+                      bottom: 10,
+                      child: _buildResult(),
+                    ),
                     Positioned(
                       top: 10,
                       child: _buildControlButton(),
@@ -163,10 +172,12 @@ class _SellScreenState extends State<SellScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
               child: defaultButton(
-                  width: MediaQuery.of(context).size.width * 0.4,
+                  //  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
                   onpress: () {
                     Alert(
@@ -201,17 +212,54 @@ class _SellScreenState extends State<SellScreen> {
                         ]).show();
                   }),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
               child: defaultButton(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  text: "Add More",
+                  //   width: MediaQuery.of(context).size.width * 0.4,
+                  text: "Add Manualy",
+                  onpress: () {
+                    Alert(
+                        context: context,
+                        title: "Search for Product",
+                        content: Column(
+                          children: <Widget>[
+                            _builddropdownSearch(),
+                          ],
+                        ),
+                        buttons: [
+                          DialogButton(
+                            onPressed: () {
+                              controller.fetchProductBybarCode(
+                                  text_barcode_controller.text);
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              "Add",
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 20),
+                            ),
+                          )
+                        ]).show();
+                  }),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              child: defaultButton(
+                  //width: MediaQuery.of(context).size.width * 0.4,
+                  text: "Scan",
                   onpress: () {
                     qrViewcontroller!.resumeCamera();
                     setState(() {
                       barCode = null;
                     });
                   }),
+            ),
+            SizedBox(
+              width: 10,
             ),
           ],
         ),
@@ -365,6 +413,91 @@ class _SellScreenState extends State<SellScreen> {
               ),
             ),
           ]),
+        ),
+      );
+
+  _buildResult() => GestureDetector(
+        onTap: () {
+          setState(() {
+            this.barCode = Barcode('', BarcodeFormat.codabar, []);
+          });
+        },
+        child: Container(
+          decoration: BoxDecoration(color: defaultColor),
+          padding: EdgeInsets.all(15),
+          child: Text(
+            "Continue Without Scan",
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+        ),
+      );
+
+  _builddropdownSearch() => Form(
+        key: _formkey,
+        child: Column(
+          children: [
+            Stack(
+              alignment: Alignment.centerRight,
+              children: [
+                Container(
+                  height: 50,
+                  child: TypeAheadField(
+                    hideOnError: true,
+                    textFieldConfiguration: TextFieldConfiguration(
+                        controller: text_productNameController,
+                        enabled: _isEnable,
+                        autofocus: true,
+                        style: TextStyle(fontSize: 24),
+                        decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            hintText: "Select Product ...")),
+                    // suggestionsCallback: (pattern) async {
+                    // return await marketController
+                    //     .autocomplete_Search_forProduct(pattern);
+                    // },
+                    itemBuilder: (context, suggestion) {
+                      return ListTile(
+                        leading: Icon(Icons.shopping_cart),
+                        title:
+                            Text((suggestion as ProductModel).name.toString()),
+                        subtitle: Text('${suggestion.price.toString()} LL'),
+                      );
+                    },
+                    onSuggestionSelected: (Object? suggestion) {
+                      print((suggestion as ProductModel).barcode);
+                      text_productNameController.text =
+                          suggestion.name.toString();
+                      text_barcode_controller.text =
+                          suggestion.barcode.toString();
+                      setState(() {
+                        _isEnable = false;
+                      });
+                    },
+                    suggestionsCallback: (String pattern) async {
+                      return await context
+                          .read<ProductsController>()
+                          .autocomplete_Search_forProduct(pattern);
+                    },
+                  ),
+                ),
+                !_isEnable
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            text_productNameController.clear();
+                            _isEnable = true;
+                          });
+                        },
+                        icon: Icon(
+                          Icons.close,
+                          color: Colors.red.shade500,
+                        ))
+                    : SizedBox(
+                        width: 2,
+                      ),
+              ],
+            ),
+          ],
         ),
       );
 }

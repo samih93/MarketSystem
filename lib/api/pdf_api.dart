@@ -24,7 +24,8 @@ class PdfApi {
   }
 
   static Future<File> generateReportByDate(
-      List<DetailsFactureModel> list, String reportDate) async {
+      List<DetailsFactureModel> list, String startDate,
+      {String? endDate}) async {
     double finalprice = 0;
     list.forEach((element) {
       finalprice += double.parse(element.price.toString());
@@ -37,7 +38,7 @@ class PdfApi {
     // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(reportDate),
+              _build_header(startDate, endate: endDate),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -80,7 +81,8 @@ class PdfApi {
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(e.qty.toString(),
-                                  style: TextStyle(font: customfont)),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
                             ),
                           ],
                         ),
@@ -89,7 +91,8 @@ class PdfApi {
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(e.price.toString(),
-                                  style: TextStyle(font: customfont)),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
                             ),
                           ],
                         ),
@@ -105,7 +108,7 @@ class PdfApi {
                     style: TextStyle(color: PdfColors.red, fontSize: 30),
                   ),
                   SizedBox(width: 5),
-                  Text("$finalprice",
+                  Text("${finalprice} LL",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
                 ],
@@ -116,7 +119,7 @@ class PdfApi {
             alignment: Alignment.bottomRight,
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
-    return saveDocument(name: 'report_${reportDate}.pdf', doc: pdf);
+    return saveDocument(name: 'report_${startDate}.pdf', doc: pdf);
   }
 
   static Future<File> saveDocument({
@@ -140,12 +143,14 @@ class PdfApi {
     await OpenFile.open(url);
   }
 
-  static _build_header(String title) => Header(
+  static _build_header(String startdate, {String? endate}) => Header(
       child: Padding(
         padding: EdgeInsets.all(8),
         child: Center(
           child: Text(
-            "Report $title",
+            endate == null
+                ? "Report $startdate"
+                : "Report From $startdate To $endate",
             style: TextStyle(
               color: PdfColors.white,
               fontSize: 25,
@@ -153,5 +158,11 @@ class PdfApi {
           ),
         ),
       ),
-      decoration: BoxDecoration(color: PdfColors.red300));
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [PdfColors.blue200, PdfColors.blue800],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          color: PdfColors.blue400));
 }

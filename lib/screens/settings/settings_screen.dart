@@ -5,6 +5,7 @@ import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'package:marketsystem/shared/styles.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = ["Report By Day", "Report by Month"];
 
   var datecontroller = TextEditingController();
+  var startdatecontroller = TextEditingController();
   var enddatecontroller = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -55,6 +57,8 @@ class SettingsScreen extends StatelessWidget {
         onTap: () async {
           switch (index) {
             case 0:
+              datecontroller.clear();
+
               Alert(
                   context: context,
                   title: "Enter Date",
@@ -108,14 +112,16 @@ class SettingsScreen extends StatelessWidget {
                   ]).show();
               break;
             case 1:
+              startdatecontroller.clear();
+              enddatecontroller.clear();
               Alert(
                   context: context,
-                  title: "Enter Date",
+                  title: "Enter Dates",
                   content: Column(
                     children: <Widget>[
                       defaultTextFormField(
                           readonly: true,
-                          controller: datecontroller,
+                          controller: startdatecontroller,
                           inputtype: TextInputType.datetime,
                           prefixIcon: Icon(Icons.date_range),
                           ontap: () {
@@ -128,7 +134,7 @@ class SettingsScreen extends StatelessWidget {
                               //Todo: handle date to string
                               //print(DateFormat.yMMMd().format(value!));
                               var tdate = value.toString().split(' ');
-                              datecontroller.text = tdate[0];
+                              startdatecontroller.text = tdate[0];
                             });
                           },
                           onvalidate: (value) {
@@ -155,7 +161,7 @@ class SettingsScreen extends StatelessWidget {
                               //Todo: handle date to string
                               //print(DateFormat.yMMMd().format(value!));
                               var tdate = value.toString().split(' ');
-                              datecontroller.text = tdate[0];
+                              enddatecontroller.text = tdate[0];
                             });
                           },
                           onvalidate: (value) {
@@ -172,11 +178,13 @@ class SettingsScreen extends StatelessWidget {
                         print(datecontroller.text);
                         await context
                             .read<FactureController>()
-                            .getReportBetweenTwoDates(
-                                datecontroller.text, enddatecontroller.text)
+                            .getReportBetweenTwoDates(startdatecontroller.text,
+                                enddatecontroller.text)
                             .then((value) {
                           print(value.length.toString());
-                          _openReport(value, datecontroller.text.toString());
+                          _openReport(
+                              value, startdatecontroller.text.toString(),
+                              enddate: enddatecontroller.text);
                         });
 
                         Navigator.pop(context);
@@ -192,26 +200,29 @@ class SettingsScreen extends StatelessWidget {
         child: Container(
           width: MediaQuery.of(context).size.width * 0.44,
           height: MediaQuery.of(context).size.width * 0.44,
-          color: defaultColor.shade300,
+          decoration: BoxDecoration(
+              gradient: myLinearGradient,
+              borderRadius: BorderRadius.circular(8)),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.report,
-                size: 60,
-              ),
+              Icon(Icons.report, size: 60, color: Colors.white),
               SizedBox(
                 height: 10,
               ),
-              Text(title),
+              Text(
+                title,
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
             ],
           ),
         ),
       );
 
-  Future<void> _openReport(
-      List<DetailsFactureModel> list, String reportDate) async {
-    final pdfFile = await PdfApi.generateReportByDate(list, reportDate);
+  Future<void> _openReport(List<DetailsFactureModel> list, String startDate,
+      {String? enddate}) async {
+    final pdfFile =
+        await PdfApi.generateReportByDate(list, startDate, endDate: enddate);
     PdfApi.openFile(pdfFile);
   }
 }

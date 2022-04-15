@@ -300,4 +300,20 @@ class ProductsController extends ChangeNotifier {
       });
     });
   }
+
+  //NOTE auto complete search for a product
+  Future<List<ProductModel>> autocomplete_Search_forProduct(
+      String value) async {
+    List<ProductModel> list_ofProduct = [];
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery("select * from products where name LIKE '%$value%'")
+        .then((value) {
+      value.forEach((element) {
+        list_ofProduct.add(ProductModel.fromJson(element));
+      });
+    });
+    return list_ofProduct;
+  }
 }

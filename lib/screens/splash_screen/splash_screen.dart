@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
+import 'package:marketsystem/shared/styles.dart';
 import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,12 +30,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSplashScreen(
-      duration: 2000,
-      splash: 'assets/splash_screen.png',
-      nextScreen: MarketLayout(),
-      splashTransition: SplashTransition.fadeTransition,
-      backgroundColor: Colors.green.shade200,
+    return Container(
+      decoration: BoxDecoration(gradient: myLinearGradient),
+      child: AnimatedSplashScreen(
+        duration: 2000,
+        splash: 'assets/splash_screen.png',
+        nextScreen: MarketLayout(),
+        splashTransition: SplashTransition.fadeTransition,
+        backgroundColor: Colors.transparent,
+      ),
     );
   }
 }

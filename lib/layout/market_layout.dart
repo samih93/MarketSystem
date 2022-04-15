@@ -4,6 +4,7 @@ import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'package:marketsystem/shared/styles.dart';
 import 'package:provider/provider.dart';
 
 class MarketLayout extends StatelessWidget {
@@ -12,6 +13,11 @@ class MarketLayout extends StatelessWidget {
     var controller = Provider.of<LayoutController>(context);
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: myLinearGradient,
+          ),
+        ),
         title: controller.issearchingInProducts
             ? _buildSearchField(
                 context,

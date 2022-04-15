@@ -195,7 +195,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     },
                     inputtype: TextInputType.phone,
                     border: UnderlineInputBorder(),
-                    hinttext: "Price...",
+                    hinttext: "Price per item...",
                     controller: productPriceController_text),
                 SizedBox(
                   height: 5,
@@ -241,7 +241,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 if (_formkey.currentState!.validate()) {
                   int? price = int.tryParse(productPriceController_text.text);
                   int? qty = int.tryParse(productQtyController.text);
-                  if (price != null && qty != null) {
+                  int? totalprice =
+                      int.tryParse(productTotalPriceController_text.text);
+                  if (price != null && qty != null && totalprice != null) {
                     print("valid");
 
                     context
@@ -287,7 +289,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     });
                   } else {
                     showToast(
-                        message: "Price Or Qty Must be a number ",
+                        message: "Price, Total Price Or Qty Must be a number ",
                         status: ToastStatus.Error);
                   }
                 } else {
