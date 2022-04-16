@@ -9,6 +9,7 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
+import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
@@ -52,6 +53,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: myLinearGradient,
+          ),
+        ),
         title: Text("Add New Product"),
       ),
       body: Stack(
@@ -95,7 +101,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           });
         },
         child: Container(
-          decoration: BoxDecoration(color: defaultColor),
+          decoration: BoxDecoration(gradient: myLinearGradient),
           padding: EdgeInsets.all(15),
           child: Text(
             "Continue Without Scan",

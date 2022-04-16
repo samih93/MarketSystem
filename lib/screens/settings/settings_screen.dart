@@ -6,12 +6,25 @@ import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class SettingsScreen extends StatelessWidget {
-  final List<String> _report_title = ["Report By Day", "Report by Month"];
+  final List<String> _report_title = [
+    "Report By Day",
+    "Report by Month",
+    "Best Selling",
+    "Most profitable Products"
+  ];
+
+  final List<IconData> _report_icons = [
+    Icons.report,
+    Icons.report,
+    Icons.loyalty_sharp,
+    Icons.turn_sharp_right_outlined
+  ];
 
   var datecontroller = TextEditingController();
   var startdatecontroller = TextEditingController();
@@ -35,6 +48,7 @@ class SettingsScreen extends StatelessWidget {
                   ..._report_title.map(
                     (element) => _report_item(
                       element,
+                      _report_icons[_report_title.indexOf(element)],
                       _report_title.indexOf(element),
                       context,
                     ),
@@ -50,6 +64,7 @@ class SettingsScreen extends StatelessWidget {
 
   _report_item(
     String title,
+    IconData icon,
     int index,
     BuildContext context,
   ) =>
@@ -139,10 +154,10 @@ class SettingsScreen extends StatelessWidget {
                           },
                           onvalidate: (value) {
                             if (value!.isEmpty) {
-                              return "date must not be empty";
+                              return "start date must not be empty";
                             }
                           },
-                          text: "date"),
+                          text: "start date"),
                       SizedBox(
                         height: 10,
                       ),
@@ -195,6 +210,11 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     )
                   ]).show();
+              break;
+            case 2:
+              showToast(
+                  message: "under developping", status: ToastStatus.Warning);
+              break;
           }
         },
         child: Container(
@@ -206,12 +226,13 @@ class SettingsScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.report, size: 60, color: Colors.white),
+              Icon(icon, size: 60, color: Colors.white),
               SizedBox(
                 height: 10,
               ),
               Text(
                 title,
+                textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
             ],

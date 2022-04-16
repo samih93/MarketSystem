@@ -177,6 +177,8 @@ class _SellScreenState extends State<SellScreen> {
             ),
             Expanded(
               child: defaultButton(
+                  gradient: myLinearGradient,
+
                   //  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
                   onpress: () {
@@ -217,6 +219,7 @@ class _SellScreenState extends State<SellScreen> {
             ),
             Expanded(
               child: defaultButton(
+                  gradient: myLinearGradient,
                   //   width: MediaQuery.of(context).size.width * 0.4,
                   text: "Add Manualy",
                   onpress: () {
@@ -249,6 +252,8 @@ class _SellScreenState extends State<SellScreen> {
             ),
             Expanded(
               child: defaultButton(
+                  gradient: myLinearGradient,
+
                   //width: MediaQuery.of(context).size.width * 0.4,
                   text: "Scan",
                   onpress: () {
@@ -423,7 +428,7 @@ class _SellScreenState extends State<SellScreen> {
           });
         },
         child: Container(
-          decoration: BoxDecoration(color: defaultColor),
+          decoration: BoxDecoration(gradient: myLinearGradient),
           padding: EdgeInsets.all(15),
           child: Text(
             "Continue Without Scan",
