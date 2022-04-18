@@ -43,6 +43,7 @@ class MarketDbHelper {
     // open the database
     database = await openDatabase(completepath);
 
+//! old one without read database from assets
     // database = await openDatabase(
     //   'Market.db',
     //   version: 1,
