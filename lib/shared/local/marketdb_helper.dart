@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
@@ -10,43 +13,64 @@ class MarketDbHelper {
   late Database database;
 
   Future<void> init() async {
-    io.Directory applicationDirectory =
-        await getApplicationDocumentsDirectory();
+    var databasesPath = await getDatabasesPath();
+    var completepath = path.join(databasesPath, "Market.db");
 
-    String dbmarket = path.join(applicationDirectory.path, "Market.db");
+    var exists = await databaseExists(completepath);
+    print("database : " + exists.toString());
 
-    bool dbExistsEnglish = await io.File(dbmarket).exists();
+    if (!exists) {
+      // Should happen only the first time you launch your application
+      print("Creating new copy from asset");
 
-    print(dbExistsEnglish);
+      // Make sure the parent directory exists
+      try {
+        await Directory(path.dirname(completepath)).create(recursive: true);
+      } catch (_) {}
 
-    database = await openDatabase(
-      'Market.db',
-      version: 1,
-      onCreate: (db, version) {
-        print("database created");
-        // NOTE create table product
-        db
-            .execute(
-                "Create Table products(barcode TEXT ,name TEXT,price INTEGER,totalprice INTEGER,qty INTEGER)")
-            .then((value) => print('products table created'))
-            .catchError((onError) => print(onError.toString()));
+      // Copy from asset
+      ByteData data =
+          await rootBundle.load(path.join("assets/db", "Market.db"));
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-        // NOTE create table factures
-        db
-            .execute(
-                "Create Table factures(id INTEGER PRIMARY KEY AUTOINCREMENT ,price INTEGER,facturedate TEXT)")
-            .then((value) => print('factures table created'))
-            .catchError((onError) => print(onError.toString()));
+      // Write and flush the bytes written
+      await File(completepath).writeAsBytes(bytes, flush: true);
+    } else {
+      print("Reading Existing Database");
+    }
 
-        db
-            .execute(
-                "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,price INTEGER,facture_id INTEGER)")
-            .then((value) => print('detailsfactures table created'))
-            .catchError((onError) => print(onError.toString()));
-      },
-      onOpen: (database) {
-        print('database opened');
-      },
-    );
+    // open the database
+    database = await openDatabase(completepath);
+
+    // database = await openDatabase(
+    //   'Market.db',
+    //   version: 1,
+    //   onCreate: (db, version) {
+    //     print("database created");
+    //     // NOTE create table product
+    //     db
+    //         .execute(
+    //             "Create Table products(barcode TEXT ,name TEXT,price INTEGER,totalprice INTEGER,qty INTEGER)")
+    //         .then((value) => print('products table created'))
+    //         .catchError((onError) => print(onError.toString()));
+
+    //     // NOTE create table factures
+    //     db
+    //         .execute(
+    //             "Create Table factures(id INTEGER PRIMARY KEY AUTOINCREMENT ,price INTEGER,facturedate TEXT)")
+    //         .then((value) => print('factures table created'))
+    //         .catchError((onError) => print(onError.toString()));
+
+    //     db
+    //         .execute(
+    //             "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,price INTEGER,facture_id INTEGER)")
+    //         .then((value) => print('detailsfactures table created'))
+    //         .catchError((onError) => print(onError.toString()));
+    //   },
+    //   onOpen: (database) {
+    //     print('database opened');
+    //   },
+    // );
   }
 }
