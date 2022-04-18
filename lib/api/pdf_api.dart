@@ -23,9 +23,11 @@ class PdfApi {
     return saveDocument(name: 'my_example.pdf', doc: pdf);
   }
 
-  static Future<File> generateReportByDate(
-      List<DetailsFactureModel> list, String startDate,
-      {String? endDate}) async {
+// startdate!=null && endDate==null ==> report by date
+// startdate!=null && endDate!=null ==> report between two dates
+// startdate==null && endDate==null ==> generate report Best Selling
+  static Future<File> generateReport(List<DetailsFactureModel> list,
+      {String? startDate, String? endDate}) async {
     double finalprice = 0;
     list.forEach((element) {
       finalprice += double.parse(element.price.toString());
@@ -38,7 +40,7 @@ class PdfApi {
     // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(startDate, endate: endDate),
+              _build_header(startdate: startDate, endate: endDate),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -119,7 +121,11 @@ class PdfApi {
             alignment: Alignment.bottomRight,
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
-    return saveDocument(name: 'report_${startDate}.pdf', doc: pdf);
+    return saveDocument(
+        name: startDate == null && endDate == null
+            ? "Best Selling Report"
+            : 'Report_${startDate}.pdf',
+        doc: pdf);
   }
 
   static Future<File> saveDocument({
@@ -143,15 +149,16 @@ class PdfApi {
     await OpenFile.open(url);
   }
 
-  static _build_header(String startdate, {String? endate}) => Header(
-    
+  static _build_header({String? startdate, String? endate}) => Header(
       child: Padding(
         padding: EdgeInsets.all(8),
         child: Center(
           child: Text(
-            endate == null
-                ? "Report $startdate"
-                : "Report From $startdate To $endate",
+            startdate == null && endate == null
+                ? "Best Selling Report"
+                : endate == null
+                    ? "Report $startdate"
+                    : "Report From $startdate To $endate",
             style: TextStyle(
               color: PdfColors.white,
               fontSize: 25,
@@ -167,5 +174,3 @@ class PdfApi {
           ),
           color: PdfColors.blue400));
 }
-
-

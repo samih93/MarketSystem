@@ -14,7 +14,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = [
     "Report By Day",
-    "Report by Month",
+    "Report Between Two Dates",
     "Best Selling",
     "Most profitable Products"
   ];
@@ -114,7 +114,8 @@ class SettingsScreen extends StatelessWidget {
                             .getReportByDate(datecontroller.text)
                             .then((value) {
                           print(value.length.toString());
-                          _openReport(value, datecontroller.text.toString());
+                          _openReportByDateOrBetween(
+                              value, datecontroller.text.toString());
                         });
 
                         Navigator.pop(context);
@@ -193,11 +194,12 @@ class SettingsScreen extends StatelessWidget {
                         print(datecontroller.text);
                         await context
                             .read<FactureController>()
-                            .getReportBetweenTwoDates(startdatecontroller.text,
+                            .getDetailsFacturesBetweenTwoDates(
+                                startdatecontroller.text,
                                 enddatecontroller.text)
                             .then((value) {
                           print(value.length.toString());
-                          _openReport(
+                          _openReportByDateOrBetween(
                               value, startdatecontroller.text.toString(),
                               enddate: enddatecontroller.text);
                         });
@@ -212,9 +214,18 @@ class SettingsScreen extends StatelessWidget {
                   ]).show();
               break;
             case 2:
-              showToast(
-                  message: "under developping", status: ToastStatus.Warning);
+              await context
+                  .read<FactureController>()
+                  .getBestSelling()
+                  .then((value) {
+                _openBestSellingReport(value);
+              });
+
               break;
+
+            case 3:
+              showToast(
+                  message: "Under developing", status: ToastStatus.Warning);
           }
         },
         child: Container(
@@ -230,20 +241,29 @@ class SettingsScreen extends StatelessWidget {
               SizedBox(
                 height: 10,
               ),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white, fontSize: 20),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
             ],
           ),
         ),
       );
 
-  Future<void> _openReport(List<DetailsFactureModel> list, String startDate,
+  Future<void> _openReportByDateOrBetween(
+      List<DetailsFactureModel> list, String startDate,
       {String? enddate}) async {
-    final pdfFile =
-        await PdfApi.generateReportByDate(list, startDate, endDate: enddate);
+    final pdfFile = await PdfApi.generateReport(list,
+        startDate: startDate, endDate: enddate);
+    PdfApi.openFile(pdfFile);
+  }
+
+  Future<void> _openBestSellingReport(List<DetailsFactureModel> list) async {
+    final pdfFile = await PdfApi.generateReport(list);
     PdfApi.openFile(pdfFile);
   }
 }
