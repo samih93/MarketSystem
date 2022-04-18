@@ -177,41 +177,45 @@ class _SellScreenState extends State<SellScreen> {
             ),
             Expanded(
               child: defaultButton(
-                  gradient: myLinearGradient,
+                  gradient: controller.basket_products.length == 0
+                      ? null
+                      : myLinearGradient,
+                  background: Colors.grey,
 
                   //  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
                   onpress: () {
-                    Alert(
-                        context: context,
-                        title: "Cash",
-                        content: Column(
-                          children: <Widget>[
-                            Text(
-                              'Total : ${controller.totalprice.toString()} LL',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                        buttons: [
-                          DialogButton(
-                            onPressed: () {
-                              controller.addFacture();
-                              // controller.clearBasket();
-                              setState(() {
-                                barCode = null;
-                                _iscashSuccess = true;
-                              });
+                    if (controller.basket_products.length > 0)
+                      Alert(
+                          context: context,
+                          title: "Cash",
+                          content: Column(
+                            children: <Widget>[
+                              Text(
+                                'Total : ${controller.totalprice.toString()} LL',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          buttons: [
+                            DialogButton(
+                              onPressed: () {
+                                controller.addFacture();
+                                // controller.clearBasket();
+                                setState(() {
+                                  barCode = null;
+                                  _iscashSuccess = true;
+                                });
 
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Enter",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                          )
-                        ]).show();
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "Enter",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20),
+                              ),
+                            )
+                          ]).show();
                   }),
             ),
             SizedBox(
