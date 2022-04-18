@@ -1,4 +1,8 @@
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart' as path;
+
+import 'dart:io' as io;
 
 class MarketDbHelper {
   MarketDbHelper._();
@@ -6,6 +10,15 @@ class MarketDbHelper {
   late Database database;
 
   Future<void> init() async {
+    io.Directory applicationDirectory =
+        await getApplicationDocumentsDirectory();
+
+    String dbmarket = path.join(applicationDirectory.path, "Market.db");
+
+    bool dbExistsEnglish = await io.File(dbmarket).exists();
+
+    print(dbExistsEnglish);
+
     database = await openDatabase(
       'Market.db',
       version: 1,
