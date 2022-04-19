@@ -18,6 +18,7 @@ class SettingsScreen extends StatelessWidget {
     "Best Selling",
     "Most profitable Products",
     "Transactions",
+    "Spent / Earn",
     "DashBoard"
   ];
 
@@ -27,6 +28,7 @@ class SettingsScreen extends StatelessWidget {
     Icons.loyalty_sharp,
     Icons.turn_sharp_right_outlined,
     Icons.list_alt,
+    Icons.currency_exchange_outlined,
     Icons.dashboard_outlined
   ];
 
