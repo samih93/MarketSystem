@@ -122,10 +122,79 @@ class PdfApi {
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
     return saveDocument(
-        name: startDate == null && endDate == null
-            ? "Best Selling Report"
-            : 'Report_${startDate}.pdf',
+        name:
+            endDate == null ? "Best Selling Report" : 'Report_${startDate}.pdf',
         doc: pdf);
+  }
+
+  static Future<File> generateBestSellingReport(
+    List<DetailsFactureModel> list,
+  ) async {
+    double finalprice = 0;
+    list.forEach((element) {
+      finalprice += double.parse(element.price.toString());
+    });
+    final pdf = Document();
+
+    final customfont =
+        Font.ttf(await rootBundle.load("assets/Hacen Tunisia.ttf"));
+
+    // String today = gettodayDate();
+    pdf.addPage(MultiPage(
+        build: (context) => <Widget>[
+              _build_header(),
+              SizedBox(height: 10),
+              Table(
+                tableWidth: TableWidth.max,
+                //defaultColumnWidth: FixedColumnWidth(120.0),
+                //defaultColumnWidth: FixedColumnWidth(screenWidth(_)*.3),
+
+                border: TableBorder.all(
+                    color: PdfColors.grey, style: BorderStyle.solid, width: 1),
+                children: [
+                  TableRow(children: [
+                    Column(children: [
+                      Text('Product Name',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Qty',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                  ]),
+                  ...list.map((e) => TableRow(children: [
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.name.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.qty.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                      ]))
+                ],
+              ),
+              SizedBox(height: 20),
+            ],
+        footer: (context) => Container(
+            alignment: Alignment.bottomRight,
+            child:
+                Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
+    return saveDocument(name: "Best Selling Report.pdf", doc: pdf);
   }
 
   static Future<File> saveDocument({
