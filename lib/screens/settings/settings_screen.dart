@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:marketsystem/api/pdf_api.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
+import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
@@ -16,14 +16,20 @@ class SettingsScreen extends StatelessWidget {
     "Report By Day",
     "Report Between Two Dates",
     "Best Selling",
-    "Most profitable Products"
+    "Most profitable Products",
+    "Transactions",
+    "Spent / Earn",
+    "DashBoard"
   ];
 
   final List<IconData> _report_icons = [
     Icons.report,
     Icons.report,
     Icons.loyalty_sharp,
-    Icons.turn_sharp_right_outlined
+    Icons.turn_sharp_right_outlined,
+    Icons.list_alt,
+    Icons.currency_exchange_outlined,
+    Icons.dashboard_outlined
   ];
 
   var datecontroller = TextEditingController();
@@ -36,24 +42,27 @@ class SettingsScreen extends StatelessWidget {
       child: Scaffold(
         body: Consumer<FactureController>(
           builder: (context, facturecontroller, child) {
-            return Padding(
-              padding: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.04,
-                  top: MediaQuery.of(context).size.width * 0.04),
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: MediaQuery.of(context).size.width * 0.04, // horizontal
-                runSpacing: 8, // vertical
-                children: [
-                  ..._report_title.map(
-                    (element) => _report_item(
-                      element,
-                      _report_icons[_report_title.indexOf(element)],
-                      _report_title.indexOf(element),
-                      context,
-                    ),
-                  )
-                ],
+            return SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.only(
+                    left: MediaQuery.of(context).size.width * 0.04,
+                    top: MediaQuery.of(context).size.width * 0.04),
+                child: Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing:
+                      MediaQuery.of(context).size.width * 0.04, // horizontal
+                  runSpacing: 8, // vertical
+                  children: [
+                    ..._report_title.map(
+                      (element) => _report_item(
+                        element,
+                        _report_icons[_report_title.indexOf(element)],
+                        _report_title.indexOf(element),
+                        context,
+                      ),
+                    )
+                  ],
+                ),
               ),
             );
           },

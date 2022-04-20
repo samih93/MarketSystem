@@ -36,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
         duration: 2000,
         splash: 'assets/splash_screen.png',
         nextScreen: MarketLayout(),
+        splashIconSize: MediaQuery.of(context).size.width * 0.4,
         splashTransition: SplashTransition.fadeTransition,
         backgroundColor: Colors.transparent,
       ),
