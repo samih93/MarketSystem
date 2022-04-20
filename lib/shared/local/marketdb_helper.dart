@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
+import 'package:http/http.dart' as http;
 
 import 'dart:io' as io;
 
@@ -24,7 +25,7 @@ class MarketDbHelper {
       // Should happen only the first time you launch your application
 
       // NOTE------------START COPY DB FROM MY ASSETS ------------------
-       //     print("Creating new copy from asset");
+      //     print("Creating new copy from asset");
 
       // Make sure the parent directory exists
       // try {
@@ -46,16 +47,19 @@ class MarketDbHelper {
 
       print("Creating new copy from internet");
 
-      String url = "https://github.com/samih93/MarketSystem/raw/master/Market.db";
+      var url = Uri.parse(
+          'https://github.com/samih93/MarketSystem/raw/master/Market.db');
+      var response = await http.get(url);
 
-      var httpClient = new io.HttpClient();
-      var request = await httpClient.getUrl(Uri.parse(url));
-      var response = await request.close();
+      // var httpClient = new io.HttpClient();
+      // var request = await httpClient.getUrl(Uri.parse(url));
+      // var response = await request.close();
 
       // thow an error if there was error getting the file
       // so it prevents from wrting the wrong content into the db file
       if (response.statusCode != 200) throw "Error getting db file";
-      var bytes = await consolidateHttpClientResponseBytes(response);
+      // var bytes = await consolidateHttpClientResponseBytes();
+      var bytes = response.bodyBytes;
       await File(completepath).writeAsBytes(bytes, flush: true);
     } else {
       print("Reading Existing Database");
