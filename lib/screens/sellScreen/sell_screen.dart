@@ -22,7 +22,7 @@ class SellScreen extends StatefulWidget {
 }
 
 class _SellScreenState extends State<SellScreen> {
-  List<String> headertitles = ['Name', 'BarCode', 'Price', 'Qty', ''];
+  List<String> headertitles = ['Name', 'Qty', ''];
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
   Barcode? barCode = null;
@@ -119,23 +119,28 @@ class _SellScreenState extends State<SellScreen> {
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: DataTable(
-                                        headingTextStyle:
-                                            TextStyle(color: defaultColor),
-                                        border: TableBorder.all(
-                                            width: 1, color: Colors.grey),
-                                        columns: [
-                                          ...headertitles
-                                              .map((e) => _build_header_item(e))
-                                        ],
-                                        rows: [
-                                          ...prod_controller.basket_products
-                                              .map((e) =>
-                                                  _build_Row(e, context)),
-                                        ],
-                                      ),
-                                    ),
+                                        padding: const EdgeInsets.all(15.0),
+                                        child: prod_controller
+                                                    .basket_products.length >
+                                                0
+                                            ? DataTable(
+                                                headingTextStyle: TextStyle(
+                                                    color: defaultColor),
+                                                border: TableBorder.all(
+                                                    width: 1,
+                                                    color: Colors.grey),
+                                                columns: [
+                                                  ...headertitles.map((e) =>
+                                                      _build_header_item(e))
+                                                ],
+                                                rows: [
+                                                  ...prod_controller
+                                                      .basket_products
+                                                      .map((e) => _build_Row(
+                                                          e, context)),
+                                                ],
+                                              )
+                                            : Container()),
                                   ),
                                 ),
                               ),
@@ -297,9 +302,20 @@ class _SellScreenState extends State<SellScreen> {
           )));
 
   _build_Row(ProductModel model, BuildContext context) => DataRow(cells: [
-        DataCell(Text(model.name.toString())),
-        DataCell(Text(model.barcode.toString())),
-        DataCell(Text(model.price.toString())),
+        DataCell(Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(model.name.toString()),
+            SizedBox(
+              height: 4,
+            ),
+            Text(
+              model.price.toString() + " LL ",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )
+          ],
+        )),
         DataCell(
             Text(
               model.qty.toString(),
@@ -466,7 +482,7 @@ class _SellScreenState extends State<SellScreen> {
                     // },
                     itemBuilder: (context, suggestion) {
                       return ListTile(
-                        leading: Icon(Icons.shopping_cart),
+                        //leading: Icon(Icons.shopping_cart),
                         title:
                             Text((suggestion as ProductModel).name.toString()),
                         subtitle: Text('${suggestion.price.toString()} LL'),
