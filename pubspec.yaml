@@ -44,6 +44,10 @@ dependencies:
   # opne file
   open_file: ^3.2.1
 
+  #restartApp
+  restart_app: ^1.1.0
+
+
 
 
 

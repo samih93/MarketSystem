@@ -20,6 +20,7 @@ class _SplashScreenState extends State<SplashScreen> {
         print('getting products');
       });
     });
+
     super.initState();
   }
 

@@ -130,10 +130,6 @@ class PdfApi {
   static Future<File> generateBestSellingReport(
     List<DetailsFactureModel> list,
   ) async {
-    double finalprice = 0;
-    list.forEach((element) {
-      finalprice += double.parse(element.price.toString());
-    });
     final pdf = Document();
 
     final customfont =

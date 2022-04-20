@@ -13,3 +13,5 @@ gettodayDate() {
 
   return year + "-" + month + "-" + day;
 }
+
+String databasepath ="";

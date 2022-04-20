@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
@@ -21,20 +22,40 @@ class MarketDbHelper {
 
     if (!exists) {
       // Should happen only the first time you launch your application
-      print("Creating new copy from asset");
+
+      // NOTE------------START COPY DB FROM MY ASSETS ------------------
+       //     print("Creating new copy from asset");
 
       // Make sure the parent directory exists
-      try {
-        await Directory(path.dirname(completepath)).create(recursive: true);
-      } catch (_) {}
+      // try {
+      //   await Directory(path.dirname(completepath)).create(recursive: true);
+      // } catch (_) {}
 
-      // Copy from asset
-      ByteData data =
-          await rootBundle.load(path.join("assets/db", "Market.db"));
-      List<int> bytes =
-          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      // // Copy from asset
+      // ByteData data =
+      //     await rootBundle.load(path.join("assets/db", "Market.db"));
+      // List<int> bytes =
+      //     data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
-      // Write and flush the bytes written
+      // // Write and flush the bytes written
+      // await File(completepath).writeAsBytes(bytes, flush: true);
+
+      // NOTE  -----------------Start Copy Db From Internet
+
+      // link github https://github.com/samih93/MarketSystem/raw/master/Market.db
+
+      print("Creating new copy from internet");
+
+      String url = "https://github.com/samih93/MarketSystem/raw/master/Market.db";
+
+      var httpClient = new io.HttpClient();
+      var request = await httpClient.getUrl(Uri.parse(url));
+      var response = await request.close();
+
+      // thow an error if there was error getting the file
+      // so it prevents from wrting the wrong content into the db file
+      if (response.statusCode != 200) throw "Error getting db file";
+      var bytes = await consolidateHttpClientResponseBytes(response);
       await File(completepath).writeAsBytes(bytes, flush: true);
     } else {
       print("Reading Existing Database");

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
+import 'package:marketsystem/main.dart';
 import 'package:marketsystem/models/details_facture.dart';
+import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -9,7 +11,9 @@ import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 
 import 'package:provider/provider.dart';
+import 'package:restart_app/restart_app.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:sqflite/sqflite.dart';
 
 class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = [
@@ -19,7 +23,8 @@ class SettingsScreen extends StatelessWidget {
     "Most profitable Products",
     "Transactions",
     "Spent / Earn",
-    "DashBoard"
+    "DashBoard",
+    "Clear Data And Restart App"
   ];
 
   final List<IconData> _report_icons = [
@@ -29,12 +34,14 @@ class SettingsScreen extends StatelessWidget {
     Icons.turn_sharp_right_outlined,
     Icons.list_alt,
     Icons.currency_exchange_outlined,
-    Icons.dashboard_outlined
+    Icons.dashboard_outlined,
+    Icons.cleaning_services
   ];
 
   var datecontroller = TextEditingController();
   var startdatecontroller = TextEditingController();
   var enddatecontroller = TextEditingController();
+  var nbOfProductsController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FactureController>(
@@ -223,18 +230,80 @@ class SettingsScreen extends StatelessWidget {
                   ]).show();
               break;
             case 2:
-              await context
-                  .read<FactureController>()
-                  .getBestSelling()
-                  .then((value) {
-                _openBestSellingReport(value);
-              });
+              Alert(
+                  context: context,
+                  title: "Enter nb of products",
+                  content: Column(
+                    children: <Widget>[
+                      TextField(
+                        controller: nbOfProductsController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          labelText: 'nb of products ',
+                        ),
+                      ),
+                    ],
+                  ),
+                  buttons: [
+                    DialogButton(
+                      onPressed: () async {
+                        await context
+                            .read<FactureController>()
+                            .getBestSelling(nbOfProductsController.text)
+                            .then((value) {
+                          _openBestSellingReport(value);
+                        });
+
+                        nbOfProductsController.clear();
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
+                  ]).show();
 
               break;
 
             case 3:
               showToast(
                   message: "Under developing", status: ToastStatus.Warning);
+              break;
+
+            case 7:
+              var alertStyle =
+                  AlertStyle(animationDuration: Duration(milliseconds: 1));
+              Alert(
+                style: alertStyle,
+                context: context,
+                type: AlertType.warning,
+                title: "Delete Data",
+                desc: "Are You Sure You Want To Delete All Data'",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    color: Colors.blue.shade400,
+                  ),
+                  DialogButton(
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      deleteDatabase().then((value) {
+                        Restart.restartApp();
+                      });
+                    },
+                    color: Colors.red.shade400,
+                  ),
+                ],
+              ).show();
           }
         },
         child: Container(
@@ -275,4 +344,6 @@ class SettingsScreen extends StatelessWidget {
     final pdfFile = await PdfApi.generateBestSellingReport(list);
     PdfApi.openFile(pdfFile);
   }
+
+  Future<void> deleteDatabase() => databaseFactory.deleteDatabase(databasepath);
 }

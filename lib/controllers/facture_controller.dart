@@ -56,7 +56,7 @@ class FactureController extends ChangeNotifier {
     return _list_of_detailsFacture;
   }
 
-  Future<List<DetailsFactureModel>> getBestSelling() async {
+  Future<List<DetailsFactureModel>> getBestSelling(String nbOfproduct) async {
     _list_of_detailsFacture = [];
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
@@ -64,7 +64,7 @@ class FactureController extends ChangeNotifier {
 
     await dbm
         .rawQuery(
-            "select df.barcode , df.name, SUM(df.qty) as qty , SUM(df.price) as price  from detailsfacture as df , factures as f on df.facture_id=f.id  group by df.barcode order by qty desc")
+            "select df.barcode , df.name, SUM(df.qty) as qty , SUM(df.price) as price  from detailsfacture as df , factures as f on df.facture_id=f.id  group by df.barcode order by qty desc limit $nbOfproduct")
         .then((value) {
       if (value.length > 0)
         value.forEach((element) {
