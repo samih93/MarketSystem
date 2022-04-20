@@ -266,8 +266,13 @@ class SettingsScreen extends StatelessWidget {
               break;
 
             case 3:
-              showToast(
-                  message: "Under developing", status: ToastStatus.Warning);
+              await context
+                  .read<FactureController>()
+                  .getMostprofitableList()
+                  .then((value) async {
+                await _openMostProfitableReport(value);
+              });
+
               break;
 
             case 7:
@@ -342,6 +347,11 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _openBestSellingReport(List<DetailsFactureModel> list) async {
     final pdfFile = await PdfApi.generateBestSellingReport(list);
+    PdfApi.openFile(pdfFile);
+  }
+
+  Future<void> _openMostProfitableReport(List<DetailsFactureModel> list) async {
+    final pdfFile = await PdfApi.generateMostProfitableReport(list);
     PdfApi.openFile(pdfFile);
   }
 

@@ -191,6 +191,120 @@ class PdfApi {
     return saveDocument(name: "Best Selling Report.pdf", doc: pdf);
   }
 
+  static Future<File> generateMostProfitableReport(
+    List<DetailsFactureModel> list,
+  ) async {
+    double finalprice = 0;
+    list.forEach((element) {
+      finalprice += double.parse(element.price.toString());
+    });
+    final pdf = Document();
+
+    final customfont =
+        Font.ttf(await rootBundle.load("assets/Hacen Tunisia.ttf"));
+
+    // String today = gettodayDate();
+    pdf.addPage(MultiPage(
+        build: (context) => <Widget>[
+              _build_header(),
+              SizedBox(height: 10),
+              Table(
+                tableWidth: TableWidth.max,
+                //defaultColumnWidth: FixedColumnWidth(120.0),
+                //defaultColumnWidth: FixedColumnWidth(screenWidth(_)*.3),
+
+                border: TableBorder.all(
+                    color: PdfColors.grey, style: BorderStyle.solid, width: 1),
+                children: [
+                  TableRow(children: [
+                    Column(children: [
+                      Text('Product Name',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Qty',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Profit per item',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Total',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                  ]),
+                  ...list.map((e) => TableRow(children: [
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.name.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.qty.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.profit_per_item.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.price.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                      ]))
+                ],
+              ),
+              SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Total  : ",
+                    style: TextStyle(color: PdfColors.red, fontSize: 30),
+                  ),
+                  SizedBox(width: 5),
+                  Text("${finalprice} LL",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
+                ],
+              ),
+              SizedBox(height: 20),
+            ],
+        footer: (context) => Container(
+            alignment: Alignment.bottomRight,
+            child:
+                Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
+    return saveDocument(name: "Most Profitable Report.pdf", doc: pdf);
+  }
+
   static Future<File> saveDocument({
     required String name,
     required Document doc,
@@ -217,11 +331,7 @@ class PdfApi {
         padding: EdgeInsets.all(8),
         child: Center(
           child: Text(
-            startdate == null && endate == null
-                ? "Best Selling Report"
-                : endate == null
-                    ? "Report $startdate"
-                    : "Report From $startdate To $endate",
+            "Most Profitable Products",
             style: TextStyle(
               color: PdfColors.white,
               fontSize: 25,
