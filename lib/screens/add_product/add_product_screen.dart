@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -165,6 +164,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     if (value!.isEmpty) {
                       return "barcode must not be empty";
                     }
+                    return null;
                   },
                   controller: productbarcodeController_text,
                   //initialValue: barCode!.code,
@@ -182,6 +182,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       if (value!.isEmpty) {
                         return "Name must not be empty";
                       }
+                      return null;
                     },
                     readonly: context.read<ProductsController>().isProductExist
                         ? true
@@ -198,6 +199,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       if (value!.isEmpty) {
                         return "Price must not be empty";
                       }
+                      return null;
                     },
                     inputtype: TextInputType.phone,
                     border: UnderlineInputBorder(),
@@ -211,6 +213,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       if (value!.isEmpty) {
                         return "Qty must not be empty";
                       }
+                      return null;
                     },
                     inputtype: TextInputType.phone,
                     border: UnderlineInputBorder(),
@@ -224,6 +227,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       if (value!.isEmpty) {
                         return "Total Price must not be empty";
                       }
+                      return null;
                     },
                     inputtype: TextInputType.phone,
                     border: UnderlineInputBorder(),

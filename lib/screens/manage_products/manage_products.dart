@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/add_product/add_product_screen.dart';
 import 'package:marketsystem/screens/edit_product/edit_product.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
 class ManageProductsScreen extends StatelessWidget {
-  List<String> headertitles = ['Name', 'BarCode', 'Price per item', 'Qty', 'Edit'];
+  List<String> headertitles = [
+    'Name',
+    'BarCode',
+    'Price per item',
+    'Qty',
+    'Edit'
+  ];
 
   @override
   Widget build(BuildContext context) {

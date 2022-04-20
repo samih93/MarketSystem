@@ -1,17 +1,13 @@
 import 'dart:io';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
-import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
-import 'package:marketsystem/shared/toast_message.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';

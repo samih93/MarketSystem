@@ -90,6 +90,7 @@ class EditProductScreen extends StatelessWidget {
                         if (value!.isEmpty) {
                           return "Name must not be empty";
                         }
+                        return null;
                       },
                       inputtype: TextInputType.name,
                       border: UnderlineInputBorder(),
@@ -103,6 +104,7 @@ class EditProductScreen extends StatelessWidget {
                         if (value!.isEmpty) {
                           return "Price must not be empty";
                         }
+                        return null;
                       },
                       inputtype: TextInputType.phone,
                       border: UnderlineInputBorder(),
@@ -116,6 +118,7 @@ class EditProductScreen extends StatelessWidget {
                         if (value!.isEmpty) {
                           return "Qty must not be empty";
                         }
+                        return null;
                       },
                       inputtype: TextInputType.phone,
                       border: UnderlineInputBorder(),

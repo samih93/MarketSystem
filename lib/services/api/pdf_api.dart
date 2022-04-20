@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:marketsystem/models/details_facture.dart';
-import 'package:marketsystem/shared/constant.dart';
-import 'package:marketsystem/shared/styles.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
-import 'package:marketsystem/shared/toast_message.dart';
 import 'package:provider/provider.dart';
 
 class AddProductToMyStoreScreen extends StatefulWidget {
@@ -108,6 +106,7 @@ class _AddProductToMyStoreScreenState extends State<AddProductToMyStoreScreen> {
                     if (value!.isEmpty) {
                       return "Quantity must not be empty";
                     }
+                    return null;
                   },
                   inputtype: TextInputType.phone,
                   border: UnderlineInputBorder(),

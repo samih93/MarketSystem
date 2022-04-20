@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/layout/market_layout.dart';
-import 'package:marketsystem/screens/add_product/add_product_screen.dart';
-import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';

@@ -6,7 +6,6 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
-import 'package:sqflite/sqflite.dart';
 
 class ProductsController extends ChangeNotifier {
   MarketDbHelper marketdb = MarketDbHelper.db;

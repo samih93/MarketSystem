@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:marketsystem/screens/manage_products/manage_products.dart';
 import 'package:marketsystem/screens/sellScreen/sell_screen.dart';
 import 'package:marketsystem/screens/settings/settings_screen.dart';
-import 'package:marketsystem/shared/local/marketdb_helper.dart';
 
 class LayoutController extends ChangeNotifier {
   List<BottomNavigationBarItem> bottomItems = [

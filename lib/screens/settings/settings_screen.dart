@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
-import 'package:marketsystem/main.dart';
 import 'package:marketsystem/models/details_facture.dart';
-import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -117,6 +114,7 @@ class SettingsScreen extends StatelessWidget {
                             if (value!.isEmpty) {
                               return "date must not be empty";
                             }
+                            return null;
                           },
                           text: "date"),
                     ],
@@ -173,6 +171,7 @@ class SettingsScreen extends StatelessWidget {
                             if (value!.isEmpty) {
                               return "start date must not be empty";
                             }
+                            return null;
                           },
                           text: "start date"),
                       SizedBox(
@@ -200,6 +199,7 @@ class SettingsScreen extends StatelessWidget {
                             if (value!.isEmpty) {
                               return "end date must not be empty";
                             }
+                            return null;
                           },
                           text: "end date"),
                     ],
