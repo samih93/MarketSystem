@@ -263,7 +263,7 @@ class SettingsScreen extends StatelessWidget {
   }
 
   Future<void> _openBestSellingReport(List<DetailsFactureModel> list) async {
-    final pdfFile = await PdfApi.generateReport(list);
+    final pdfFile = await PdfApi.generateBestSellingReport(list);
     PdfApi.openFile(pdfFile);
   }
 }
