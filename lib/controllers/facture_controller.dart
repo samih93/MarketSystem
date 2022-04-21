@@ -80,7 +80,8 @@ class FactureController extends ChangeNotifier {
     return _list_of_detailsFacture;
   }
 
-  Future<List<DetailsFactureModel>> getMostprofitableList() async {
+  Future<List<DetailsFactureModel>> getMostprofitableList(
+      String nbOfproduct) async {
     _list_of_detailsFacture = [];
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
@@ -88,7 +89,7 @@ class FactureController extends ChangeNotifier {
 
     await dbm
         .rawQuery(
-            "select df.barcode , df.name, df.qty , (((p.price*p.qty) - totalprice)/p.qty) as profit_per_item , (((p.price*p.qty) - totalprice)/p.qty)*df.qty as price  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode group by df.barcode order by price ")
+            "select df.barcode , df.name, df.qty , (((p.price*p.qty) - totalprice)/p.qty) as profit_per_item , (((p.price*p.qty) - totalprice)/p.qty)*df.qty as total_profit  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode group by df.barcode order by total_profit desc limit $nbOfproduct ")
         .then((value) {
       if (value.length > 0)
         value.forEach((element) {

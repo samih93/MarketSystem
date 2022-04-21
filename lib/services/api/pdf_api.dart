@@ -196,7 +196,7 @@ class PdfApi {
   ) async {
     double finalprice = 0;
     list.forEach((element) {
-      finalprice += double.parse(element.price.toString());
+      finalprice += double.parse(element.total_profit.toString());
     });
     final pdf = Document();
 
@@ -273,7 +273,7 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.price.toString(),
+                              child: Text(e.total_profit.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),

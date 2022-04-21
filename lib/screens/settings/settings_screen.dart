@@ -122,17 +122,23 @@ class SettingsScreen extends StatelessWidget {
                   buttons: [
                     DialogButton(
                       onPressed: () async {
-                        print(datecontroller.text);
-                        await context
-                            .read<FactureController>()
-                            .getReportByDate(datecontroller.text)
-                            .then((value) {
-                          print(value.length.toString());
-                          _openReportByDateOrBetween(
-                              value, datecontroller.text.toString());
-                        });
-
-                        Navigator.pop(context);
+                        if (datecontroller.text.trim() == "null" ||
+                            datecontroller.text.trim() == "") {
+                          showToast(
+                              message: "date must be not empty or null ",
+                              status: ToastStatus.Error);
+                          print(datecontroller.text);
+                        } else {
+                          await context
+                              .read<FactureController>()
+                              .getReportByDate(datecontroller.text)
+                              .then((value) {
+                            print(value.length.toString());
+                            _openReportByDateOrBetween(
+                                value, datecontroller.text.toString());
+                          });
+                          Navigator.pop(context);
+                        }
                       },
                       child: Text(
                         "Ok",
@@ -207,20 +213,29 @@ class SettingsScreen extends StatelessWidget {
                   buttons: [
                     DialogButton(
                       onPressed: () async {
-                        print(datecontroller.text);
-                        await context
-                            .read<FactureController>()
-                            .getDetailsFacturesBetweenTwoDates(
-                                startdatecontroller.text,
-                                enddatecontroller.text)
-                            .then((value) {
-                          print(value.length.toString());
-                          _openReportByDateOrBetween(
-                              value, startdatecontroller.text.toString(),
-                              enddate: enddatecontroller.text);
-                        });
-
-                        Navigator.pop(context);
+                        //  print(datecontroller.text);
+                        if ((startdatecontroller.text.trim() == "null" ||
+                                startdatecontroller.text.trim() == "") ||
+                            (enddatecontroller.text.trim() == "null" ||
+                                enddatecontroller.text.trim() == "")) {
+                          showToast(
+                              message:
+                                  "start or enddate  must be not empty or null ",
+                              status: ToastStatus.Error);
+                        } else {
+                          await context
+                              .read<FactureController>()
+                              .getDetailsFacturesBetweenTwoDates(
+                                  startdatecontroller.text,
+                                  enddatecontroller.text)
+                              .then((value) {
+                            print(value.length.toString());
+                            _openReportByDateOrBetween(
+                                value, startdatecontroller.text.toString(),
+                                enddate: enddatecontroller.text);
+                          });
+                          Navigator.pop(context);
+                        }
                       },
                       child: Text(
                         "Ok",
@@ -247,14 +262,29 @@ class SettingsScreen extends StatelessWidget {
                   buttons: [
                     DialogButton(
                       onPressed: () async {
-                        await context
-                            .read<FactureController>()
-                            .getBestSelling(nbOfProductsController.text)
-                            .then((value) {
-                          _openBestSellingReport(value);
-                        });
+                        if (nbOfProductsController.text == null ||
+                            nbOfProductsController.text.trim() == "")
+                          showToast(
+                              message: "Enter nb of products",
+                              status: ToastStatus.Error);
+                        else {
+                          int? nbofproduct =
+                              int.tryParse(nbOfProductsController.text);
+                          if (nbofproduct != null) {
+                            await context
+                                .read<FactureController>()
+                                .getBestSelling(nbOfProductsController.text)
+                                .then((value) {
+                              _openBestSellingReport(value);
+                            });
 
-                        nbOfProductsController.clear();
+                            nbOfProductsController.clear();
+                          } else {
+                            showToast(
+                                message: "nb of products must be an integer",
+                                status: ToastStatus.Error);
+                          }
+                        }
                       },
                       child: Text(
                         "Ok",
@@ -266,12 +296,53 @@ class SettingsScreen extends StatelessWidget {
               break;
 
             case 3:
-              await context
-                  .read<FactureController>()
-                  .getMostprofitableList()
-                  .then((value) async {
-                await _openMostProfitableReport(value);
-              });
+              Alert(
+                  context: context,
+                  title: "Enter nb of products",
+                  content: Column(
+                    children: <Widget>[
+                      TextField(
+                        controller: nbOfProductsController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          labelText: 'nb of products ',
+                        ),
+                      ),
+                    ],
+                  ),
+                  buttons: [
+                    DialogButton(
+                      onPressed: () async {
+                        if (nbOfProductsController.text == null ||
+                            nbOfProductsController.text.trim() == "")
+                          showToast(
+                              message: "Enter nb of products",
+                              status: ToastStatus.Error);
+                        else {
+                          int? nbofproduct =
+                              int.tryParse(nbOfProductsController.text);
+                          if (nbofproduct != null) {
+                            await context
+                                .read<FactureController>()
+                                .getMostprofitableList(nbofproduct.toString())
+                                .then((value) async {
+                              await _openMostProfitableReport(value);
+                            });
+
+                            nbOfProductsController.clear();
+                          } else {
+                            showToast(
+                                message: "nb of products must be an integer",
+                                status: ToastStatus.Error);
+                          }
+                        }
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
+                  ]).show();
 
               break;
 
