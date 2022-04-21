@@ -37,13 +37,16 @@ class EditProductScreen extends StatelessWidget {
                       int.tryParse(productQtyController_text.text);
                   if (price != null && qty != null && totalprice != null) {
                     print('QTY : ' + productQtyController_text.text.toString());
+                    String profit_per_item =
+                        ((qty * price - totalprice) / qty).toString();
                     prod_controller
                         .updateProduct(ProductModel(
                             barcode: model.barcode,
                             name: productNameController_text.text,
                             price: productPriceController_text.text,
                             totalprice: productTotalPriceController_text.text,
-                            qty: productQtyController_text.text))
+                            qty: productQtyController_text.text,
+                            profit_per_item: profit_per_item))
                         .then((value) {
                       Get.back();
                       showToast(

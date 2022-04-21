@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
+import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -129,6 +131,8 @@ class SettingsScreen extends StatelessWidget {
                               status: ToastStatus.Error);
                           print(datecontroller.text);
                         } else {
+                          Navigator.pop(context);
+
                           await context
                               .read<FactureController>()
                               .getReportByDate(datecontroller.text)
@@ -137,7 +141,6 @@ class SettingsScreen extends StatelessWidget {
                             _openReportByDateOrBetween(
                                 value, datecontroller.text.toString());
                           });
-                          Navigator.pop(context);
                         }
                       },
                       child: Text(
@@ -223,6 +226,8 @@ class SettingsScreen extends StatelessWidget {
                                   "start or enddate  must be not empty or null ",
                               status: ToastStatus.Error);
                         } else {
+                          Navigator.pop(context);
+
                           await context
                               .read<FactureController>()
                               .getDetailsFacturesBetweenTwoDates(
@@ -234,7 +239,6 @@ class SettingsScreen extends StatelessWidget {
                                 value, startdatecontroller.text.toString(),
                                 enddate: enddatecontroller.text);
                           });
-                          Navigator.pop(context);
                         }
                       },
                       child: Text(
@@ -268,6 +272,8 @@ class SettingsScreen extends StatelessWidget {
                               message: "Enter nb of products",
                               status: ToastStatus.Error);
                         else {
+                          Navigator.pop(context);
+
                           int? nbofproduct =
                               int.tryParse(nbOfProductsController.text);
                           if (nbofproduct != null) {
@@ -322,6 +328,8 @@ class SettingsScreen extends StatelessWidget {
                           int? nbofproduct =
                               int.tryParse(nbOfProductsController.text);
                           if (nbofproduct != null) {
+                            Navigator.pop(context);
+
                             await context
                                 .read<FactureController>()
                                 .getMostprofitableList(nbofproduct.toString())
@@ -344,6 +352,69 @@ class SettingsScreen extends StatelessWidget {
                     )
                   ]).show();
 
+              break;
+
+            case 4:
+              Alert(
+                  context: context,
+                  title: "Enter Date",
+                  content: Column(
+                    children: <Widget>[
+                      defaultTextFormField(
+                          readonly: true,
+                          controller: datecontroller,
+                          inputtype: TextInputType.datetime,
+                          prefixIcon: Icon(Icons.date_range),
+                          ontap: () {
+                            showDatePicker(
+                                    context: context,
+                                    initialDate: DateTime.now(),
+                                    firstDate: DateTime.parse('2022-01-01'),
+                                    lastDate: DateTime.parse('2040-01-01'))
+                                .then((value) {
+                              //Todo: handle date to string
+                              //print(DateFormat.yMMMd().format(value!));
+                              var tdate = value.toString().split(' ');
+                              datecontroller.text = tdate[0];
+                            });
+                          },
+                          onvalidate: (value) {
+                            if (value!.isEmpty) {
+                              return "date must not be empty";
+                            }
+                            return null;
+                          },
+                          text: "date"),
+                    ],
+                  ),
+                  buttons: [
+                    DialogButton(
+                      onPressed: () async {
+                        if (datecontroller.text.trim() == "null" ||
+                            datecontroller.text.trim() == "") {
+                          showToast(
+                              message: "date must be not empty or null ",
+                              status: ToastStatus.Error);
+                          print(datecontroller.text);
+                        } else {
+                          // await context
+                          //     .read<FactureController>()
+                          //     .gettransactionsReport(datecontroller.text)
+                          //     .then((value) {
+                          //   print(value.length.toString());
+                          // _openReportByDateOrBetween(
+                          //     value, datecontroller.text.toString());
+                          // });
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
+                  ]).show();
+              break;
               break;
 
             case 7:
@@ -416,12 +487,12 @@ class SettingsScreen extends StatelessWidget {
     PdfApi.openFile(pdfFile);
   }
 
-  Future<void> _openBestSellingReport(List<DetailsFactureModel> list) async {
+  Future<void> _openBestSellingReport(List<BestSellingVmodel> list) async {
     final pdfFile = await PdfApi.generateBestSellingReport(list);
     PdfApi.openFile(pdfFile);
   }
 
-  Future<void> _openMostProfitableReport(List<DetailsFactureModel> list) async {
+  Future<void> _openMostProfitableReport(List<ProfitableVModel> list) async {
     final pdfFile = await PdfApi.generateMostProfitableReport(list);
     PdfApi.openFile(pdfFile);
   }

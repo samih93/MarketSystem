@@ -255,7 +255,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                       int.tryParse(productTotalPriceController_text.text);
                   if (price != null && qty != null && totalprice != null) {
                     print("valid");
-
+                    String profit_per_item =
+                        ((qty * price - totalprice) / qty).toString();
                     context
                         .read<ProductsController>()
                         .insertProductByModel(
@@ -265,7 +266,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
                                 price: productPriceController_text.text,
                                 totalprice:
                                     productTotalPriceController_text.text,
-                                qty: productQtyController.text))
+                                qty: productQtyController.text,
+                                profit_per_item: profit_per_item))
                         .then((value) {
                       if (context
                               .read<ProductsController>()

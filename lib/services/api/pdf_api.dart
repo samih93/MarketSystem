@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:marketsystem/models/details_facture.dart';
+import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
@@ -38,7 +40,7 @@ class PdfApi {
     // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(startdate: startDate, endate: endDate),
+              _build_header(startdate: startDate, enddate: endDate),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -120,13 +122,16 @@ class PdfApi {
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
     return saveDocument(
-        name:
-            endDate == null ? "Best Selling Report" : 'Report_${startDate}.pdf',
+        name: startDate != null && endDate != null
+            ? 'Report from $startDate to $endDate'
+            : startDate != null && endDate == null
+                ? 'Report_${startDate}.pdf'
+                : "Best Selling Report",
         doc: pdf);
   }
 
   static Future<File> generateBestSellingReport(
-    List<DetailsFactureModel> list,
+    List<BestSellingVmodel> list,
   ) async {
     final pdf = Document();
 
@@ -136,7 +141,7 @@ class PdfApi {
     // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(),
+              _build_header(title: "Best Selling Report"),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -192,7 +197,7 @@ class PdfApi {
   }
 
   static Future<File> generateMostProfitableReport(
-    List<DetailsFactureModel> list,
+    List<ProfitableVModel> list,
   ) async {
     double finalprice = 0;
     list.forEach((element) {
@@ -206,7 +211,7 @@ class PdfApi {
     // String today = gettodayDate();
     pdf.addPage(MultiPage(
         build: (context) => <Widget>[
-              _build_header(),
+              _build_header(title: "Most Profitable Report"),
               SizedBox(height: 10),
               Table(
                 tableWidth: TableWidth.max,
@@ -326,24 +331,29 @@ class PdfApi {
     await OpenFile.open(url);
   }
 
-  static _build_header({String? startdate, String? endate}) => Header(
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Center(
-          child: Text(
-            "Most Profitable Products",
-            style: TextStyle(
-              color: PdfColors.white,
-              fontSize: 25,
+  static _build_header({String? startdate, String? enddate, String? title}) =>
+      Header(
+          child: Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(
+              child: Text(
+                startdate != null && enddate != null
+                    ? "Report from $startdate To $enddate"
+                    : startdate != null && enddate == null
+                        ? "Report - $startdate - "
+                        : title!,
+                style: TextStyle(
+                  color: PdfColors.white,
+                  fontSize: 25,
+                ),
+              ),
             ),
           ),
-        ),
-      ),
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [PdfColors.blue200, PdfColors.blue800],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          color: PdfColors.blue400));
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [PdfColors.blue200, PdfColors.blue800],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              color: PdfColors.blue400));
 }
