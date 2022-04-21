@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
+import 'package:marketsystem/models/viewmodel/transactions_vmodel.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';

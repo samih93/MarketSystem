@@ -98,23 +98,23 @@ class FactureController extends ChangeNotifier {
   }
 // NOTE get all transaction by date ---------------------
 
-  Future<List<TransactionsVModel>> gettransactionsReport(String date) async {
-    List<TransactionsVModel> _list_of_transactions = [];
-    var dbm = await marketdb.database;
-    print("date : " + date.toString());
-    print("today " + gettodayDate().toString());
+  // Future<List<TransactionsVModel>> gettransactionsReport(String date) async {
+  //   List<TransactionsVModel> _list_of_transactions = [];
+  //   var dbm = await marketdb.database;
+  //   print("date : " + date.toString());
+  //   print("today " + gettodayDate().toString());
 
-    await dbm
-        .rawQuery(
-            "select df.barcode , df.name, SUM(df.qty) as qty , SUM(df.price) as price  from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'  group by df.barcode order by df.name")
-        .then((value) {
-      if (value.length > 0)
-        value.forEach((element) {
-          //print(object)
-          // print(element['barcode']);
-          _list_of_transactions.add(TransactionsVModel.fromJson(element));
-        });
-    });
-    return _list_of_transactions;
-  }
+  //   await dbm
+  //       .rawQuery(
+  //           "select  df.name as name, df.qty as qty , df.price as price  from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'  group by df.barcode order by f.facturedate desc")
+  //       .then((value) {
+  //     if (value.length > 0)
+  //       value.forEach((element) {
+  //         //print(object)
+  //         // print(element['barcode']);
+  //         _list_of_transactions.add(TransactionsVModel.fromJson(element));
+  //       });
+  //   });
+  //   return _list_of_transactions;
+  // }
 }

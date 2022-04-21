@@ -355,66 +355,67 @@ class SettingsScreen extends StatelessWidget {
               break;
 
             case 4:
-              Alert(
-                  context: context,
-                  title: "Enter Date",
-                  content: Column(
-                    children: <Widget>[
-                      defaultTextFormField(
-                          readonly: true,
-                          controller: datecontroller,
-                          inputtype: TextInputType.datetime,
-                          prefixIcon: Icon(Icons.date_range),
-                          ontap: () {
-                            showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.parse('2022-01-01'),
-                                    lastDate: DateTime.parse('2040-01-01'))
-                                .then((value) {
-                              //Todo: handle date to string
-                              //print(DateFormat.yMMMd().format(value!));
-                              var tdate = value.toString().split(' ');
-                              datecontroller.text = tdate[0];
-                            });
-                          },
-                          onvalidate: (value) {
-                            if (value!.isEmpty) {
-                              return "date must not be empty";
-                            }
-                            return null;
-                          },
-                          text: "date"),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        if (datecontroller.text.trim() == "null" ||
-                            datecontroller.text.trim() == "") {
-                          showToast(
-                              message: "date must be not empty or null ",
-                              status: ToastStatus.Error);
-                          print(datecontroller.text);
-                        } else {
-                          // await context
-                          //     .read<FactureController>()
-                          //     .gettransactionsReport(datecontroller.text)
-                          //     .then((value) {
-                          //   print(value.length.toString());
-                          // _openReportByDateOrBetween(
-                          //     value, datecontroller.text.toString());
-                          // });
-                          Navigator.pop(context);
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-              break;
+              // Alert(
+              //     context: context,
+              //     title: "Enter Date",
+              //     content: Column(
+              //       children: <Widget>[
+              //         defaultTextFormField(
+              //             readonly: true,
+              //             controller: datecontroller,
+              //             inputtype: TextInputType.datetime,
+              //             prefixIcon: Icon(Icons.date_range),
+              //             ontap: () {
+              //               showDatePicker(
+              //                       context: context,
+              //                       initialDate: DateTime.now(),
+              //                       firstDate: DateTime.parse('2022-01-01'),
+              //                       lastDate: DateTime.parse('2040-01-01'))
+              //                   .then((value) {
+              //                 //Todo: handle date to string
+              //                 //print(DateFormat.yMMMd().format(value!));
+              //                 var tdate = value.toString().split(' ');
+              //                 datecontroller.text = tdate[0];
+              //               });
+              //             },
+              //             onvalidate: (value) {
+              //               if (value!.isEmpty) {
+              //                 return "date must not be empty";
+              //               }
+              //               return null;
+              //             },
+              //             text: "date"),
+              //       ],
+              //     ),
+              //     buttons: [
+              //       DialogButton(
+              //         onPressed: () async {
+              //           if (datecontroller.text.trim() == "null" ||
+              //               datecontroller.text.trim() == "") {
+              //             showToast(
+              //                 message: "date must be not empty or null ",
+              //                 status: ToastStatus.Error);
+              //             print(datecontroller.text);
+              //           } else {
+              //             // await context
+              //             //     .read<FactureController>()
+              //             //     .gettransactionsReport(datecontroller.text)
+              //             //     .then((value) {
+              //             //   print(value.length.toString());
+              //             // _openReportByDateOrBetween(
+              //             //     value, datecontroller.text.toString());
+              //             // });
+              //             Navigator.pop(context);
+              //           }
+              //         },
+              //         child: Text(
+              //           "Ok",
+              //           style: TextStyle(color: Colors.white, fontSize: 20),
+              //         ),
+              //       )
+              //     ]).show();
+              showToast(
+                  message: "under developing", status: ToastStatus.Warning);
               break;
 
             case 7:
