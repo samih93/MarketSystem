@@ -17,7 +17,7 @@ class ProductsController extends ChangeNotifier {
 
   bool isloadingGetProducts = false;
 
-  Future<void> getAllProduct() async {
+  Future<List<ProductModel>> getAllProduct() async {
     isloadingGetProducts = true;
     notifyListeners();
     _list_ofProduct = [];
@@ -38,6 +38,7 @@ class ProductsController extends ChangeNotifier {
       isloadingGetProducts = false;
       notifyListeners();
     });
+    return _list_ofProduct;
   }
   //NOTE delete Product
 
