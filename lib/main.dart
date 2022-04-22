@@ -10,12 +10,12 @@ import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await MarketDbHelper.db.init().then((value) async {
-    await getDatabasesPath().then((value) {
-      print(value + "/Market.db");
-      databasepath = value + "/Market.db";
-    });
-  });
+  // await MarketDbHelper.db.init().then((value) async {
+  //   await getDatabasesPath().then((value) {
+  //     print(value + "/Market.db");
+  //     databasepath = value + "/Market.db";
+  //   });
+  // });
 
   runApp(MultiProvider(
     providers: [
