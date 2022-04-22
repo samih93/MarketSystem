@@ -17,7 +17,7 @@ class FactureController extends ChangeNotifier {
 
     await dbm
         .rawQuery(
-            "select df.barcode , df.name, SUM(df.qty) as qty , SUM(df.price) as price  from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'  group by df.barcode order by df.name")
+            "select df.barcode , df.name, SUM(df.qty) as qty , df.price as price , SUM(df.price) as totalprice  from detailsfacture as df , factures as f on df.facture_id=f.id where f.facturedate='${date}'  group by df.barcode order by df.name")
         .then((value) {
       if (value.length > 0)
         value.forEach((element) {

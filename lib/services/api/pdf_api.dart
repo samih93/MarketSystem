@@ -63,7 +63,12 @@ class PdfApi {
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                     Column(children: [
-                      Text('Total Price',
+                      Text('Price per item',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('total price',
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
@@ -94,6 +99,16 @@ class PdfApi {
                             Directionality(
                               textDirection: TextDirection.rtl,
                               child: Text(e.price.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.totalprice.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),

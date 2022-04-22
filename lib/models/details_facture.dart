@@ -4,6 +4,7 @@ class DetailsFactureModel {
   String? name;
   String? qty;
   String? price;
+  String? totalprice;
   int? facture_id;
   String? facturedate;
   // For most profitable product
@@ -21,6 +22,7 @@ class DetailsFactureModel {
     name = map['name'];
     qty = map['qty'] != null ? map['qty'].toString() : "";
     price = map['price'] != null ? map['price'].toString() : "";
+    totalprice = map['totalprice'] != null ? map['totalprice'].toString() : "";
 
     facture_id = map['facture_id'];
     facturedate = map['facturedate'];
@@ -32,6 +34,7 @@ class DetailsFactureModel {
       'name': name,
       'qty': qty,
       'price': price,
+      'totalprice': totalprice,
       'facture_id': facture_id,
     };
   }
