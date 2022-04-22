@@ -63,12 +63,12 @@ class PdfApi {
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                     Column(children: [
-                      Text('Price per item',
+                      Text('Price',
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
                     Column(children: [
-                      Text('total price',
+                      Text('total',
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
