@@ -8,6 +8,7 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -335,8 +336,21 @@ class _SellScreenState extends State<SellScreen> {
               buttons: [
                 DialogButton(
                   onPressed: () {
-                    context.read<ProductsController>().onchangeQtyInBasket(
-                        model.barcode.toString(), qtyController.text);
+                    context
+                        .read<ProductsController>()
+                        .onchangeQtyInBasket(
+                            model.barcode.toString(), qtyController.text)
+                        .then((value) {
+                      if (value == false) {
+                        showToast(
+                            message: "qty must be less then qty in store",
+                            status: ToastStatus.Error);
+                      } else {
+                        showToast(
+                            message: "qty Changed",
+                            status: ToastStatus.Success);
+                      }
+                    });
                     Navigator.pop(context);
                     qtyController.clear();
                   },
