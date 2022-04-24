@@ -222,15 +222,28 @@ class ProductsController extends ChangeNotifier {
     return model;
   }
 
-  onchangeQtyInBasket(String barcode, String qty) {
-    basket_products.forEach((element) {
-      if (element.barcode == barcode) element.qty = qty;
-    });
-    notifyListeners();
-    basket_products.forEach((element) {
-      print(element.qty);
-    });
-    gettotalPrice();
+// NOTE on change qty in sell screen
+
+  Future<bool> onchangeQtyInBasket(String barcode, String qty) async {
+    bool isonchangesuccess = true;
+    ProductModel? model = await getProductbyBarcode(barcode);
+    if (int.parse(model!.qty.toString()) >= int.parse(qty)) {
+      basket_products.forEach((element) {
+        if (element.barcode == barcode) element.qty = qty;
+      });
+      notifyListeners();
+      basket_products.forEach((element) {
+        print(element.qty);
+      });
+      gettotalPrice();
+      isonchangesuccess = true;
+    } else {
+      basket_products.forEach((element) {
+        if (element.barcode == barcode) element.qty = model.qty;
+      });
+      isonchangesuccess = false;
+    }
+    return isonchangesuccess;
   }
 
   double totalprice = 0;
