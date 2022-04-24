@@ -49,6 +49,10 @@ dependencies:
   #restartApp
   restart_app: ^1.1.0
 
+  #wave animation loading 
+  flutter_spinkit: ^5.1.0
+
+
 
 
 
