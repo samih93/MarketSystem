@@ -434,13 +434,6 @@ class SettingsScreen extends StatelessWidget {
                       });
               break;
             case 7:
-              context.read<ProductsController>().cleanDatabase().then((value) =>
-                  {
-                    showToast(
-                        message: "Data Deleted", status: ToastStatus.Success)
-                  });
-              break;
-            case 8:
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
@@ -449,6 +442,48 @@ class SettingsScreen extends StatelessWidget {
                 type: AlertType.warning,
                 title: "Delete Data",
                 desc: "Are You Sure You Want To Delete All Data'",
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "Cancel",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    color: Colors.blue.shade400,
+                  ),
+                  DialogButton(
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    onPressed: () {
+                      context
+                          .read<ProductsController>()
+                          .cleanDatabase()
+                          .then((value) {
+                        showToast(
+                            message: "Data Deleted",
+                            status: ToastStatus.Success);
+                        Navigator.pop(context);
+                      });
+                    },
+                    color: Colors.red.shade400,
+                  ),
+                ],
+              ).show();
+
+              break;
+            case 8:
+              var alertStyle =
+                  AlertStyle(animationDuration: Duration(milliseconds: 1));
+              Alert(
+                style: alertStyle,
+                context: context,
+                type: AlertType.warning,
+                title: "Reload Data",
+                desc: "Are You Sure You Want To Reload All Data'",
                 buttons: [
                   DialogButton(
                     child: Text(

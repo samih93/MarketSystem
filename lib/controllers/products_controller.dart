@@ -332,8 +332,11 @@ class ProductsController extends ChangeNotifier {
 
   Future<void> cleanDatabase() async {
     var dbm = await marketdb.database;
-    await dbm.rawDelete("DELETE * FROM products");
-    await dbm.rawDelete("DELETE * FROM factures");
-    await dbm.rawDelete("DELETE * FROM detailsfacture");
+    await dbm.rawDelete("DELETE FROM products").then((value) {
+      list_ofProduct.clear;
+      notifyListeners();
+    });
+    await dbm.rawDelete("DELETE FROM factures");
+    await dbm.rawDelete("DELETE FROM detailsfacture");
   }
 }
