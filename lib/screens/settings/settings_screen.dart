@@ -458,8 +458,8 @@ class SettingsScreen extends StatelessWidget {
                       "Delete",
                       style: TextStyle(color: Colors.white, fontSize: 18),
                     ),
-                    onPressed: () {
-                      context
+                    onPressed: () async {
+                      await context
                           .read<ProductsController>()
                           .cleanDatabase()
                           .then((value) {
