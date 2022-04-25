@@ -329,4 +329,11 @@ class ProductsController extends ChangeNotifier {
     });
     return list_ofProduct;
   }
+
+  Future<void> cleanDatabase() async {
+    var dbm = await marketdb.database;
+    await dbm.rawDelete("DELETE * FROM products");
+    await dbm.rawDelete("DELETE * FROM factures");
+    await dbm.rawDelete("DELETE * FROM detailsfacture");
+  }
 }

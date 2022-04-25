@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
@@ -24,7 +25,8 @@ class SettingsScreen extends StatelessWidget {
     "Transactions",
     "Spent / Earn",
     "DashBoard",
-    "Clear Data And Restart App"
+    "Clean Data",
+    "Reload Data And Restart App"
   ];
 
   final List<IconData> _report_icons = [
@@ -35,7 +37,8 @@ class SettingsScreen extends StatelessWidget {
     Icons.list_alt,
     Icons.currency_exchange_outlined,
     Icons.dashboard_outlined,
-    Icons.cleaning_services
+    Icons.cleaning_services_outlined,
+    Icons.replay
   ];
 
   var datecontroller = TextEditingController();
@@ -431,6 +434,13 @@ class SettingsScreen extends StatelessWidget {
                       });
               break;
             case 7:
+              context.read<ProductsController>().cleanDatabase().then((value) =>
+                  {
+                    showToast(
+                        message: "Data Deleted", status: ToastStatus.Success)
+                  });
+              break;
+            case 8:
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
