@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -418,6 +419,16 @@ class SettingsScreen extends StatelessWidget {
                   message: "under developing", status: ToastStatus.Warning);
               break;
 
+            case 5:
+              await context
+                  .read<FactureController>()
+                  .getEarnSpentGoupeByItem()
+                  .then((value) => {
+                        value.forEach((element) {
+                          print(element.toJson());
+                        })
+                      });
+              break;
             case 7:
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));

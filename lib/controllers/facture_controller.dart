@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/transactions_vmodel.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -117,4 +118,23 @@ class FactureController extends ChangeNotifier {
   //   });
   //   return _list_of_transactions;
   // }
+
+  //NOTE get total spent and earn in one month
+  Future<List<EarnSpentVmodel>> getEarnSpentGoupeByItem() async {
+    List<EarnSpentVmodel> _list_of_Earn_SpentByIytem = [];
+    var dbm = await marketdb.database;
+
+//NOTE need to join to order by barcode
+    await dbm
+        .rawQuery(
+            "select df.barcode , df.name, p.totalprice as total_spent , SUM(df.price) as total_earn   from detailsfacture as df  join  products as p on p.barcode = df.barcode group by df.barcode order by df.name")
+        .then((value) {
+      if (value.length > 0)
+        value.forEach((element) {
+          _list_of_Earn_SpentByIytem.add(EarnSpentVmodel.fromJson(element));
+        });
+      //  .forEach((element) => print(element.toJson()));
+    });
+    return _list_of_Earn_SpentByIytem;
+  }
 }
