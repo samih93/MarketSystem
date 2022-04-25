@@ -18,8 +18,8 @@ import 'package:sqflite/sqflite.dart';
 
 class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = [
-    "Report By Day",
-    "Report Between Two Dates",
+    "Daily Sales",
+    "Sales Between Two Dates",
     "Best Selling",
     "Most profitable Products",
     "Transactions",
