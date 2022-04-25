@@ -127,7 +127,7 @@ class FactureController extends ChangeNotifier {
 //NOTE need to join to order by barcode
     await dbm
         .rawQuery(
-            "select df.barcode , df.name, p.totalprice as total_spent , SUM(df.price) as total_earn   from detailsfacture as df  join  products as p on p.barcode = df.barcode group by df.barcode order by df.name")
+            "select df.barcode , df.name, p.totalprice as total_spent , SUM(df.price) as total_earn , p.qty as rest_qty   from detailsfacture as df  join  products as p on p.barcode = df.barcode group by df.barcode order by df.name")
         .then((value) {
       if (value.length > 0)
         value.forEach((element) {

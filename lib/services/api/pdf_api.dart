@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/transactions_vmodel.dart';
 import 'package:open_file/open_file.dart';
@@ -324,6 +325,105 @@ class PdfApi {
             child:
                 Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
     return saveDocument(name: "Most Profitable Report.pdf", doc: pdf);
+  }
+
+  static Future<File> generateEarnSpentReport(
+    List<EarnSpentVmodel> list,
+  ) async {
+    final pdf = Document();
+
+    final customfont =
+        Font.ttf(await rootBundle.load("assets/Hacen Tunisia.ttf"));
+
+    // String today = gettodayDate();
+    pdf.addPage(MultiPage(
+        build: (context) => <Widget>[
+              _build_header(title: "Earn / Spent By item"),
+              SizedBox(height: 10),
+              Table(
+                tableWidth: TableWidth.max,
+                border: TableBorder.all(
+                    color: PdfColors.grey, style: BorderStyle.solid, width: 1),
+                children: [
+                  TableRow(children: [
+                    Column(children: [
+                      Text('Product Name',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Spent',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Earn',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                    Column(children: [
+                      Text('Rest Qty',
+                          style: TextStyle(
+                              fontSize: 25.0, fontWeight: FontWeight.bold))
+                    ]),
+                  ]),
+                  ...list.map((e) => TableRow(children: [
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.name.toString(),
+                                  style: TextStyle(
+                                      font: customfont, fontSize: 20)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.total_spent.toString(),
+                                  style: TextStyle(
+                                      font: customfont,
+                                      fontSize: 20,
+                                      color: PdfColors.red500)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.total_earn.toString(),
+                                  style: TextStyle(
+                                      font: customfont,
+                                      fontSize: 20,
+                                      color: PdfColors.green500)),
+                            ),
+                          ],
+                        ),
+                        Column(
+                          children: [
+                            Directionality(
+                              textDirection: TextDirection.rtl,
+                              child: Text(e.rest_qty.toString(),
+                                  style: TextStyle(
+                                    font: customfont,
+                                    fontSize: 20,
+                                  )),
+                            ),
+                          ],
+                        ),
+                      ]))
+                ],
+              ),
+              SizedBox(height: 20),
+            ],
+        footer: (context) => Container(
+            alignment: Alignment.bottomRight,
+            child:
+                Text("Page ${context.pageNumber} of ${context.pagesCount}"))));
+    return saveDocument(name: "Earn_Spent.pdf", doc: pdf);
   }
 
   static Future<File> saveDocument({

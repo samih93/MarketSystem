@@ -424,8 +424,9 @@ class SettingsScreen extends StatelessWidget {
                   .read<FactureController>()
                   .getEarnSpentGoupeByItem()
                   .then((value) => {
-                        value.forEach((element) {
+                        value.forEach((element) async {
                           print(element.toJson());
+                          await _openEarnSpenReport(value);
                         })
                       });
               break;
@@ -506,6 +507,11 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _openMostProfitableReport(List<ProfitableVModel> list) async {
     final pdfFile = await PdfApi.generateMostProfitableReport(list);
+    PdfApi.openFile(pdfFile);
+  }
+
+  Future<void> _openEarnSpenReport(List<EarnSpentVmodel> list) async {
+    final pdfFile = await PdfApi.generateEarnSpentReport(list);
     PdfApi.openFile(pdfFile);
   }
 
