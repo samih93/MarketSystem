@@ -25,11 +25,11 @@ class SettingsScreen extends StatelessWidget {
     "Sales Between Two Dates",
     "Best Selling",
     "Most profitable Products",
-    "Transactions",
-    "Spent / Earn",
+    "Low Qty",
+    "Spent / Earn by Item",
     "DashBoard",
     "Clean Data",
-    "Reload Data And Restart App"
+    "Sync Online Data And Restart App"
   ];
 
   final List<IconData> _report_icons = [
@@ -37,7 +37,7 @@ class SettingsScreen extends StatelessWidget {
     Icons.report,
     Icons.loyalty_sharp,
     Icons.turn_sharp_right_outlined,
-    Icons.list_alt,
+    Icons.trending_down_outlined,
     Icons.currency_exchange_outlined,
     Icons.dashboard_outlined,
     Icons.cleaning_services_outlined,
