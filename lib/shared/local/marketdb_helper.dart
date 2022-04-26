@@ -4,7 +4,6 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
 
-
 class MarketDbHelper {
   MarketDbHelper._();
   static final MarketDbHelper db = MarketDbHelper._();
