@@ -12,6 +12,7 @@ import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 
 import 'package:provider/provider.dart';
 import 'package:restart_app/restart_app.dart';
@@ -47,6 +48,7 @@ class SettingsScreen extends StatelessWidget {
   var startdatecontroller = TextEditingController();
   var enddatecontroller = TextEditingController();
   var nbOfProductsController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FactureController>(
@@ -436,7 +438,26 @@ class SettingsScreen extends StatelessWidget {
                       });
               break;
             case 6:
-              Get.to(DashBoardScreen());
+              showMonthPicker(
+                context: context,
+                firstDate: DateTime(DateTime.now().year - 1, 5),
+                lastDate: DateTime(DateTime.now().year + 1, 9),
+                initialDate: DateTime.now(),
+                locale: Locale("en"),
+              ).then((date) {
+                if (date != null) {
+                  print(date.toString());
+                  print("--------");
+                  int current_year = int.parse(date.toString().split("-")[0]);
+                  int current_month = int.parse(date.toString().split("-")[1]);
+
+                  int latestday_inCurrentMonth =
+                      new DateTime(2013, current_month + 1, 0)
+                          .day; // to get latest day in month
+                  print(latestday_inCurrentMonth);
+                  Get.to(DashBoardScreen(current_year, current_month));
+                }
+              });
               break;
             case 7:
               var alertStyle =

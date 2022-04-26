@@ -5,6 +5,25 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DashBoardScreen extends StatelessWidget {
+  int currentYear;
+  int currentMonth;
+  DashBoardScreen(this.currentYear, this.currentMonth);
+
+  List<String> months = [
+    'January',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
+  ];
+
   List<_SalesData> data = [
     _SalesData('1', 35),
     _SalesData('2', 28),
@@ -37,6 +56,25 @@ class DashBoardScreen extends StatelessWidget {
         ),
         body: SingleChildScrollView(
           child: Column(children: [
+            Container(
+              color: Colors.grey.shade600,
+              height: 60,
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      months[currentMonth - 1] + " - $currentYear",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        letterSpacing: 2,
+                        fontSize: 30,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               height: 20,
             ),
