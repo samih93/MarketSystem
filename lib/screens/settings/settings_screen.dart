@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
+import 'package:marketsystem/screens/dashboard/dashboard_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -432,6 +434,9 @@ class SettingsScreen extends StatelessWidget {
                           await _openEarnSpenReport(value);
                         })
                       });
+              break;
+            case 6:
+              Get.to(DashBoardScreen());
               break;
             case 7:
               var alertStyle =
