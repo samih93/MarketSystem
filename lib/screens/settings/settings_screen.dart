@@ -5,6 +5,7 @@ import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
+import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/screens/dashboard/dashboard_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
@@ -25,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
     "Sales Between Two Dates",
     "Best Selling",
     "Most profitable Products",
-    "Low Qty",
+    "Low Qty In Store",
     "Spent / Earn by Item",
     "DashBoard",
     "Clean Data",
@@ -37,7 +38,7 @@ class SettingsScreen extends StatelessWidget {
     Icons.report,
     Icons.loyalty_sharp,
     Icons.turn_sharp_right_outlined,
-    Icons.trending_down_outlined,
+    Icons.warning_amber_rounded,
     Icons.currency_exchange_outlined,
     Icons.dashboard_outlined,
     Icons.cleaning_services_outlined,
@@ -363,67 +364,56 @@ class SettingsScreen extends StatelessWidget {
               break;
 
             case 4:
-              // Alert(
-              //     context: context,
-              //     title: "Enter Date",
-              //     content: Column(
-              //       children: <Widget>[
-              //         defaultTextFormField(
-              //             readonly: true,
-              //             controller: datecontroller,
-              //             inputtype: TextInputType.datetime,
-              //             prefixIcon: Icon(Icons.date_range),
-              //             ontap: () {
-              //               showDatePicker(
-              //                       context: context,
-              //                       initialDate: DateTime.now(),
-              //                       firstDate: DateTime.parse('2022-01-01'),
-              //                       lastDate: DateTime.parse('2040-01-01'))
-              //                   .then((value) {
-              //                 //Todo: handle date to string
-              //                 //print(DateFormat.yMMMd().format(value!));
-              //                 var tdate = value.toString().split(' ');
-              //                 datecontroller.text = tdate[0];
-              //               });
-              //             },
-              //             onvalidate: (value) {
-              //               if (value!.isEmpty) {
-              //                 return "date must not be empty";
-              //               }
-              //               return null;
-              //             },
-              //             text: "date"),
-              //       ],
-              //     ),
-              //     buttons: [
-              //       DialogButton(
-              //         onPressed: () async {
-              //           if (datecontroller.text.trim() == "null" ||
-              //               datecontroller.text.trim() == "") {
-              //             showToast(
-              //                 message: "date must be not empty or null ",
-              //                 status: ToastStatus.Error);
-              //             print(datecontroller.text);
-              //           } else {
-              //             // await context
-              //             //     .read<FactureController>()
-              //             //     .gettransactionsReport(datecontroller.text)
-              //             //     .then((value) {
-              //             //   print(value.length.toString());
-              //             // _openReportByDateOrBetween(
-              //             //     value, datecontroller.text.toString());
-              //             // });
-              //             Navigator.pop(context);
-              //           }
-              //         },
-              //         child: Text(
-              //           "Ok",
-              //           style: TextStyle(color: Colors.white, fontSize: 20),
-              //         ),
-              //       )
-              //     ]).show();
-              showToast(
-                  message: "under developing", status: ToastStatus.Warning);
+              Alert(
+                  context: context,
+                  title: "Enter nb of products",
+                  content: Column(
+                    children: <Widget>[
+                      TextField(
+                        controller: nbOfProductsController,
+                        keyboardType: TextInputType.phone,
+                        decoration: InputDecoration(
+                          labelText: 'nb of products ',
+                        ),
+                      ),
+                    ],
+                  ),
+                  buttons: [
+                    DialogButton(
+                      onPressed: () async {
+                        if (nbOfProductsController.text == null ||
+                            nbOfProductsController.text.trim() == "")
+                          showToast(
+                              message: "Enter nb of products",
+                              status: ToastStatus.Error);
+                        else {
+                          int? nbofproduct =
+                              int.tryParse(nbOfProductsController.text);
+                          if (nbofproduct != null) {
+                            Navigator.pop(context);
+
+                            await context
+                                .read<FactureController>()
+                                .getLowQtyProductInStore(nbofproduct.toString())
+                                .then((value) async {
+                              await _openLowQtyReport(value);
+                            });
+
+                            nbOfProductsController.clear();
+                          } else {
+                            showToast(
+                                message: "nb of products must be an integer",
+                                status: ToastStatus.Error);
+                          }
+                        }
+                      },
+                      child: Text(
+                        "Ok",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
+                    )
+                  ]).show();
+
               break;
 
             case 5:
@@ -583,6 +573,11 @@ class SettingsScreen extends StatelessWidget {
 
   Future<void> _openEarnSpenReport(List<EarnSpentVmodel> list) async {
     final pdfFile = await PdfApi.generateEarnSpentReport(list);
+    PdfApi.openFile(pdfFile);
+  }
+
+  Future<void> _openLowQtyReport(List<LowQtyVModel> list) async {
+    final pdfFile = await PdfApi.generateLowQtyReport(list);
     PdfApi.openFile(pdfFile);
   }
 

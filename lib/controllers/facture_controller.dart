@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
+import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/transactions_vmodel.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -136,5 +137,25 @@ class FactureController extends ChangeNotifier {
       //  .forEach((element) => print(element.toJson()));
     });
     return _list_of_Earn_SpentByIytem;
+  }
+
+  Future<List<LowQtyVModel>> getLowQtyProductInStore(String nbOfproduct) async {
+    List<LowQtyVModel> _list_of_LowQtyVModel = [];
+    var dbm = await marketdb.database;
+    // print("date : " + date.toString());
+    // print("today " + gettodayDate().toString());
+
+//NOTE need to join to order by barcode
+    await dbm
+        .rawQuery(
+            "select barcode , name,qty from Products group by barcode order by qty asc limit $nbOfproduct")
+        .then((value) {
+      if (value.length > 0)
+        value.forEach((element) {
+          _list_of_LowQtyVModel.add(LowQtyVModel.fromJson(element));
+        });
+      //  .forEach((element) => print(element.toJson()));
+    });
+    return _list_of_LowQtyVModel;
   }
 }
