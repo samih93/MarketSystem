@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:marketsystem/controllers/facture_controller.dart';
+import 'package:marketsystem/controllers/products_controller.dart';
+import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
@@ -45,7 +50,11 @@ class DashBoardScreen extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ChangeNotifierProvider<FactureController>(
+      create: (_) => FactureController()
+        ..getBestSelling()
+        ..getMostprofitableList(),
+      child: Scaffold(
         appBar: AppBar(
           title: const Text('DashBoard'),
           flexibleSpace: Container(
@@ -55,154 +64,174 @@ class DashBoardScreen extends StatelessWidget {
           ),
         ),
         body: SingleChildScrollView(
-          child: Column(children: [
-            Container(
-              color: Colors.grey.shade600,
-              height: 60,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      months[currentMonth - 1] + " - $currentYear",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        letterSpacing: 2,
-                        fontSize: 30,
+          child: Column(
+            children: [
+              Container(
+                color: Colors.grey.shade600,
+                height: 60,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        months[currentMonth - 1] + " - $currentYear",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 2,
+                          fontSize: 30,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            //Initialize the chart widget
-            Container(
-              color: Colors.amberAccent,
-              height: 30,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Daily Sales",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        letterSpacing: 1,
+              SizedBox(
+                height: 20,
+              ),
+              //Initialize the chart widget
+              Container(
+                color: Colors.amberAccent,
+                height: 30,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Daily Sales",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SfCartesianChart(
-                enableSideBySideSeriesPlacement: false,
-                primaryXAxis: CategoryAxis(),
-                // Chart title
-                // title: ChartTitle(
-                //   text: 'Daily Sales',
-                // ),
-                // disable legend
-                legend: Legend(isVisible: false),
-                // Enable tooltip
-                tooltipBehavior: TooltipBehavior(enable: true),
-                series: <ChartSeries<_SalesData, String>>[
-                  LineSeries<_SalesData, String>(
-                      dataSource: data,
-                      xValueMapper: (_SalesData sales, _) => sales.year,
-                      yValueMapper: (_SalesData sales, _) => sales.sales,
-                      name: 'Sales',
-                      // Enable data label
-                      dataLabelSettings: DataLabelSettings(
-                        isVisible: true,
-                      ))
-                ]),
-            Container(
-              color: Colors.amberAccent,
-              height: 30,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Best Selling",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        letterSpacing: 1,
+              SfCartesianChart(
+                  enableSideBySideSeriesPlacement: false,
+                  primaryXAxis: CategoryAxis(),
+                  // Chart title
+                  // title: ChartTitle(
+                  //   text: 'Daily Sales',
+                  // ),
+                  // disable legend
+                  legend: Legend(isVisible: false),
+                  // Enable tooltip
+                  tooltipBehavior: TooltipBehavior(enable: true),
+                  series: <ChartSeries<_SalesData, String>>[
+                    LineSeries<_SalesData, String>(
+                        dataSource: data,
+                        xValueMapper: (_SalesData sales, _) => sales.year,
+                        yValueMapper: (_SalesData sales, _) => sales.sales,
+                        name: 'Sales',
+                        // Enable data label
+                        dataLabelSettings: DataLabelSettings(
+                          isVisible: true,
+                        ))
+                  ]),
+              Container(
+                color: Colors.amberAccent,
+                height: 30,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Best Selling",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SfCartesianChart(
-              plotAreaBorderWidth: 0,
-              // title: ChartTitle(text: 'Best Selling'),
-              primaryXAxis: CategoryAxis(
-                  majorGridLines: const MajorGridLines(width: 0),
-                  labelIntersectAction: AxisLabelIntersectAction.rotate45),
-              primaryYAxis: NumericAxis(
-                  axisLine: const AxisLine(width: 0),
-                  labelFormat: '{value}%',
-                  majorTickLines: const MajorTickLines(size: 0)),
-              series: _getDefaultColumnSeries(),
-              tooltipBehavior: TooltipBehavior(
-                  enable: true, header: '', canShowMarker: false),
-            ),
-            Container(
-              color: Colors.amberAccent,
-              height: 30,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      "Most Profitable",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        letterSpacing: 1,
+              //NOTE best selling diagram
+              Consumer<FactureController>(
+                  builder: (context, controller, child) {
+                return SfCartesianChart(
+                  plotAreaBorderWidth: 0,
+                  // title: ChartTitle(text: 'Best Selling'),
+                  primaryXAxis: CategoryAxis(
+                      majorGridLines: const MajorGridLines(width: 0),
+                      labelIntersectAction: AxisLabelIntersectAction.rotate45),
+                  primaryYAxis: NumericAxis(
+                      axisLine: const AxisLine(width: 0),
+                      labelFormat: '{value}',
+                      majorTickLines: const MajorTickLines(size: 0)),
+                  series: _getBestSellingColumnSeries(context),
+                  tooltipBehavior: TooltipBehavior(
+                      enable: true, header: '', canShowMarker: false),
+                );
+              }),
+              Container(
+                color: Colors.amberAccent,
+                height: 30,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "Most Profitable",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          letterSpacing: 1,
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            SfCartesianChart(
-              plotAreaBorderWidth: 0,
-              // title: ChartTitle(text: 'Best Selling'),
-              primaryXAxis: CategoryAxis(
-                  majorGridLines: const MajorGridLines(width: 0),
-                  labelIntersectAction: AxisLabelIntersectAction.rotate45),
-              primaryYAxis: NumericAxis(
-                  axisLine: const AxisLine(width: 0),
-                  labelFormat: '{value} LL',
-                  majorTickLines: const MajorTickLines(size: 0)),
-              series: _getDefaultColumnSeries(),
-              tooltipBehavior: TooltipBehavior(
-                  enable: true, header: '', canShowMarker: false),
-            ),
-          ]),
-        ));
+              Consumer<FactureController>(
+                  builder: (context, controller, child) {
+                return SfCartesianChart(
+                  plotAreaBorderWidth: 0,
+                  // title: ChartTitle(text: 'Best Selling'),
+                  primaryXAxis: CategoryAxis(
+                      majorGridLines: const MajorGridLines(width: 0),
+                      labelIntersectAction: AxisLabelIntersectAction.rotate45),
+                  primaryYAxis: NumericAxis(
+                      axisLine: const AxisLine(width: 0),
+                      labelFormat: '{value} LL ',
+                      majorTickLines: const MajorTickLines(size: 0)),
+                  series: _getMostProfitableColumnSeries(context),
+                  tooltipBehavior: TooltipBehavior(
+                      enable: true, header: '', canShowMarker: false),
+                );
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   /// Get default column series
-  List<ColumnSeries<ChartSampleData, String>> _getDefaultColumnSeries() {
-    return <ColumnSeries<ChartSampleData, String>>[
-      ColumnSeries<ChartSampleData, String>(
-        dataSource: <ChartSampleData>[
-          ChartSampleData(x: 'China', y: 0.541),
-          ChartSampleData(x: 'Brazil', y: 0.818),
-          ChartSampleData(x: 'Bolivia', y: 1.51),
-          ChartSampleData(x: 'Mexico', y: 1.302),
-          ChartSampleData(x: 'Egypt', y: 2.017),
-          ChartSampleData(x: 'Mongolia', y: 1.683),
-        ],
-        xValueMapper: (ChartSampleData sales, _) => sales.x as String,
-        yValueMapper: (ChartSampleData sales, _) => sales.y,
+  List<ColumnSeries<BestSellingVmodel, String>> _getBestSellingColumnSeries(
+      BuildContext context) {
+    return <ColumnSeries<BestSellingVmodel, String>>[
+      ColumnSeries<BestSellingVmodel, String>(
+        dataSource: context.read<FactureController>().list_of_BestSelling,
+        xValueMapper: (BestSellingVmodel bSVm, _) => bSVm.name.toString(),
+        yValueMapper: (BestSellingVmodel bSVm, _) =>
+            double.parse(bSVm.qty.toString()),
         dataLabelSettings: const DataLabelSettings(
             isVisible: true, textStyle: TextStyle(fontSize: 10)),
       )
     ];
   }
+}
+
+List<ColumnSeries<ProfitableVModel, String>> _getMostProfitableColumnSeries(
+    BuildContext context) {
+  return <ColumnSeries<ProfitableVModel, String>>[
+    ColumnSeries<ProfitableVModel, String>(
+      dataSource: context.read<FactureController>().list_of_profitableProduct,
+      xValueMapper: (ProfitableVModel pVm, _) => pVm.name.toString(),
+      yValueMapper: (ProfitableVModel pVm, _) =>
+          double.parse(pVm.total_profit.toString()),
+      dataLabelSettings: const DataLabelSettings(
+          isVisible: true, textStyle: TextStyle(fontSize: 10)),
+    )
+  ];
 }
 
 class _SalesData {

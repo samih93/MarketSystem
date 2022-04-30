@@ -55,45 +55,54 @@ class FactureController extends ChangeNotifier {
 
 //-----------NOTE get Best Selling products -------------
 
-  Future<List<BestSellingVmodel>> getBestSelling(String nbOfproduct) async {
-    List<BestSellingVmodel> _list_of_BestSelling = [];
+  List<BestSellingVmodel> _list_of_BestSelling = [];
+  List<BestSellingVmodel> get list_of_BestSelling => _list_of_BestSelling;
+
+  Future<List<BestSellingVmodel>> getBestSelling({String? nbOfproduct}) async {
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
     // print("today " + gettodayDate().toString());
 
 //NOTE need to join to order by barcode
-    await dbm
-        .rawQuery(
-            "select barcode , name, SUM(qty) as qty  from detailsfacture group by barcode order by qty desc limit $nbOfproduct")
-        .then((value) {
+    String query =
+        "select barcode , name, SUM(qty) as qty  from detailsfacture group by barcode order by qty desc";
+    if (nbOfproduct != null) {
+      query += "limit $nbOfproduct";
+    }
+    await dbm.rawQuery(query).then((value) {
       if (value.length > 0)
         value.forEach((element) {
           _list_of_BestSelling.add(BestSellingVmodel.fromJson(element));
         });
+      notifyListeners();
       //  .forEach((element) => print(element.toJson()));
     });
     return _list_of_BestSelling;
   }
 
 //NOTE get most profitable item
+  List<ProfitableVModel> _list_of_profitableProduct = [];
+  List<ProfitableVModel> get list_of_profitableProduct =>
+      _list_of_profitableProduct;
 
   Future<List<ProfitableVModel>> getMostprofitableList(
-      String nbOfproduct) async {
-    List<ProfitableVModel> _list_of_profitableProduct = [];
+      {String? nbOfproduct}) async {
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
     // print("today " + gettodayDate().toString());
-
-    await dbm
-        .rawQuery(
-            "select df.barcode , df.name, df.qty , p.profit_per_item as profit_per_item , df.qty*p.profit_per_item as total_profit  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode group by df.barcode order by total_profit desc limit $nbOfproduct ")
-        .then((value) {
+    String query =
+        "select df.barcode , df.name, df.qty , p.profit_per_item as profit_per_item , df.qty*p.profit_per_item as total_profit  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode group by df.barcode order by total_profit desc";
+    if (nbOfproduct != null) {
+      query += "limit $nbOfproduct";
+    }
+    await dbm.rawQuery(query).then((value) {
       if (value.length > 0)
         value.forEach((element) {
           //print(object)
           // print(element['barcode']);
           _list_of_profitableProduct.add(ProfitableVModel.fromJson(element));
         });
+      notifyListeners();
       //_list_of_profitableProduct.forEach((element) => print(element.toJson()));
     });
     return _list_of_profitableProduct;

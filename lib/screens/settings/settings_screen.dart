@@ -30,7 +30,7 @@ class SettingsScreen extends StatelessWidget {
     "Spent / Earn by Item",
     "DashBoard",
     "Clean Data",
-    "Sync Online Data And Restart App"
+    "Restore Data And Restart App"
   ];
 
   final List<IconData> _report_icons = [
@@ -288,7 +288,7 @@ class SettingsScreen extends StatelessWidget {
                           if (nbofproduct != null) {
                             await context
                                 .read<FactureController>()
-                                .getBestSelling(nbOfProductsController.text)
+                                .getBestSelling(nbOfproduct:  nbOfProductsController.text)
                                 .then((value) {
                               _openBestSellingReport(value);
                             });
@@ -341,7 +341,7 @@ class SettingsScreen extends StatelessWidget {
 
                             await context
                                 .read<FactureController>()
-                                .getMostprofitableList(nbofproduct.toString())
+                                .getMostprofitableList(nbOfproduct:  nbofproduct.toString())
                                 .then((value) async {
                               await _openMostProfitableReport(value);
                             });
