@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/details_facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/daily_sales.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
@@ -166,5 +167,38 @@ class FactureController extends ChangeNotifier {
       //  .forEach((element) => print(element.toJson()));
     });
     return _list_of_LowQtyVModel;
+  }
+
+  //NOTE get dailySales diagram report
+
+  List<DailySalesVm> _list_of_DailySalesInMonth = [];
+  List<DailySalesVm> get list_of_DailySalesInMonth =>
+      _list_of_DailySalesInMonth;
+  Future<void> getDailysalesIn_month(int current_year, int current_month,
+      int first_day_inmonth, int lastDayInMonth) async {
+    var dbm = await marketdb.database;
+
+    String current_month_handled = current_month < 10
+        ? "0" + current_month.toString()
+        : current_month.toString();
+
+    for (int i = first_day_inmonth; i <= lastDayInMonth; i++) {
+      String currentDate =
+          "$current_year-$current_month_handled-${i < 10 ? "0$i" : i}";
+      print("CurrentDate " + currentDate.toString());
+      await dbm
+          .rawQuery(
+              "select  Sum(price) as total_sales_in_day  from factures where facturedate='$currentDate'")
+          .then((value) {
+        value.forEach((element) {
+          DailySalesVm dailySalesVm = DailySalesVm.fromJson(element);
+          dailySalesVm.day_in_month = i;
+          //    print(dailySalesVm.toJson());
+          _list_of_DailySalesInMonth.add(dailySalesVm);
+        });
+        notifyListeners();
+        //print(value.toList());
+      });
+    }
   }
 }

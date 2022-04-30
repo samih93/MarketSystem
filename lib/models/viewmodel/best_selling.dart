@@ -3,6 +3,7 @@ class BestSellingVmodel {
   String? qty;
 
   BestSellingVmodel({required this.name, required this.qty});
+  
   BestSellingVmodel.fromJson(Map<String, dynamic> map) {
     name = map['name'];
     qty = map['qty'].toString();

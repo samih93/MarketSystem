@@ -288,7 +288,8 @@ class SettingsScreen extends StatelessWidget {
                           if (nbofproduct != null) {
                             await context
                                 .read<FactureController>()
-                                .getBestSelling(nbOfproduct:  nbOfProductsController.text)
+                                .getBestSelling(
+                                    nbOfproduct: nbOfProductsController.text)
                                 .then((value) {
                               _openBestSellingReport(value);
                             });
@@ -341,7 +342,8 @@ class SettingsScreen extends StatelessWidget {
 
                             await context
                                 .read<FactureController>()
-                                .getMostprofitableList(nbOfproduct:  nbofproduct.toString())
+                                .getMostprofitableList(
+                                    nbOfproduct: nbofproduct.toString())
                                 .then((value) async {
                               await _openMostProfitableReport(value);
                             });
@@ -438,14 +440,10 @@ class SettingsScreen extends StatelessWidget {
                 if (date != null) {
                   print(date.toString());
                   print("--------");
-                  int current_year = int.parse(date.toString().split("-")[0]);
-                  int current_month = int.parse(date.toString().split("-")[1]);
 
-                  int latestday_inCurrentMonth =
-                      new DateTime(2013, current_month + 1, 0)
-                          .day; // to get latest day in month
-                  print(latestday_inCurrentMonth);
-                  Get.to(DashBoardScreen(current_year, current_month));
+                  //print(latestday_inCurrentMonth);
+
+                  Get.to(DashBoardScreen(date));
                 }
               });
               break;

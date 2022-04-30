@@ -34,7 +34,7 @@ class DetailsFactureModel {
       'name': name,
       'qty': qty,
       'price': price,
-      'totalprice': totalprice,
+      //  'totalprice': totalprice,
       'facture_id': facture_id,
     };
   }

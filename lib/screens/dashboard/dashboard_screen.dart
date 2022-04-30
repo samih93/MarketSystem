@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
+import 'package:marketsystem/models/viewmodel/daily_sales.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
@@ -10,9 +11,8 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DashBoardScreen extends StatelessWidget {
-  int currentYear;
-  int currentMonth;
-  DashBoardScreen(this.currentYear, this.currentMonth);
+  DateTime? currentdate;
+  DashBoardScreen(this.currentdate);
 
   List<String> months = [
     'January',
@@ -50,10 +50,21 @@ class DashBoardScreen extends StatelessWidget {
   ];
   @override
   Widget build(BuildContext context) {
+    int current_year = int.parse(currentdate.toString().split("-")[0]);
+    int current_month = int.parse(currentdate.toString().split("-")[1]);
+
+    int firstDayInmonth =
+        int.parse(currentdate.toString().split(" ")[0].split("-")[2]);
+    int latestday_inCurrentMonth = new DateTime(2013, current_month + 1, 0)
+        .day; // to get latest day in month
+    print("first day $firstDayInmonth");
+    print("last day $latestday_inCurrentMonth");
     return ChangeNotifierProvider<FactureController>(
       create: (_) => FactureController()
         ..getBestSelling()
-        ..getMostprofitableList(),
+        ..getMostprofitableList()
+        ..getDailysalesIn_month(current_year, current_month, firstDayInmonth,
+            latestday_inCurrentMonth),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('DashBoard'),
@@ -73,7 +84,7 @@ class DashBoardScreen extends StatelessWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        months[currentMonth - 1] + " - $currentYear",
+                        months[current_month - 1] + " - $current_year",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: Colors.white,
@@ -106,28 +117,37 @@ class DashBoardScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              SfCartesianChart(
-                  enableSideBySideSeriesPlacement: false,
-                  primaryXAxis: CategoryAxis(),
-                  // Chart title
-                  // title: ChartTitle(
-                  //   text: 'Daily Sales',
-                  // ),
-                  // disable legend
-                  legend: Legend(isVisible: false),
-                  // Enable tooltip
-                  tooltipBehavior: TooltipBehavior(enable: true),
-                  series: <ChartSeries<_SalesData, String>>[
-                    LineSeries<_SalesData, String>(
-                        dataSource: data,
-                        xValueMapper: (_SalesData sales, _) => sales.year,
-                        yValueMapper: (_SalesData sales, _) => sales.sales,
-                        name: 'Sales',
-                        // Enable data label
-                        dataLabelSettings: DataLabelSettings(
-                          isVisible: true,
-                        ))
-                  ]),
+              Consumer<FactureController>(
+                  builder: (context, controller, child) {
+                return SfCartesianChart(
+                    enableSideBySideSeriesPlacement: false,
+                    primaryXAxis: CategoryAxis(),
+                    primaryYAxis: NumericAxis(
+                        axisLine: const AxisLine(width: 0),
+                        labelFormat: '{value} LL',
+                        majorTickLines: const MajorTickLines(size: 0)),
+                    // Chart title
+                    // title: ChartTitle(
+                    //   text: 'Daily Sales',
+                    // ),
+                    // disable legend
+                    legend: Legend(isVisible: false),
+                    // Enable tooltip
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    series: <ChartSeries<DailySalesVm, String>>[
+                      LineSeries<DailySalesVm, String>(
+                          dataSource: controller.list_of_DailySalesInMonth,
+                          xValueMapper: (DailySalesVm dSVm, _) =>
+                              dSVm.day_in_month.toString(),
+                          yValueMapper: (DailySalesVm dSVm, _) =>
+                              double.parse(dSVm.total_sales_in_day.toString()),
+                          name: 'Sales',
+                          // Enable data label
+                          dataLabelSettings: DataLabelSettings(
+                            isVisible: true,
+                          ))
+                    ]);
+              }),
               Container(
                 color: Colors.amberAccent,
                 height: 30,
