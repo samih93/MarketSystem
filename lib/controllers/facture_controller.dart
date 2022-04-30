@@ -59,6 +59,7 @@ class FactureController extends ChangeNotifier {
   List<BestSellingVmodel> _list_of_BestSelling = [];
   List<BestSellingVmodel> get list_of_BestSelling => _list_of_BestSelling;
 
+//TODO: fix by month
   Future<List<BestSellingVmodel>> getBestSelling({String? nbOfproduct}) async {
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
@@ -86,6 +87,7 @@ class FactureController extends ChangeNotifier {
   List<ProfitableVModel> get list_of_profitableProduct =>
       _list_of_profitableProduct;
 
+//TODO: fix by month
   Future<List<ProfitableVModel>> getMostprofitableList(
       {String? nbOfproduct}) async {
     var dbm = await marketdb.database;
