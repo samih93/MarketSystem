@@ -5,14 +5,12 @@ import 'package:provider/provider.dart';
 
 class ReceiptsScreen extends StatelessWidget {
   String? currentdate;
-  ReceiptsScreen({this.currentdate});
-
-  //const ReceiptsScreen({Key? key}) : super(key: key);
+  ReceiptsScreen(this.currentdate);
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<FactureController>(
-        create: (_) => FactureController()..getReceiptsByDate(gettodayDate()),
+        create: (_) => FactureController()..getReceiptsByDate(currentdate!),
         child: Scaffold(
           appBar: AppBar(
             title: Text("Receipts"),

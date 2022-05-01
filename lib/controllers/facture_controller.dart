@@ -17,16 +17,21 @@ class FactureController extends ChangeNotifier {
   List<FactureModel> list_of_receipts = [];
 
   Future<List<FactureModel>> getReceiptsByDate(String date) async {
+    print(date);
     var dbm = await marketdb.database;
-
     await dbm
         .rawQuery(
             "select * from factures where facturedate='$date' order by facturedate desc")
         .then((value) {
-      print(value.length);
-      value.forEach((element) {
-        list_of_receipts.add(FactureModel.fromJson(element));
-      });
+      print("lenght : " + value.length.toString());
+      if (value.length > 0) {
+        value.forEach((element) {
+          list_of_receipts.add(FactureModel.fromJson(element));
+        });
+      } else {
+        print("no receipts yet");
+      }
+
       list_of_receipts.forEach((element) {
         print(element.toJson());
       });

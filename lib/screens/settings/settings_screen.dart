@@ -109,7 +109,7 @@ class SettingsScreen extends StatelessWidget {
                 //print(DateFormat.yMMMd().format(value!));
                 var tdate = value.toString().split(' ');
                 //datecontroller.text = tdate[0];
-                Get.to(() => ReceiptsScreen(currentdate: tdate[0].toString()));
+                Get.to(() => ReceiptsScreen(tdate[0].toString()));
               });
               break;
             case 1:
