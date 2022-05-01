@@ -13,12 +13,12 @@ import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-class SellScreen extends StatefulWidget {
+class SalesScreen extends StatefulWidget {
   @override
-  State<SellScreen> createState() => _SellScreenState();
+  State<SalesScreen> createState() => _SellScreenState();
 }
 
-class _SellScreenState extends State<SellScreen> {
+class _SellScreenState extends State<SalesScreen> {
   List<String> headertitles = ['Name', 'Qty', ''];
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
@@ -190,12 +190,17 @@ class _SellScreenState extends State<SellScreen> {
                     if (controller.basket_products.length > 0)
                       Alert(
                           context: context,
-                          title: "Cash",
+                          //  title: "Cash",
                           content: Column(
                             children: <Widget>[
                               Text(
-                                'Total : ${controller.totalprice.toString()} LL',
+                                'Total Amount',
                                 style: TextStyle(fontSize: 20),
+                              ),
+                              Text(
+                                '${controller.totalprice.toString()} LL',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
