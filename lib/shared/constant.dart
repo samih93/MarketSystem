@@ -14,4 +14,18 @@ gettodayDate() {
   return year + "-" + month + "-" + day;
 }
 
-String databasepath ="";
+getCurrentYear(DateTime date) => int.parse(date.toString().split("-")[0]);
+getCurrentMonth(DateTime date) {
+  var month = int.parse(date.toString().split("-")[1]);
+  return month < 10 ? "0$month" : month;
+}
+
+getFirstDayInMonth(DateTime date) =>
+    int.parse(date.toString().split(" ")[0].split("-")[2]);
+
+getLastDayInCurrentMonth(DateTime date) =>
+    new DateTime(2013, int.parse(getCurrentMonth(date)) + 1, 0).day;
+
+getCurrentDayInMonth(int i) => i < 10 ? "0$i" : i;
+
+String databasepath = "";

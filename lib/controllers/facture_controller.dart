@@ -60,17 +60,26 @@ class FactureController extends ChangeNotifier {
   List<BestSellingVmodel> get list_of_BestSelling => _list_of_BestSelling;
 
 //TODO: fix by month
-  Future<List<BestSellingVmodel>> getBestSelling({String? nbOfproduct}) async {
+  Future<List<BestSellingVmodel>> getBestSelling(
+      {String? nbOfproduct, DateTime? currentdate}) async {
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
     // print("today " + gettodayDate().toString());
 
 //NOTE need to join to order by barcode
     String query =
-        "select barcode , name, SUM(qty) as qty  from detailsfacture group by barcode order by qty desc";
-    if (nbOfproduct != null) {
-      query += "limit $nbOfproduct";
+        "select df.barcode , df.name, SUM(df.qty) as qty  from detailsfacture as df join factures as f on df.facture_id = f.id ";
+    if (currentdate != null) {
+      String firstDateInCurrentMonth =
+          "${getCurrentYear(currentdate)}-${getCurrentMonth(currentdate)}-${getFirstDayInMonth(currentdate)}";
+      String lastDateInCurrentMonth =
+          "${getCurrentYear(currentdate)}-${getCurrentMonth(currentdate)}-${getLastDayInCurrentMonth(currentdate)}";
+      query +=
+          " where f.facturedate>='$firstDateInCurrentMonth' and f.facturedate<='$lastDateInCurrentMonth'";
     }
+    query += ' group by barcode order by qty desc';
+    query += nbOfproduct != null ? " limit $nbOfproduct" : " limit 15";
+
     await dbm.rawQuery(query).then((value) {
       if (value.length > 0)
         value.forEach((element) {
@@ -89,15 +98,26 @@ class FactureController extends ChangeNotifier {
 
 //TODO: fix by month
   Future<List<ProfitableVModel>> getMostprofitableList(
-      {String? nbOfproduct}) async {
+      {String? nbOfproduct, DateTime? currentdate}) async {
     var dbm = await marketdb.database;
     // print("date : " + date.toString());
     // print("today " + gettodayDate().toString());
+
     String query =
-        "select df.barcode , df.name, df.qty , p.profit_per_item as profit_per_item , df.qty*p.profit_per_item as total_profit  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode group by df.barcode order by total_profit desc";
-    if (nbOfproduct != null) {
-      query += "limit $nbOfproduct";
+        "select df.barcode , df.name, df.qty , p.profit_per_item as profit_per_item , df.qty*p.profit_per_item as total_profit  from detailsfacture as df  join  factures as f on df.facture_id=f.id join  products as p on p.barcode = df.barcode";
+    if (currentdate != null) {
+      String firstDateInCurrentMonth =
+          "${getCurrentYear(currentdate)}-${getCurrentMonth(currentdate)}-${getFirstDayInMonth(currentdate)}";
+      String lastDateInCurrentMonth =
+          "${getCurrentYear(currentdate)}-${getCurrentMonth(currentdate)}-${getLastDayInCurrentMonth(currentdate)}";
+      query +=
+          " where f.facturedate>='$firstDateInCurrentMonth' and f.facturedate<='$lastDateInCurrentMonth'";
     }
+    query += " group by df.barcode order by total_profit desc";
+
+    //NOTE check nb of product if null set defualt 15
+    query += nbOfproduct != null ? " limit $nbOfproduct" : " limit 15";
+
     await dbm.rawQuery(query).then((value) {
       if (value.length > 0)
         value.forEach((element) {
@@ -176,17 +196,15 @@ class FactureController extends ChangeNotifier {
   List<DailySalesVm> _list_of_DailySalesInMonth = [];
   List<DailySalesVm> get list_of_DailySalesInMonth =>
       _list_of_DailySalesInMonth;
-  Future<void> getDailysalesIn_month(int current_year, int current_month,
-      int first_day_inmonth, int lastDayInMonth) async {
+  bool isHasDailySalesInMonth = false;
+  Future<void> getDailysalesIn_month(DateTime date) async {
     var dbm = await marketdb.database;
 
-    String current_month_handled = current_month < 10
-        ? "0" + current_month.toString()
-        : current_month.toString();
-
-    for (int i = first_day_inmonth; i <= lastDayInMonth; i++) {
+    for (int i = getFirstDayInMonth(date);
+        i <= getLastDayInCurrentMonth(date);
+        i++) {
       String currentDate =
-          "$current_year-$current_month_handled-${i < 10 ? "0$i" : i}";
+          "${getCurrentYear(date)}-${getCurrentMonth(date)}-${getCurrentDayInMonth(i)}";
       print("CurrentDate " + currentDate.toString());
       await dbm
           .rawQuery(
@@ -198,6 +216,15 @@ class FactureController extends ChangeNotifier {
           //    print(dailySalesVm.toJson());
           _list_of_DailySalesInMonth.add(dailySalesVm);
         });
+
+//NOTE to check if has a total sales >0
+        if (isHasDailySalesInMonth == false) {
+          isHasDailySalesInMonth = _list_of_DailySalesInMonth
+              .any((element) => element.total_sales_in_day! > 0);
+        }
+
+        print(isHasDailySalesInMonth);
+
         notifyListeners();
         //print(value.toList());
       });
