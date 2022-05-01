@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/details_facture.dart';
+import 'package:marketsystem/models/facture.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/daily_sales.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
@@ -11,6 +12,28 @@ import 'package:marketsystem/shared/local/marketdb_helper.dart';
 
 class FactureController extends ChangeNotifier {
   MarketDbHelper marketdb = MarketDbHelper.db;
+
+//NOTE get list of receipts
+  List<FactureModel> list_of_receipts = [];
+
+  Future<List<FactureModel>> getReceiptsByDate(String date) async {
+    var dbm = await marketdb.database;
+
+    await dbm
+        .rawQuery(
+            "select * from factures where facturedate='$date' order by facturedate desc")
+        .then((value) {
+      print(value.length);
+      value.forEach((element) {
+        list_of_receipts.add(FactureModel.fromJson(element));
+      });
+      list_of_receipts.forEach((element) {
+        print(element.toJson());
+      });
+      notifyListeners();
+    });
+    return list_of_receipts;
+  }
 
   Future<List<DetailsFactureModel>> getReportByDate(String date) async {
     List<DetailsFactureModel> _list_of_detailsFacture = [];

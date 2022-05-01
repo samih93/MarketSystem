@@ -31,15 +31,7 @@ class DashBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // int current_year = int.parse(currentdate.toString().split("-")[0]);
-    // int current_month = int.parse(currentdate.toString().split("-")[1]);
-
-    // int firstDayInmonth =
-    //     int.parse(currentdate.toString().split(" ")[0].split("-")[2]);
-    // int latestday_inCurrentMonth = new DateTime(2013, current_month + 1, 0)
-    //     .day; // to get latest day in month
-    // print("first day $firstDayInmonth");
-    // print("last day $latestday_inCurrentMonth");
+   
     return ChangeNotifierProvider<FactureController>(
       create: (_) => FactureController()
         ..getBestSelling(currentdate: currentdate)

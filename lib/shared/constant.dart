@@ -6,7 +6,10 @@ final defaultColor = Colors.blue;
 gettodayDate() {
   DateTime now = DateTime.now();
   String year = now.year.toString();
-  String day = now.day.toString();
+  String day = int.parse(now.day.toString()) < 10
+      ? "0" + now.day.toString()
+      : now.day.toString();
+  ;
   String month = int.parse(now.month.toString()) < 10
       ? "0" + now.month.toString()
       : now.month.toString();

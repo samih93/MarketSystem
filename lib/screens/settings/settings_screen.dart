@@ -8,6 +8,7 @@ import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/screens/dashboard/dashboard_screen.dart';
+import 'package:marketsystem/screens/receipts_screen/receipts_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -22,6 +23,7 @@ import 'package:sqflite/sqflite.dart';
 
 class SettingsScreen extends StatelessWidget {
   final List<String> _report_title = [
+    "Receipts",
     "Daily Sales",
     "Sales Between Two Dates",
     "Best Selling",
@@ -34,6 +36,7 @@ class SettingsScreen extends StatelessWidget {
   ];
 
   final List<IconData> _report_icons = [
+    Icons.receipt,
     Icons.report,
     Icons.report,
     Icons.loyalty_sharp,
@@ -96,6 +99,20 @@ class SettingsScreen extends StatelessWidget {
         onTap: () async {
           switch (index) {
             case 0:
+              showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.parse('2022-01-01'),
+                      lastDate: DateTime.parse('2040-01-01'))
+                  .then((value) {
+                //Todo: handle date to string
+                //print(DateFormat.yMMMd().format(value!));
+                var tdate = value.toString().split(' ');
+                //datecontroller.text = tdate[0];
+                Get.to(() => ReceiptsScreen(currentdate: tdate[0].toString()));
+              });
+              break;
+            case 1:
               datecontroller.clear();
 
               Alert(
@@ -159,7 +176,7 @@ class SettingsScreen extends StatelessWidget {
                     )
                   ]).show();
               break;
-            case 1:
+            case 2:
               startdatecontroller.clear();
               enddatecontroller.clear();
               Alert(
@@ -257,7 +274,7 @@ class SettingsScreen extends StatelessWidget {
                     )
                   ]).show();
               break;
-            case 2:
+            case 3:
               Alert(
                   context: context,
                   title: "Enter nb of products",
@@ -311,7 +328,7 @@ class SettingsScreen extends StatelessWidget {
 
               break;
 
-            case 3:
+            case 4:
               Alert(
                   context: context,
                   title: "Enter nb of products",
@@ -365,7 +382,7 @@ class SettingsScreen extends StatelessWidget {
 
               break;
 
-            case 4:
+            case 5:
               Alert(
                   context: context,
                   title: "Enter nb of products",
@@ -418,7 +435,7 @@ class SettingsScreen extends StatelessWidget {
 
               break;
 
-            case 5:
+            case 6:
               await context
                   .read<FactureController>()
                   .getEarnSpentGoupeByItem()
@@ -429,7 +446,7 @@ class SettingsScreen extends StatelessWidget {
                         })
                       });
               break;
-            case 6:
+            case 7:
               showMonthPicker(
                 context: context,
                 firstDate: DateTime(DateTime.now().year - 1, 5),
@@ -447,7 +464,7 @@ class SettingsScreen extends StatelessWidget {
                 }
               });
               break;
-            case 7:
+            case 8:
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
@@ -489,7 +506,7 @@ class SettingsScreen extends StatelessWidget {
               ).show();
 
               break;
-            case 8:
+            case 9:
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
