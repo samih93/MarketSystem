@@ -64,8 +64,11 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.7.0
 
-  #google sign in 
+  #google sign in
   google_sign_in: ^5.3.0
+  # firebase 
+  firebase_auth: ^3.2.0
+  firebase_core: ^1.16.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -99,6 +102,7 @@ flutter:
   assets:
     - assets/
     - assets/db/
+    - assets/images/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

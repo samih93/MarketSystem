@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
@@ -17,6 +18,7 @@ Future<void> main() async {
   //     databasepath = value + "/Market.db";
   //   });
   // });
+  await Firebase.initializeApp();
 
   runApp(MultiProvider(
     providers: [
