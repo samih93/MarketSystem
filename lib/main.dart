@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
@@ -23,6 +24,7 @@ Future<void> main() async {
           create: (_) => LayoutController()),
       ChangeNotifierProvider<ProductsController>(
           create: (_) => ProductsController()),
+      ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
     ],
     child: MyApp(),
   ));

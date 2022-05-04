@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -28,10 +29,20 @@ class MarketLayout extends StatelessWidget {
         actions: controller.issearchingInProducts == false
             ? [
                 IconButton(
+                  iconSize: 35,
+                  icon: Icon(Icons.g_mobiledata_outlined),
+                  onPressed: () {
+                    context
+                        .read<AuthController>()
+                        .signInWithGoogle()
+                        .then((value) {});
+                  },
+                ),
+                IconButton(
                     onPressed: () {
                       controller.onChangeSearchInProductsStatus(true);
                     },
-                    icon: Icon(Icons.search))
+                    icon: Icon(Icons.search)),
               ]
             : [],
       ),
