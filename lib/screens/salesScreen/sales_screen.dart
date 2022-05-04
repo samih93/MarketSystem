@@ -23,6 +23,7 @@ class _SellScreenState extends State<SalesScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
   Barcode? barCode = null;
+  bool isflashOn = true;
 
   var qtyController = TextEditingController();
   var receivedCashController = TextEditingController();
@@ -284,14 +285,29 @@ class _SellScreenState extends State<SalesScreen> {
   _buildControlButton() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          //  qrViewcontroller!.getFlashStatus() == true
           IconButton(
               onPressed: () {
+                qrViewcontroller!.getFlashStatus().then((value) {
+                  setState(() {
+                    isflashOn = value!;
+                  });
+                });
                 qrViewcontroller!.toggleFlash();
               },
               icon: Icon(
-                Icons.flash_on,
+                isflashOn ? Icons.flash_on : Icons.flash_off,
                 color: defaultColor,
+                size: 35,
               ))
+          // : IconButton(
+          //     onPressed: () {
+          //       qrViewcontroller!.toggleFlash();
+          //     },
+          //     icon: Icon(
+          //       Icons.flash_on,
+          //       color: defaultColor,
+          //     ))
         ],
       );
 
