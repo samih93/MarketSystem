@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
@@ -100,6 +101,7 @@ class MarketLayout extends StatelessWidget {
     //AuthController _controller = Provider.of<AuthController>(context);
     String? _userImage =
         _controller.userModel != null ? _controller.userModel?.photoURL : null;
+
     return Drawer(
       child: ListView(
         children: [
