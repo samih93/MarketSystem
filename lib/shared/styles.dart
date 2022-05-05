@@ -17,3 +17,14 @@ LinearGradient get myLinearGradient {
     end: Alignment.bottomRight,
   );
 }
+
+LinearGradient get myDisabledGradient {
+  return LinearGradient(
+    colors: [
+      Color.fromARGB(255, 82, 83, 87),
+      Color.fromARGB(255, 135, 140, 141),
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}

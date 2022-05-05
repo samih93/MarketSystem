@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
@@ -94,419 +95,420 @@ class SettingsScreen extends StatelessWidget {
     IconData icon,
     int index,
     BuildContext context,
-  ) =>
-      GestureDetector(
-        onTap: () async {
-          switch (index) {
-            case 0:
-              showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime.parse('2022-01-01'),
-                      lastDate: DateTime.parse('2040-01-01'))
-                  .then((value) {
-                //Todo: handle date to string
-                //print(DateFormat.yMMMd().format(value!));
-                var tdate = value.toString().split(' ');
-                //datecontroller.text = tdate[0];
-                Get.to(() => ReceiptsScreen(tdate[0].toString()));
-              });
-              break;
-            case 1:
-              datecontroller.clear();
+  ) {
+    AuthController authController = Provider.of<AuthController>(context);
+    return GestureDetector(
+      onTap: () async {
+        switch (index) {
+          case 0:
+            showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime.parse('2022-01-01'),
+                    lastDate: DateTime.parse('2040-01-01'))
+                .then((value) {
+              //Todo: handle date to string
+              //print(DateFormat.yMMMd().format(value!));
+              var tdate = value.toString().split(' ');
+              //datecontroller.text = tdate[0];
+              Get.to(() => ReceiptsScreen(tdate[0].toString()));
+            });
+            break;
+          case 1:
+            datecontroller.clear();
 
-              Alert(
-                  context: context,
-                  title: "Enter Date",
-                  content: Column(
-                    children: <Widget>[
-                      defaultTextFormField(
-                          readonly: true,
-                          controller: datecontroller,
-                          inputtype: TextInputType.datetime,
-                          prefixIcon: Icon(Icons.date_range),
-                          ontap: () {
-                            showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.parse('2022-01-01'),
-                                    lastDate: DateTime.parse('2040-01-01'))
-                                .then((value) {
-                              //Todo: handle date to string
-                              //print(DateFormat.yMMMd().format(value!));
-                              var tdate = value.toString().split(' ');
-                              datecontroller.text = tdate[0];
-                            });
-                          },
-                          onvalidate: (value) {
-                            if (value!.isEmpty) {
-                              return "date must not be empty";
-                            }
-                            return null;
-                          },
-                          text: "date"),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        if (datecontroller.text.trim() == "null" ||
-                            datecontroller.text.trim() == "") {
-                          showToast(
-                              message: "date must be not empty or null ",
-                              status: ToastStatus.Error);
-                          print(datecontroller.text);
-                        } else {
-                          Navigator.pop(context);
-
-                          await context
-                              .read<FactureController>()
-                              .getReportByDate(datecontroller.text)
-                              .then((value) {
-                            print(value.length.toString());
-                            _openReportByDateOrBetween(
-                                value, datecontroller.text.toString());
-                          });
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-              break;
-            case 2:
-              startdatecontroller.clear();
-              enddatecontroller.clear();
-              Alert(
-                  context: context,
-                  title: "Enter Dates",
-                  content: Column(
-                    children: <Widget>[
-                      defaultTextFormField(
-                          readonly: true,
-                          controller: startdatecontroller,
-                          inputtype: TextInputType.datetime,
-                          prefixIcon: Icon(Icons.date_range),
-                          ontap: () {
-                            showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.parse('2022-01-01'),
-                                    lastDate: DateTime.parse('2040-01-01'))
-                                .then((value) {
-                              //Todo: handle date to string
-                              //print(DateFormat.yMMMd().format(value!));
-                              var tdate = value.toString().split(' ');
-                              startdatecontroller.text = tdate[0];
-                            });
-                          },
-                          onvalidate: (value) {
-                            if (value!.isEmpty) {
-                              return "start date must not be empty";
-                            }
-                            return null;
-                          },
-                          text: "start date"),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      defaultTextFormField(
-                          readonly: true,
-                          controller: enddatecontroller,
-                          inputtype: TextInputType.datetime,
-                          prefixIcon: Icon(Icons.date_range),
-                          ontap: () {
-                            showDatePicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    firstDate: DateTime.parse('2022-01-01'),
-                                    lastDate: DateTime.parse('2040-01-01'))
-                                .then((value) {
-                              //Todo: handle date to string
-                              //print(DateFormat.yMMMd().format(value!));
-                              var tdate = value.toString().split(' ');
-                              enddatecontroller.text = tdate[0];
-                            });
-                          },
-                          onvalidate: (value) {
-                            if (value!.isEmpty) {
-                              return "end date must not be empty";
-                            }
-                            return null;
-                          },
-                          text: "end date"),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        //  print(datecontroller.text);
-                        if ((startdatecontroller.text.trim() == "null" ||
-                                startdatecontroller.text.trim() == "") ||
-                            (enddatecontroller.text.trim() == "null" ||
-                                enddatecontroller.text.trim() == "")) {
-                          showToast(
-                              message:
-                                  "start or enddate  must be not empty or null ",
-                              status: ToastStatus.Error);
-                        } else {
-                          Navigator.pop(context);
-
-                          await context
-                              .read<FactureController>()
-                              .getDetailsFacturesBetweenTwoDates(
-                                  startdatecontroller.text,
-                                  enddatecontroller.text)
-                              .then((value) {
-                            print(value.length.toString());
-                            _openReportByDateOrBetween(
-                                value, startdatecontroller.text.toString(),
-                                enddate: enddatecontroller.text);
-                          });
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-              break;
-            case 3:
-              Alert(
-                  context: context,
-                  title: "Enter nb of products",
-                  content: Column(
-                    children: <Widget>[
-                      TextField(
-                        controller: nbOfProductsController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          labelText: 'nb of products ',
-                        ),
-                      ),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        if (nbOfProductsController.text == null ||
-                            nbOfProductsController.text.trim() == "")
-                          showToast(
-                              message: "Enter nb of products",
-                              status: ToastStatus.Error);
-                        else {
-                          Navigator.pop(context);
-
-                          int? nbofproduct =
-                              int.tryParse(nbOfProductsController.text);
-                          if (nbofproduct != null) {
-                            await context
-                                .read<FactureController>()
-                                .getBestSelling(
-                                    nbOfproduct: nbOfProductsController.text)
-                                .then((value) {
-                              _openBestSellingReport(value);
-                            });
-
-                            nbOfProductsController.clear();
-                          } else {
-                            showToast(
-                                message: "nb of products must be an integer",
-                                status: ToastStatus.Error);
-                          }
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-
-              break;
-
-            case 4:
-              Alert(
-                  context: context,
-                  title: "Enter nb of products",
-                  content: Column(
-                    children: <Widget>[
-                      TextField(
-                        controller: nbOfProductsController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          labelText: 'nb of products ',
-                        ),
-                      ),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        if (nbOfProductsController.text == null ||
-                            nbOfProductsController.text.trim() == "")
-                          showToast(
-                              message: "Enter nb of products",
-                              status: ToastStatus.Error);
-                        else {
-                          int? nbofproduct =
-                              int.tryParse(nbOfProductsController.text);
-                          if (nbofproduct != null) {
-                            Navigator.pop(context);
-
-                            await context
-                                .read<FactureController>()
-                                .getMostprofitableList(
-                                    nbOfproduct: nbofproduct.toString())
-                                .then((value) async {
-                              await _openMostProfitableReport(value);
-                            });
-
-                            nbOfProductsController.clear();
-                          } else {
-                            showToast(
-                                message: "nb of products must be an integer",
-                                status: ToastStatus.Error);
-                          }
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-
-              break;
-
-            case 5:
-              Alert(
-                  context: context,
-                  title: "Enter nb of products",
-                  content: Column(
-                    children: <Widget>[
-                      TextField(
-                        controller: nbOfProductsController,
-                        keyboardType: TextInputType.phone,
-                        decoration: InputDecoration(
-                          labelText: 'nb of products ',
-                        ),
-                      ),
-                    ],
-                  ),
-                  buttons: [
-                    DialogButton(
-                      onPressed: () async {
-                        if (nbOfProductsController.text == null ||
-                            nbOfProductsController.text.trim() == "")
-                          showToast(
-                              message: "Enter nb of products",
-                              status: ToastStatus.Error);
-                        else {
-                          int? nbofproduct =
-                              int.tryParse(nbOfProductsController.text);
-                          if (nbofproduct != null) {
-                            Navigator.pop(context);
-
-                            await context
-                                .read<FactureController>()
-                                .getLowQtyProductInStore(nbofproduct.toString())
-                                .then((value) async {
-                              await _openLowQtyReport(value);
-                            });
-
-                            nbOfProductsController.clear();
-                          } else {
-                            showToast(
-                                message: "nb of products must be an integer",
-                                status: ToastStatus.Error);
-                          }
-                        }
-                      },
-                      child: Text(
-                        "Ok",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                      ),
-                    )
-                  ]).show();
-
-              break;
-
-            case 6:
-              await context
-                  .read<FactureController>()
-                  .getEarnSpentGoupeByItem()
-                  .then((value) => {
-                        value.forEach((element) async {
-                          print(element.toJson());
-                          await _openEarnSpenReport(value);
-                        })
-                      });
-              break;
-            case 7:
-              showMonthPicker(
+            Alert(
                 context: context,
-                firstDate: DateTime(DateTime.now().year - 1, 5),
-                lastDate: DateTime(DateTime.now().year + 1, 9),
-                initialDate: DateTime.now(),
-                locale: Locale("en"),
-              ).then((date) {
-                if (date != null) {
-                  print(date.toString());
-                  print("--------");
-
-                  //print(latestday_inCurrentMonth);
-
-                  Get.to(DashBoardScreen(date));
-                }
-              });
-              break;
-            case 8:
-              var alertStyle =
-                  AlertStyle(animationDuration: Duration(milliseconds: 1));
-              Alert(
-                style: alertStyle,
-                context: context,
-                type: AlertType.warning,
-                title: "Delete Data",
-                desc: "Are You Sure You Want To Delete All Data'",
+                title: "Enter Date",
+                content: Column(
+                  children: <Widget>[
+                    defaultTextFormField(
+                        readonly: true,
+                        controller: datecontroller,
+                        inputtype: TextInputType.datetime,
+                        prefixIcon: Icon(Icons.date_range),
+                        ontap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.parse('2022-01-01'),
+                                  lastDate: DateTime.parse('2040-01-01'))
+                              .then((value) {
+                            //Todo: handle date to string
+                            //print(DateFormat.yMMMd().format(value!));
+                            var tdate = value.toString().split(' ');
+                            datecontroller.text = tdate[0];
+                          });
+                        },
+                        onvalidate: (value) {
+                          if (value!.isEmpty) {
+                            return "date must not be empty";
+                          }
+                          return null;
+                        },
+                        text: "date"),
+                  ],
+                ),
                 buttons: [
                   DialogButton(
-                    child: Text(
-                      "Cancel",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    color: Colors.blue.shade400,
-                  ),
-                  DialogButton(
-                    child: Text(
-                      "Delete",
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
                     onPressed: () async {
-                      await context
-                          .read<ProductsController>()
-                          .cleanDatabase()
-                          .then((value) {
+                      if (datecontroller.text.trim() == "null" ||
+                          datecontroller.text.trim() == "") {
                         showToast(
-                            message: "Data Deleted",
-                            status: ToastStatus.Success);
+                            message: "date must be not empty or null ",
+                            status: ToastStatus.Error);
+                        print(datecontroller.text);
+                      } else {
                         Navigator.pop(context);
-                      });
-                    },
-                    color: Colors.red.shade400,
-                  ),
-                ],
-              ).show();
 
-              break;
-            case 9:
+                        await context
+                            .read<FactureController>()
+                            .getReportByDate(datecontroller.text)
+                            .then((value) {
+                          print(value.length.toString());
+                          _openReportByDateOrBetween(
+                              value, datecontroller.text.toString());
+                        });
+                      }
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+            break;
+          case 2:
+            startdatecontroller.clear();
+            enddatecontroller.clear();
+            Alert(
+                context: context,
+                title: "Enter Dates",
+                content: Column(
+                  children: <Widget>[
+                    defaultTextFormField(
+                        readonly: true,
+                        controller: startdatecontroller,
+                        inputtype: TextInputType.datetime,
+                        prefixIcon: Icon(Icons.date_range),
+                        ontap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.parse('2022-01-01'),
+                                  lastDate: DateTime.parse('2040-01-01'))
+                              .then((value) {
+                            //Todo: handle date to string
+                            //print(DateFormat.yMMMd().format(value!));
+                            var tdate = value.toString().split(' ');
+                            startdatecontroller.text = tdate[0];
+                          });
+                        },
+                        onvalidate: (value) {
+                          if (value!.isEmpty) {
+                            return "start date must not be empty";
+                          }
+                          return null;
+                        },
+                        text: "start date"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    defaultTextFormField(
+                        readonly: true,
+                        controller: enddatecontroller,
+                        inputtype: TextInputType.datetime,
+                        prefixIcon: Icon(Icons.date_range),
+                        ontap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime.parse('2022-01-01'),
+                                  lastDate: DateTime.parse('2040-01-01'))
+                              .then((value) {
+                            //Todo: handle date to string
+                            //print(DateFormat.yMMMd().format(value!));
+                            var tdate = value.toString().split(' ');
+                            enddatecontroller.text = tdate[0];
+                          });
+                        },
+                        onvalidate: (value) {
+                          if (value!.isEmpty) {
+                            return "end date must not be empty";
+                          }
+                          return null;
+                        },
+                        text: "end date"),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () async {
+                      //  print(datecontroller.text);
+                      if ((startdatecontroller.text.trim() == "null" ||
+                              startdatecontroller.text.trim() == "") ||
+                          (enddatecontroller.text.trim() == "null" ||
+                              enddatecontroller.text.trim() == "")) {
+                        showToast(
+                            message:
+                                "start or enddate  must be not empty or null ",
+                            status: ToastStatus.Error);
+                      } else {
+                        Navigator.pop(context);
+
+                        await context
+                            .read<FactureController>()
+                            .getDetailsFacturesBetweenTwoDates(
+                                startdatecontroller.text,
+                                enddatecontroller.text)
+                            .then((value) {
+                          print(value.length.toString());
+                          _openReportByDateOrBetween(
+                              value, startdatecontroller.text.toString(),
+                              enddate: enddatecontroller.text);
+                        });
+                      }
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+            break;
+          case 3:
+            Alert(
+                context: context,
+                title: "Enter nb of products",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: nbOfProductsController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'nb of products ',
+                      ),
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () async {
+                      if (nbOfProductsController.text == null ||
+                          nbOfProductsController.text.trim() == "")
+                        showToast(
+                            message: "Enter nb of products",
+                            status: ToastStatus.Error);
+                      else {
+                        Navigator.pop(context);
+
+                        int? nbofproduct =
+                            int.tryParse(nbOfProductsController.text);
+                        if (nbofproduct != null) {
+                          await context
+                              .read<FactureController>()
+                              .getBestSelling(
+                                  nbOfproduct: nbOfProductsController.text)
+                              .then((value) {
+                            _openBestSellingReport(value);
+                          });
+
+                          nbOfProductsController.clear();
+                        } else {
+                          showToast(
+                              message: "nb of products must be an integer",
+                              status: ToastStatus.Error);
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+
+            break;
+
+          case 4:
+            Alert(
+                context: context,
+                title: "Enter nb of products",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: nbOfProductsController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'nb of products ',
+                      ),
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () async {
+                      if (nbOfProductsController.text == null ||
+                          nbOfProductsController.text.trim() == "")
+                        showToast(
+                            message: "Enter nb of products",
+                            status: ToastStatus.Error);
+                      else {
+                        int? nbofproduct =
+                            int.tryParse(nbOfProductsController.text);
+                        if (nbofproduct != null) {
+                          Navigator.pop(context);
+
+                          await context
+                              .read<FactureController>()
+                              .getMostprofitableList(
+                                  nbOfproduct: nbofproduct.toString())
+                              .then((value) async {
+                            await _openMostProfitableReport(value);
+                          });
+
+                          nbOfProductsController.clear();
+                        } else {
+                          showToast(
+                              message: "nb of products must be an integer",
+                              status: ToastStatus.Error);
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+
+            break;
+
+          case 5:
+            Alert(
+                context: context,
+                title: "Enter nb of products",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: nbOfProductsController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'nb of products ',
+                      ),
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () async {
+                      if (nbOfProductsController.text == null ||
+                          nbOfProductsController.text.trim() == "")
+                        showToast(
+                            message: "Enter nb of products",
+                            status: ToastStatus.Error);
+                      else {
+                        int? nbofproduct =
+                            int.tryParse(nbOfProductsController.text);
+                        if (nbofproduct != null) {
+                          Navigator.pop(context);
+
+                          await context
+                              .read<FactureController>()
+                              .getLowQtyProductInStore(nbofproduct.toString())
+                              .then((value) async {
+                            await _openLowQtyReport(value);
+                          });
+
+                          nbOfProductsController.clear();
+                        } else {
+                          showToast(
+                              message: "nb of products must be an integer",
+                              status: ToastStatus.Error);
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+
+            break;
+
+          case 6:
+            await context
+                .read<FactureController>()
+                .getEarnSpentGoupeByItem()
+                .then((value) => {
+                      value.forEach((element) async {
+                        print(element.toJson());
+                        await _openEarnSpenReport(value);
+                      })
+                    });
+            break;
+          case 7:
+            showMonthPicker(
+              context: context,
+              firstDate: DateTime(DateTime.now().year - 1, 5),
+              lastDate: DateTime(DateTime.now().year + 1, 9),
+              initialDate: DateTime.now(),
+              locale: Locale("en"),
+            ).then((date) {
+              if (date != null) {
+                print(date.toString());
+                print("--------");
+
+                //print(latestday_inCurrentMonth);
+
+                Get.to(DashBoardScreen(date));
+              }
+            });
+            break;
+          case 8:
+            var alertStyle =
+                AlertStyle(animationDuration: Duration(milliseconds: 1));
+            Alert(
+              style: alertStyle,
+              context: context,
+              type: AlertType.warning,
+              title: "Delete Data",
+              desc: "Are You Sure You Want To Delete All Data'",
+              buttons: [
+                DialogButton(
+                  child: Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  color: Colors.blue.shade400,
+                ),
+                DialogButton(
+                  child: Text(
+                    "Delete",
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                  onPressed: () async {
+                    await context
+                        .read<ProductsController>()
+                        .cleanDatabase()
+                        .then((value) {
+                      showToast(
+                          message: "Data Deleted", status: ToastStatus.Success);
+                      Navigator.pop(context);
+                    });
+                  },
+                  color: Colors.red.shade400,
+                ),
+              ],
+            ).show();
+
+            break;
+          case 9:
+            if (authController.userModel != null) {
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
@@ -540,33 +542,42 @@ class SettingsScreen extends StatelessWidget {
                   ),
                 ],
               ).show();
-          }
-        },
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.44,
-          height: MediaQuery.of(context).size.width * 0.44,
-          decoration: BoxDecoration(
-              gradient: myLinearGradient,
-              borderRadius: BorderRadius.circular(8)),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 60, color: Colors.white),
-              SizedBox(
-                height: 10,
+            } else {
+              showToast(
+                  message: "Please Sign In with google to Restore Data",
+                  status: ToastStatus.Warning,
+                  time: 3);
+            }
+        }
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.44,
+        height: MediaQuery.of(context).size.width * 0.44,
+        decoration: BoxDecoration(
+            gradient: authController.userModel == null && index == 9
+                ? myDisabledGradient
+                : myLinearGradient,
+            borderRadius: BorderRadius.circular(8)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 60, color: Colors.white),
+            SizedBox(
+              height: 10,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      );
+      ),
+    );
+  }
 
   Future<void> _openReportByDateOrBetween(
       List<DetailsFactureModel> list, String startDate,

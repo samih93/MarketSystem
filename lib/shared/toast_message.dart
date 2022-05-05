@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:marketsystem/shared/constant.dart';
 
-void showToast({required message, required ToastStatus status}) =>
+void showToast({required message, required ToastStatus status, int? time}) =>
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 2,
+        timeInSecForIosWeb: time ?? 2,
         backgroundColor: chooseToastColor(status),
         textColor: Colors.white,
         fontSize: 16.0);

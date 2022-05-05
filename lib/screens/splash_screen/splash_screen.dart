@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future _load_products() async {
     Future.delayed(Duration(seconds: 2)).then((value) async {
+      await _loadUserData();
       await MarketDbHelper.db.init().then((value) async {
         await getDatabasesPath().then((value) async {
           print(value + "/Market.db");
@@ -39,6 +41,12 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       });
     });
+  }
+
+  Future _loadUserData() async {
+    await Provider.of<AuthController>(context, listen: false)
+        .getUserData()
+        .then((value) {});
   }
 
   @override
