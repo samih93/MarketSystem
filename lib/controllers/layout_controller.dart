@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/screens/manage_products/manage_products.dart';
+import 'package:marketsystem/screens/reports/reports_screen.dart';
 import 'package:marketsystem/screens/salesScreen/sales_screen.dart';
-import 'package:marketsystem/screens/settings/settings_screen.dart';
 
 class LayoutController extends ChangeNotifier {
   List<BottomNavigationBarItem> bottomItems = [
@@ -9,20 +9,13 @@ class LayoutController extends ChangeNotifier {
     // BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Product"),
     BottomNavigationBarItem(
         icon: Icon(Icons.production_quantity_limits), label: "Sales"),
-    // BottomNavigationBarItem(
-    //     icon: Icon(Icons.store_mall_directory_outlined), label: "Settings"),
+    BottomNavigationBarItem(icon: Icon(Icons.report), label: "reports"),
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [
-    ManageProductsScreen(),
-    SalesScreen(), /* SettingsScreen()*/
-  ];
+  final screens = [ManageProductsScreen(), SalesScreen(), ReportsScreen()];
 
-  final appbar_title = [
-    'Manage Products',
-    'Sales', /*'Settings'*/
-  ];
+  final appbar_title = ['Manage Products', 'Sales', 'Report'];
 
   // NOTE: --------------------- On Change Index Of Screens ------------------
 

@@ -58,8 +58,8 @@ dependencies:
   #Toast
   fluttertoast: ^8.0.8
 
-  #splash
-  animated_splash_screen: ^1.2.0
+  # #splash
+  # animated_splash_screen: ^1.2.0
 
   # Qr Code
   qr_flutter: ^4.0.0
@@ -70,6 +70,10 @@ dependencies:
   # firebase
   firebase_auth: ^3.2.0
   firebase_core: ^1.16.0
+
+  #lottie animation 
+  #lottie: ^1.3.0
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -103,6 +107,7 @@ flutter:
     - assets/
     - assets/db/
     - assets/images/
+    - assets/lottie/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
