@@ -9,14 +9,20 @@ class LayoutController extends ChangeNotifier {
     // BottomNavigationBarItem(icon: Icon(Icons.add), label: "Add Product"),
     BottomNavigationBarItem(
         icon: Icon(Icons.production_quantity_limits), label: "Sales"),
-    BottomNavigationBarItem(
-        icon: Icon(Icons.store_mall_directory_outlined), label: "Settings"),
+    // BottomNavigationBarItem(
+    //     icon: Icon(Icons.store_mall_directory_outlined), label: "Settings"),
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [ManageProductsScreen(), SalesScreen(), SettingsScreen()];
+  final screens = [
+    ManageProductsScreen(),
+    SalesScreen(), /* SettingsScreen()*/
+  ];
 
-  final appbar_title = ['Manage Products', 'Sales', 'Settings'];
+  final appbar_title = [
+    'Manage Products',
+    'Sales', /*'Settings'*/
+  ];
 
   // NOTE: --------------------- On Change Index Of Screens ------------------
 

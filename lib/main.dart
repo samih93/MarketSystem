@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
+import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/user.dart';
@@ -31,6 +32,8 @@ Future<void> main() async {
           create: (_) => LayoutController()),
       ChangeNotifierProvider<ProductsController>(
           create: (_) => ProductsController()),
+      ChangeNotifierProvider<FactureController>(
+          create: (_) => FactureController()),
       ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
     ],
     child: MyApp(),

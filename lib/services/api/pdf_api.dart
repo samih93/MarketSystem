@@ -33,7 +33,7 @@ class PdfApi {
       {String? startDate, String? endDate}) async {
     double finalprice = 0;
     list.forEach((element) {
-      finalprice += double.parse(element.price.toString());
+      finalprice += double.parse(element.totalprice.toString());
     });
     final pdf = Document();
 
