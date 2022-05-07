@@ -32,7 +32,6 @@ class ReportsScreen extends StatelessWidget {
     "Low Qty In Store",
     "Spent / Earn by Item",
     "DashBoard",
-   
   ];
 
   final List<IconData> _report_icons = [
@@ -44,7 +43,6 @@ class ReportsScreen extends StatelessWidget {
     Icons.warning_amber_rounded,
     Icons.currency_exchange_outlined,
     Icons.dashboard_outlined,
-  
   ];
 
   var datecontroller = TextEditingController();
