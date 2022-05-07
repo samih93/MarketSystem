@@ -54,6 +54,20 @@ class MarketLayout extends StatelessWidget {
     Icons.settings_backup_restore_sharp
   ];
 
+  final List<Color> _icon_colors = [
+    Colors.grey,
+    Colors.red,
+    Colors.green,
+    Colors.tealAccent,
+    Colors.purple,
+    Colors.grey,
+    Colors.grey,
+    Colors.green.shade500,
+    Colors.red.shade500,
+    Colors.grey,
+    Colors.grey,
+  ];
+
   var datecontroller = TextEditingController();
   var startdatecontroller = TextEditingController();
   var enddatecontroller = TextEditingController();
@@ -255,7 +269,9 @@ class MarketLayout extends StatelessWidget {
                                     : Colors.black),
                           ),
                           leading: Icon(
-                              _report_icons[_report_title.indexOf(element)]),
+                              _report_icons[_report_title.indexOf(element)],
+                              color:
+                                  _icon_colors[_report_title.indexOf(element)]),
                           onTap: () async {
                             switch (_report_title.indexOf(element)) {
                               case 0:
