@@ -10,7 +10,7 @@ class AuthController extends ChangeNotifier {
 
 //NOTE Sign with google --------------------
   String statusLoginMessage = "";
-  ToastStatus toastStatus = ToastStatus.Error;
+  ToastStatus toastLoginStatus = ToastStatus.Error;
   bool isloadingLogin = false;
   Future<void> signInWithGoogle() async {
     UserCredential? _user = null;
@@ -21,8 +21,8 @@ class AuthController extends ChangeNotifier {
     try {
       googleUser = await GoogleSignIn().signIn();
       isloadingLogin = true;
-      statusLoginMessage = "Logged In Successfully";
-      toastStatus = ToastStatus.Success;
+      statusLoginMessage = "You have been successfully logged In ";
+      toastLoginStatus = ToastStatus.Success;
       notifyListeners();
 
       // Obtain the auth details from the request
@@ -53,18 +53,32 @@ class AuthController extends ChangeNotifier {
     } catch (e) {
       statusLoginMessage =
           "Logged In failed, check your network connection and try again";
-      toastStatus = ToastStatus.Error;
+      toastLoginStatus = ToastStatus.Error;
       isloadingLogin = false;
       notifyListeners();
     }
   }
+// NOTE google Sign Out ----------------------
 
+  String statusSignOutMessage = "";
+  ToastStatus toastSignOutStatus = ToastStatus.Error;
+  bool isloadingSignOut = false;
   Future<void> google_signOut() async {
+    isloadingSignOut = true;
+    notifyListeners();
     await _googleSignIn.signOut().then((value) {
+      statusLoginMessage = "You have been successfully logged out";
+      toastSignOutStatus = ToastStatus.Success;
       _userModel = null;
       CashHelper.removeDatabykey(key: "user");
       notifyListeners();
       // print(_user?.user?.displayName);
+    }).catchError((error) {
+      statusSignOutMessage =
+          "Logged In failed, check your network connection and try again";
+      toastSignOutStatus = ToastStatus.Error;
+      isloadingSignOut = false;
+      notifyListeners();
     });
   }
 
