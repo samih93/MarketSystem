@@ -139,27 +139,7 @@ class _SellScreenState extends State<SalesScreen> {
                                               0
                                           ? Column(
                                               children: [
-                                                Row(
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 3,
-                                                      child: Text(
-                                                        "Name",
-                                                        style: headerProductTable
-                                                            .copyWith(
-                                                                color:
-                                                                    defaultColor),
-                                                      ),
-                                                    ),
-                                                    Expanded(
-                                                        child: Text("Qty",
-                                                            style: headerProductTable
-                                                                .copyWith(
-                                                                    color:
-                                                                        defaultColor))),
-                                                    Expanded(child: Text("")),
-                                                  ],
-                                                ),
+                                                _build_basket_header(),
                                                 Divider(
                                                   thickness: 2,
                                                   color: defaultColor,
@@ -522,6 +502,24 @@ class _SellScreenState extends State<SalesScreen> {
                       .deleteProductFromBasket(model.barcode.toString());
                 },
                 icon: Icon(Icons.close))),
+      ],
+    );
+  }
+
+  _build_basket_header() {
+    return Row(
+      children: [
+        Expanded(
+          flex: 3,
+          child: Text(
+            "Name",
+            style: headerProductTable.copyWith(color: defaultColor),
+          ),
+        ),
+        Expanded(
+            child: Text("Qty",
+                style: headerProductTable.copyWith(color: defaultColor))),
+        Expanded(child: Text("")),
       ],
     );
   }
