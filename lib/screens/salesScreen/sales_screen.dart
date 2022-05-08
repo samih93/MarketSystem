@@ -24,6 +24,7 @@ class _SellScreenState extends State<SalesScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
   Barcode? barCode = null;
+  bool is_onScan = false;
   bool isflashOn = true;
 
   var qtyController = TextEditingController();
@@ -35,7 +36,6 @@ class _SellScreenState extends State<SalesScreen> {
   var text_barcode_controller = TextEditingController();
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  bool _isEnable = true;
   @override
   void dispose() {
     // TODO: implement dispose
@@ -95,16 +95,16 @@ class _SellScreenState extends State<SalesScreen> {
               : Stack(
                   alignment: Alignment.topCenter,
                   children: [
-                    _buildQr(context),
-                    Positioned(
-                      bottom: 10,
-                      child: _buildResult(),
-                    ),
+                    if (is_onScan) _buildQr(context),
+                    // Positioned(
+                    //   bottom: 10,
+                    //   child: _buildResult(),
+                    // ),
                     Positioned(
                       top: 10,
                       child: _buildControlButton(),
                     ),
-                    if (barCode != null)
+                    if (is_onScan == false)
                       Align(
                         alignment: Alignment.center,
                         child: Container(
@@ -121,7 +121,7 @@ class _SellScreenState extends State<SalesScreen> {
                                         onPressed: () {
                                           qrViewcontroller!.resumeCamera();
                                           setState(() {
-                                            barCode = null;
+                                            is_onScan = true;
                                           });
                                         },
                                         icon:
@@ -261,6 +261,18 @@ class _SellScreenState extends State<SalesScreen> {
                 isflashOn ? Icons.flash_on : Icons.flash_off,
                 color: defaultColor,
                 size: 35,
+              )),
+          IconButton(
+              onPressed: () async {
+                await qrViewcontroller?.pauseCamera();
+                setState(() {
+                  is_onScan = false;
+                });
+              },
+              icon: Icon(
+                Icons.close,
+                color: defaultColor,
+                size: 35,
               ))
           // : IconButton(
           //     onPressed: () {
@@ -327,7 +339,7 @@ class _SellScreenState extends State<SalesScreen> {
         onTap: () {
           setState(() {
             _iscashSuccess = false;
-            qrViewcontroller!.resumeCamera();
+            is_onScan = false;
           });
         },
         child: Container(
@@ -354,22 +366,6 @@ class _SellScreenState extends State<SalesScreen> {
         ),
       );
 
-  _buildResult() => GestureDetector(
-        onTap: () {
-          setState(() {
-            this.barCode = Barcode('', BarcodeFormat.codabar, []);
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(gradient: myLinearGradient),
-          padding: EdgeInsets.all(15),
-          child: Text(
-            "Continue Without Scan",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        ),
-      );
-
   _builddropdownSearch() => Form(
         key: _formkey,
         child: Column(
@@ -382,10 +378,9 @@ class _SellScreenState extends State<SalesScreen> {
                   child: TypeAheadField(
                     hideOnError: true,
                     textFieldConfiguration: TextFieldConfiguration(
+                        enableSuggestions: false,
                         controller: text_productNameController,
-                        // enabled: _isEnable,
-                        autofocus: true,
-                        style: TextStyle(fontSize: 24),
+                        style: TextStyle(fontSize: 20),
                         decoration: InputDecoration(
                             border: UnderlineInputBorder(),
                             hintText: "Select Product ...")),
@@ -402,10 +397,11 @@ class _SellScreenState extends State<SalesScreen> {
                       );
                     },
                     onSuggestionSelected: (Object? suggestion) async {
-                      print((suggestion as ProductModel).barcode);
+                      String? barcode =
+                          (suggestion as ProductModel).barcode.toString();
                       await context
                           .read<ProductsController>()
-                          .fetchProductBybarCode(text_barcode_controller.text);
+                          .fetchProductBybarCode(barcode);
                       text_productNameController.clear();
                     },
                     suggestionsCallback: (String pattern) async {
@@ -461,23 +457,30 @@ class _SellScreenState extends State<SalesScreen> {
                 buttons: [
                   DialogButton(
                     onPressed: () {
-                      context
-                          .read<ProductsController>()
-                          .onchangeQtyInBasket(
-                              model.barcode.toString(), qtyController.text)
-                          .then((value) {
-                        if (value == false) {
-                          showToast(
-                              message: "qty must be less then qty in store",
-                              status: ToastStatus.Error);
-                        } else {
-                          showToast(
-                              message: "qty Changed",
-                              status: ToastStatus.Success);
-                        }
-                      });
-                      Navigator.pop(context);
-                      qtyController.clear();
+                      int? qty = int.tryParse(qtyController.text);
+                      if (qty != null) {
+                        context
+                            .read<ProductsController>()
+                            .onchangeQtyInBasket(
+                                model.barcode.toString(), qtyController.text)
+                            .then((value) {
+                          if (value == false) {
+                            showToast(
+                                message: "qty must be less then qty in store",
+                                status: ToastStatus.Error);
+                          } else {
+                            showToast(
+                                message: "qty Changed",
+                                status: ToastStatus.Success);
+                          }
+                        });
+                        Navigator.pop(context);
+                        qtyController.clear();
+                      } else {
+                        showToast(
+                            message: "qty  Must be a number ",
+                            status: ToastStatus.Error);
+                      }
                     },
                     child: Text(
                       "Ok",

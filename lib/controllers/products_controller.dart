@@ -235,7 +235,6 @@ class ProductsController extends ChangeNotifier {
       basket_products.forEach((element) {
         print(element.qty);
       });
-      gettotalPrice();
       isonchangesuccess = true;
     } else {
       basket_products.forEach((element) {
@@ -243,6 +242,8 @@ class ProductsController extends ChangeNotifier {
       });
       isonchangesuccess = false;
     }
+    gettotalPrice();
+
     return isonchangesuccess;
   }
 
