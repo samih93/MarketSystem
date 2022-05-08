@@ -1,13 +1,20 @@
+import 'dart:ffi';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
 import 'package:http/http.dart' as http;
+import 'dart:io' as io;
 
-class MarketDbHelper {
+class MarketDbHelper extends ChangeNotifier {
   MarketDbHelper._();
   static final MarketDbHelper db = MarketDbHelper._();
   late Database database;
+  String _progressDownload = "0%";
+  String get progressDownload => _progressDownload;
+  bool is_databaseExist = true;
 
   Future<void> init() async {
     var databasesPath = await getDatabasesPath();
@@ -40,24 +47,22 @@ class MarketDbHelper {
 
       // link github https://github.com/samih93/MarketSystem/raw/master/Market.db
 
+      String db_url =
+          'https://github.com/samih93/MarketSystem/raw/master/Market.db';
       print("Creating new copy from internet");
-
-      var url = Uri.parse(
-          'https://github.com/samih93/MarketSystem/raw/master/Market.db');
-      var response = await http.get(url);
-
-      // var httpClient = new io.HttpClient();
-      // var request = await httpClient.getUrl(Uri.parse(url));
-      // var response = await request.close();
-
-      // thow an error if there was error getting the file
-      // so it prevents from wrting the wrong content into the db file
-      if (response.statusCode != 200) throw "Error getting db file";
-      // var bytes = await consolidateHttpClientResponseBytes();
-      var bytes = response.bodyBytes;
-      await File(completepath).writeAsBytes(bytes, flush: true);
+      is_databaseExist = false;
+      await Dio().download(db_url, completepath,
+          onReceiveProgress: (rec, total) {
+        double progress = double.parse(((rec / total) * 100).toString());
+        _progressDownload = progress.toStringAsFixed(1) + "%";
+        notifyListeners();
+        //   print(downloadingStr);
+        // print(percebt_download.toStringAsFixed(1) + "%");
+      });
     } else {
+      is_databaseExist = true;
       print("Reading Existing Database");
+      notifyListeners();
     }
 
     // open the database

@@ -84,6 +84,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Colors.white,
                   size: 35.0,
                 ),
+                if (context.watch<MarketDbHelper>().is_databaseExist == false)
+                  Text(
+                    context.watch<MarketDbHelper>().progressDownload.toString(),
+                    style: TextStyle(
+                        color: Colors.white, letterSpacing: 1, fontSize: 20),
+                  ),
               ],
             )),
       ),

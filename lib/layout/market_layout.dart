@@ -56,13 +56,13 @@ class MarketLayout extends StatelessWidget {
 
   final List<Color> _icon_colors = [
     Colors.grey,
-    Colors.red,
+    Colors.grey,
+    Colors.grey,
     Colors.green,
-    Colors.tealAccent,
     Colors.purple,
+    Colors.red,
     Colors.grey,
-    Colors.grey,
-    Colors.green.shade500,
+    Colors.purple.shade500,
     Colors.red.shade500,
     Colors.grey,
     Colors.grey,
