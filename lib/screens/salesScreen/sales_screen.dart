@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
+import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
@@ -106,50 +107,80 @@ class _SellScreenState extends State<SalesScreen> {
                     if (barCode != null)
                       Align(
                         alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                width: double.infinity,
-                                color: Colors.white,
-                                child: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Padding(
-                                        padding: const EdgeInsets.all(15.0),
-                                        child: prod_controller
-                                                    .basket_products.length >
-                                                0
-                                            ? DataTable(
-                                                headingTextStyle: TextStyle(
-                                                    color: defaultColor),
-                                                border: TableBorder.all(
-                                                    width: 1,
-                                                    color: Colors.grey),
-                                                columns: [
-                                                  ...headertitles.map((e) =>
-                                                      _build_header_item(e))
-                                                ],
-                                                rows: [
-                                                  ...prod_controller
-                                                      .basket_products
-                                                      .map((e) => _build_Row(
-                                                          e, context)),
-                                                ],
-                                              )
-                                            : Container()),
-                                  ),
+                        child: Container(
+                          color: Colors.white,
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 15.0, vertical: 5),
+                                child: Row(
+                                  children: [
+                                    Expanded(child: _builddropdownSearch()),
+                                    IconButton(
+                                        onPressed: () {
+                                          qrViewcontroller!.resumeCamera();
+                                          setState(() {
+                                            barCode = null;
+                                          });
+                                        },
+                                        icon:
+                                            Icon(Icons.qr_code_scanner_rounded))
+                                  ],
                                 ),
                               ),
-                            ),
-                            _buildTotalPrice(prod_controller),
-                            Container(
-                              height: 10,
-                              color: Colors.white,
-                            ),
-                            _buildSubmitRow(prod_controller),
-                          ],
+                              Expanded(
+                                child: Container(
+                                  width: double.infinity,
+                                  child: Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: prod_controller
+                                                  .basket_products.length >
+                                              0
+                                          ? Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Expanded(
+                                                      flex: 3,
+                                                      child: Text(
+                                                        "Name",
+                                                        style: headerProductTable
+                                                            .copyWith(
+                                                                color:
+                                                                    defaultColor),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                        child: Text("Qty",
+                                                            style: headerProductTable
+                                                                .copyWith(
+                                                                    color:
+                                                                        defaultColor))),
+                                                    Expanded(child: Text("")),
+                                                  ],
+                                                ),
+                                                Divider(
+                                                  thickness: 2,
+                                                  color: defaultColor,
+                                                ),
+                                                ...prod_controller
+                                                    .basket_products
+                                                    .map(
+                                                        (e) => _basket_item(e)),
+                                              ],
+                                            )
+                                          : Container()),
+                                ),
+                              ),
+                              _buildTotalPrice(prod_controller),
+                              Container(
+                                height: 10,
+                                color: Colors.white,
+                              ),
+                              _buildSubmitRow(prod_controller),
+                            ],
+                          ),
                         ),
                       ),
                     // DataTable(
@@ -229,55 +260,6 @@ class _SellScreenState extends State<SalesScreen> {
             SizedBox(
               width: 10,
             ),
-            Expanded(
-              child: defaultButton(
-                  gradient: myLinearGradient,
-                  //   width: MediaQuery.of(context).size.width * 0.4,
-                  text: "Add Manualy",
-                  onpress: () {
-                    Alert(
-                        context: context,
-                        title: "Search for Product",
-                        content: Column(
-                          children: <Widget>[
-                            _builddropdownSearch(),
-                          ],
-                        ),
-                        buttons: [
-                          DialogButton(
-                            onPressed: () {
-                              controller.fetchProductBybarCode(
-                                  text_barcode_controller.text);
-                              Navigator.pop(context);
-                            },
-                            child: Text(
-                              "Add",
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 20),
-                            ),
-                          )
-                        ]).show();
-                  }),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: defaultButton(
-                  gradient: myLinearGradient,
-
-                  //width: MediaQuery.of(context).size.width * 0.4,
-                  text: "Scan",
-                  onpress: () {
-                    qrViewcontroller!.resumeCamera();
-                    setState(() {
-                      barCode = null;
-                    });
-                  }),
-            ),
-            SizedBox(
-              width: 10,
-            ),
           ],
         ),
       );
@@ -310,86 +292,6 @@ class _SellScreenState extends State<SalesScreen> {
           //     ))
         ],
       );
-
-  _build_header_item(String headerTitle) => DataColumn(
-      label: Text(headerTitle,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          )));
-
-  _build_Row(ProductModel model, BuildContext context) => DataRow(cells: [
-        DataCell(Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(model.name.toString()),
-            SizedBox(
-              height: 4,
-            ),
-            Text(
-              model.price.toString() + " LL ",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            )
-          ],
-        )),
-        DataCell(
-            Text(
-              model.qty.toString(),
-              style: TextStyle(
-                  color: defaultColor, decoration: TextDecoration.underline),
-            ), onTap: () {
-          Alert(
-              context: context,
-              title: "Enter Qty",
-              content: Column(
-                children: <Widget>[
-                  TextField(
-                    controller: qtyController,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: 'Qty',
-                    ),
-                  ),
-                ],
-              ),
-              buttons: [
-                DialogButton(
-                  onPressed: () {
-                    context
-                        .read<ProductsController>()
-                        .onchangeQtyInBasket(
-                            model.barcode.toString(), qtyController.text)
-                        .then((value) {
-                      if (value == false) {
-                        showToast(
-                            message: "qty must be less then qty in store",
-                            status: ToastStatus.Error);
-                      } else {
-                        showToast(
-                            message: "qty Changed",
-                            status: ToastStatus.Success);
-                      }
-                    });
-                    Navigator.pop(context);
-                    qtyController.clear();
-                  },
-                  child: Text(
-                    "Ok",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                )
-              ]).show();
-        }),
-        DataCell(IconButton(
-            onPressed: () {
-              context
-                  .read<ProductsController>()
-                  .deleteProductFromBasket(model.barcode.toString());
-            },
-            icon: Icon(Icons.close))),
-      ]);
 
   _buildQr(BuildContext context) => QRView(
         key: qrKey,
@@ -501,7 +403,7 @@ class _SellScreenState extends State<SalesScreen> {
                     hideOnError: true,
                     textFieldConfiguration: TextFieldConfiguration(
                         controller: text_productNameController,
-                        enabled: _isEnable,
+                        // enabled: _isEnable,
                         autofocus: true,
                         style: TextStyle(fontSize: 24),
                         decoration: InputDecoration(
@@ -519,15 +421,12 @@ class _SellScreenState extends State<SalesScreen> {
                         subtitle: Text('${suggestion.price.toString()} LL'),
                       );
                     },
-                    onSuggestionSelected: (Object? suggestion) {
+                    onSuggestionSelected: (Object? suggestion) async {
                       print((suggestion as ProductModel).barcode);
-                      text_productNameController.text =
-                          suggestion.name.toString();
-                      text_barcode_controller.text =
-                          suggestion.barcode.toString();
-                      setState(() {
-                        _isEnable = false;
-                      });
+                      await context
+                          .read<ProductsController>()
+                          .fetchProductBybarCode(text_barcode_controller.text);
+                      text_productNameController.clear();
                     },
                     suggestionsCallback: (String pattern) async {
                       return await context
@@ -536,24 +435,94 @@ class _SellScreenState extends State<SalesScreen> {
                     },
                   ),
                 ),
-                !_isEnable
-                    ? IconButton(
-                        onPressed: () {
-                          setState(() {
-                            text_productNameController.clear();
-                            _isEnable = true;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.red.shade500,
-                        ))
-                    : SizedBox(
-                        width: 2,
-                      ),
               ],
             ),
           ],
         ),
       );
+
+  _basket_item(ProductModel model) {
+    return Row(
+      children: [
+        Expanded(
+          flex: 4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(model.name.toString()),
+              SizedBox(
+                height: 4,
+              ),
+              Text(
+                model.price.toString() + " LL ",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )
+            ],
+          ),
+        ),
+        Expanded(
+            child: GestureDetector(
+          onTap: () {
+            Alert(
+                context: context,
+                title: "Enter Qty",
+                content: Column(
+                  children: <Widget>[
+                    TextField(
+                      controller: qtyController,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                        labelText: 'Qty',
+                      ),
+                    ),
+                  ],
+                ),
+                buttons: [
+                  DialogButton(
+                    onPressed: () {
+                      context
+                          .read<ProductsController>()
+                          .onchangeQtyInBasket(
+                              model.barcode.toString(), qtyController.text)
+                          .then((value) {
+                        if (value == false) {
+                          showToast(
+                              message: "qty must be less then qty in store",
+                              status: ToastStatus.Error);
+                        } else {
+                          showToast(
+                              message: "qty Changed",
+                              status: ToastStatus.Success);
+                        }
+                      });
+                      Navigator.pop(context);
+                      qtyController.clear();
+                    },
+                    child: Text(
+                      "Ok",
+                      style: TextStyle(color: Colors.white, fontSize: 20),
+                    ),
+                  )
+                ]).show();
+          },
+          child: Text(
+            "${model.qty}",
+            style: TextStyle(
+                fontSize: 15,
+                color: defaultColor,
+                decoration: TextDecoration.underline),
+          ),
+        )),
+        Expanded(
+            child: IconButton(
+                onPressed: () {
+                  context
+                      .read<ProductsController>()
+                      .deleteProductFromBasket(model.barcode.toString());
+                },
+                icon: Icon(Icons.close))),
+      ],
+    );
+  }
 }
