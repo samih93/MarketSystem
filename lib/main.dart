@@ -34,7 +34,6 @@ Future<void> main() async {
           create: (_) => ProductsController()),
       ChangeNotifierProvider<FactureController>(
           create: (_) => FactureController()),
-      ChangeNotifierProvider<MarketDbHelper>(create: (_) => MarketDbHelper.db),
       ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
     ],
     child: MyApp(),

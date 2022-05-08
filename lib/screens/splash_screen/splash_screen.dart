@@ -55,43 +55,53 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(gradient: myLinearGradient),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Container(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: const Image(
-                      image: AssetImage("assets/splash_screen.png")),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(
-                  "Market System",
-                  style: TextStyle(
-                      color: Colors.white, letterSpacing: 1, fontSize: 30),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                SpinKitWave(
-                  color: Colors.white,
-                  size: 35.0,
-                ),
-                if (context.watch<MarketDbHelper>().is_databaseExist == false)
-                  Text(
-                    context.watch<MarketDbHelper>().progressDownload.toString(),
-                    style: TextStyle(
-                        color: Colors.white, letterSpacing: 1, fontSize: 20),
+    return ChangeNotifierProvider<MarketDbHelper>(
+      create: (_) => MarketDbHelper.db,
+      child: Container(
+        decoration: BoxDecoration(gradient: myLinearGradient),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Container(
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.4,
+                    child: const Image(
+                        image: AssetImage("assets/splash_screen.png")),
                   ),
-              ],
-            )),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Text(
+                    "Market System",
+                    style: TextStyle(
+                        color: Colors.white, letterSpacing: 1, fontSize: 30),
+                  ),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  SpinKitWave(
+                    color: Colors.white,
+                    size: 35.0,
+                  ),
+                  Consumer<MarketDbHelper>(
+                    builder: (BuildContext context, controller, Widget? child) {
+                      if (controller.is_databaseExist == false)
+                        return Text(
+                          controller.progressDownload.toString(),
+                          style: TextStyle(
+                              color: Colors.white,
+                              letterSpacing: 1,
+                              fontSize: 20),
+                        );
+                      return Container();
+                    },
+                  ),
+                ],
+              )),
+        ),
       ),
     );
   }

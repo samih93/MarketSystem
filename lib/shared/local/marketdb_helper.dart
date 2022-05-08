@@ -5,7 +5,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
-import 'package:http/http.dart' as http;
 import 'dart:io' as io;
 
 class MarketDbHelper extends ChangeNotifier {
@@ -51,13 +50,12 @@ class MarketDbHelper extends ChangeNotifier {
           'https://github.com/samih93/MarketSystem/raw/master/Market.db';
       print("Creating new copy from internet");
       is_databaseExist = false;
+      notifyListeners();
       await Dio().download(db_url, completepath,
           onReceiveProgress: (rec, total) {
         double progress = double.parse(((rec / total) * 100).toString());
         _progressDownload = progress.toStringAsFixed(1) + "%";
         notifyListeners();
-        //   print(downloadingStr);
-        // print(percebt_download.toStringAsFixed(1) + "%");
       });
     } else {
       is_databaseExist = true;
