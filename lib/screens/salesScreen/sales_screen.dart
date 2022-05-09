@@ -6,6 +6,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
+import 'package:marketsystem/screens/cash_screen/cash_screen.dart';
 import 'package:marketsystem/screens/change_qty_screen/change_qty.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -38,6 +39,10 @@ class _SellScreenState extends State<SalesScreen> {
   var text_barcode_controller = TextEditingController();
 
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+
+  String _change_amount = "";
+  String _total_paid = "";
+  String _received_cash = "";
   @override
   void dispose() {
     // TODO: implement dispose
@@ -68,6 +73,80 @@ class _SellScreenState extends State<SalesScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "${_received_cash}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 30),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Received",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 25),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Column(
+                              children: [
+                                Text(
+                                  "${_total_paid}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 25),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Total paid",
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 15),
+                                ),
+                              ],
+                            )),
+                            Expanded(
+                                child: Column(
+                              children: [
+                                Text(
+                                  "${_change_amount}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.red.shade400,
+                                      fontSize: 25),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Text(
+                                  "Change",
+                                  style: TextStyle(
+                                      color: Colors.red.shade400, fontSize: 15),
+                                ),
+                              ],
+                            ))
+                          ],
+                        ),
+                        SizedBox(
+                          height: 25,
+                        ),
                         CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 50,
@@ -146,10 +225,16 @@ class _SellScreenState extends State<SalesScreen> {
                                                   thickness: 2,
                                                   color: defaultColor,
                                                 ),
-                                                ...prod_controller
-                                                    .basket_products
-                                                    .map(
-                                                        (e) => _basket_item(e)),
+                                                Expanded(
+                                                  child: ListView(
+                                                    children: [
+                                                      ...prod_controller
+                                                          .basket_products
+                                                          .map((e) =>
+                                                              _basket_item(e)),
+                                                    ],
+                                                  ),
+                                                ),
                                               ],
                                             )
                                           : Container()),
@@ -200,43 +285,57 @@ class _SellScreenState extends State<SalesScreen> {
 
                   //  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
-                  onpress: () {
-                    if (controller.basket_products.length > 0)
-                      Alert(
-                          context: context,
-                          //  title: "Cash",
-                          content: Column(
-                            children: <Widget>[
-                              Text(
-                                'Total Amount',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              Text(
-                                '${controller.totalprice.toString()} LL',
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          buttons: [
-                            DialogButton(
-                              onPressed: () {
-                                controller.addFacture();
-                                // controller.clearBasket();
-                                setState(() {
-                                  barCode = null;
-                                  _iscashSuccess = true;
-                                });
+                  onpress: () async {
+                    String total_price =
+                        controller.totalprice.toStringAsFixed(0).toString();
+                    String res =
+                        await Get.to(CashScreen(controller.totalprice));
+                    print("res :" + res.toString());
+                    setState(() {
+                      _change_amount = double.parse(res).toStringAsFixed(0);
+                      _total_paid = total_price;
+                      _received_cash =
+                          (double.parse(total_price) + double.parse(res))
+                              .toStringAsFixed(0);
+                      _iscashSuccess = true;
+                    });
+                    // if (controller.basket_products.length > 0)
+                    //   Alert(
+                    //       context: context,
+                    //       //  title: "Cash",
+                    //       content: Column(
+                    //         children: <Widget>[
+                    //           Text(
+                    //             '${controller.totalprice.toString()} LL',
+                    //             style: TextStyle(
+                    //                 fontSize: 20, fontWeight: FontWeight.bold),
+                    //           ),
+                    //           Text(
+                    //             'Total amount due',
+                    //             style: TextStyle(
+                    //                 fontSize: 15, color: Colors.grey.shade500),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //       buttons: [
+                    //         DialogButton(
+                    //           onPressed: () {
+                    //             controller.addFacture();
+                    //             // controller.clearBasket();
+                    //             setState(() {
+                    //               barCode = null;
+                    //               _iscashSuccess = true;
+                    //             });
 
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Enter",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20),
-                              ),
-                            )
-                          ]).show();
+                    //             Navigator.pop(context);
+                    //           },
+                    //           child: Text(
+                    //             "Enter",
+                    //             style: TextStyle(
+                    //                 color: Colors.white, fontSize: 20),
+                    //           ),
+                    //         )
+                    //       ]).show();
                   }),
             ),
             SizedBox(
@@ -428,7 +527,10 @@ class _SellScreenState extends State<SalesScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(model.name.toString()),
+              Text(
+                model.name.toString(),
+                overflow: TextOverflow.ellipsis,
+              ),
               SizedBox(
                 height: 4,
               ),

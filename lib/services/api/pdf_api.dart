@@ -80,7 +80,10 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.name.toString(),
+                              child: Text(
+                                  e.name.toString().length > 20
+                                      ? "${e.name.toString().substring(0, 20)}..."
+                                      : e.name.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
@@ -186,7 +189,10 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.name.toString(),
+                              child: Text(
+                                  e.name.toString().length > 20
+                                      ? "${e.name.toString().substring(0, 20)}..."
+                                      : e.name.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
@@ -266,7 +272,10 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.name.toString(),
+                              child: Text(
+                                  e.name.toString().length > 20
+                                      ? "${e.name.toString().substring(0, 20)}..."
+                                      : e.name.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
@@ -366,7 +375,10 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.name.toString(),
+                              child: Text(
+                                  e.name.toString().length > 20
+                                      ? "${e.name.toString().substring(0, 20)}..."
+                                      : e.name.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
@@ -439,7 +451,10 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.name.toString(),
+                              child: Text(
+                                  e.name.toString().length > 20
+                                      ? "${e.name.toString().substring(0, 20)}..."
+                                      : e.name.toString(),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
