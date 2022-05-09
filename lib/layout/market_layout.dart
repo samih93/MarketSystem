@@ -37,7 +37,11 @@ class MarketLayout extends StatelessWidget {
     "DashBoard",
     "Delete Data",
     "Backup",
-    "Restore"
+    "Restore",
+    "Pos System",
+    "Rate us",
+    "Support",
+    "Share"
   ];
 
   final List<IconData> _report_icons = [
@@ -51,19 +55,30 @@ class MarketLayout extends StatelessWidget {
     Icons.bar_chart_outlined,
     Icons.delete_forever_outlined,
     Icons.backup_outlined,
-    Icons.settings_backup_restore_sharp
+    Icons.settings_backup_restore_sharp,
+    Icons.info_outline,
+    Icons.star,
+    Icons.email,
+    Icons.share
   ];
 
   final List<Color> _icon_colors = [
+    //Reports
     Colors.grey,
-    Colors.grey,
-    Colors.grey,
+    Colors.orange.shade500,
+    Colors.orange.shade500,
     Colors.green,
     Colors.purple,
     Colors.red,
     Colors.grey,
     Colors.purple.shade500,
     Colors.red.shade500,
+    //Cloud
+    Colors.grey,
+    Colors.grey,
+    // About
+    Colors.grey,
+    Colors.grey,
     Colors.grey,
     Colors.grey,
   ];
@@ -257,6 +272,8 @@ class MarketLayout extends StatelessWidget {
                     children: [
                       if (_report_title.indexOf(element) == 9)
                         _listtileTitle("Cloud", context),
+                      if (_report_title.indexOf(element) == 11)
+                        _listtileTitle("About", context),
                       ListTile(
                           title: Text(
                             element,

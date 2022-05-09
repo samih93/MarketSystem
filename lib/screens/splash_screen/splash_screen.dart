@@ -8,6 +8,7 @@ import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:marketsystem/shared/styles.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -75,16 +76,22 @@ class _SplashScreenState extends State<SplashScreen> {
                     height: 10,
                   ),
                   Text(
-                    "Market System",
+                    "Pos System",
                     style: TextStyle(
                         color: Colors.white, letterSpacing: 1, fontSize: 30),
                   ),
                   SizedBox(
                     height: 40,
                   ),
-                  SpinKitWave(
-                    color: Colors.white,
-                    size: 35.0,
+                  Consumer<MarketDbHelper>(
+                    builder: (BuildContext context, controller, Widget? child) {
+                      if (controller.is_has_connection)
+                        return SpinKitWave(
+                          color: Colors.white,
+                          size: 35.0,
+                        );
+                      return Container();
+                    },
                   ),
                   Consumer<MarketDbHelper>(
                     builder: (BuildContext context, controller, Widget? child) {
@@ -95,6 +102,17 @@ class _SplashScreenState extends State<SplashScreen> {
                               color: Colors.white,
                               letterSpacing: 1,
                               fontSize: 20),
+                        );
+                      if (controller.is_has_connection == false)
+                        return Container(
+                          color: Colors.redAccent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "check your network connection and try again",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
                         );
                       return Container();
                     },

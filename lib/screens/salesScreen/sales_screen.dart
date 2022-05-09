@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
+import 'package:marketsystem/screens/change_qty_screen/change_qty.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -119,7 +121,7 @@ class _SellScreenState extends State<SalesScreen> {
                                     Expanded(child: _builddropdownSearch()),
                                     IconButton(
                                         onPressed: () {
-                                          qrViewcontroller!.resumeCamera();
+                                          qrViewcontroller?.resumeCamera();
                                           setState(() {
                                             is_onScan = true;
                                           });
@@ -440,54 +442,60 @@ class _SellScreenState extends State<SalesScreen> {
         Expanded(
             child: GestureDetector(
           onTap: () {
-            Alert(
-                context: context,
-                title: "Enter Qty",
-                content: Column(
-                  children: <Widget>[
-                    TextField(
-                      controller: qtyController,
-                      keyboardType: TextInputType.phone,
-                      decoration: InputDecoration(
-                        labelText: 'Qty',
-                      ),
-                    ),
-                  ],
-                ),
-                buttons: [
-                  DialogButton(
-                    onPressed: () {
-                      int? qty = int.tryParse(qtyController.text);
-                      if (qty != null) {
-                        context
-                            .read<ProductsController>()
-                            .onchangeQtyInBasket(
-                                model.barcode.toString(), qtyController.text)
-                            .then((value) {
-                          if (value == false) {
-                            showToast(
-                                message: "qty must be less then qty in store",
-                                status: ToastStatus.Error);
-                          } else {
-                            showToast(
-                                message: "qty Changed",
-                                status: ToastStatus.Success);
-                          }
-                        });
-                        Navigator.pop(context);
-                        qtyController.clear();
-                      } else {
-                        showToast(
-                            message: "qty  Must be a number ",
-                            status: ToastStatus.Error);
-                      }
-                    },
-                    child: Text(
-                      "Ok",
-                      style: TextStyle(color: Colors.white, fontSize: 20),
-                    ),
-                  )
-                ]).show();
+            print("name " + model.name.toString());
+            Get.to(ChangeQtyScreen(
+                title: model.name.toString(),
+                barcode: model.barcode.toString(),
+                qty: model.qty.toString().trim()));
+            // Alert(
+            //     context: context,
+            //     title: "Enter Qty",
+            //     content: Column(
+            //       children: <Widget>[
+            //         TextField(
+            //           controller: qtyController,
+            //           keyboardType: TextInputType.phone,
+            //           decoration: InputDecoration(
+            //             labelText: 'Qty',
+            //           ),
+            //         ),
+            //       ],
+            //     ),
+            //     buttons: [
+            //       DialogButton(
+            //         onPressed: () {
+
+            // int? qty = int.tryParse(qtyController.text);
+            // if (qty != null) {
+            //   context
+            //       .read<ProductsController>()
+            //       .onchangeQtyInBasket(
+            //           model.barcode.toString(), qtyController.text)
+            //       .then((value) {
+            //     if (value == false) {
+            //       showToast(
+            //           message: "qty must be less then qty in store",
+            //           status: ToastStatus.Error);
+            //     } else {
+            //       showToast(
+            //           message: "qty Changed",
+            //           status: ToastStatus.Success);
+            //     }
+            //   });
+            //   Navigator.pop(context);
+            //   qtyController.clear();
+            // } else {
+            //   showToast(
+            //       message: "qty  Must be a number ",
+            //       status: ToastStatus.Error);
+            // }
+            //             },
+            //             child: Text(
+            //               "Ok",
+            //               style: TextStyle(color: Colors.white, fontSize: 20),
+            //             ),
+            //           )
+            //         ]).show();
           },
           child: Text(
             "${model.qty}",

@@ -9,7 +9,7 @@ void showToast({required message, required ToastStatus status, int? time}) =>
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: time ?? 2,
+        timeInSecForIosWeb: time ?? 3,
         backgroundColor: chooseToastColor(status),
         textColor: Colors.white,
         fontSize: 16.0);

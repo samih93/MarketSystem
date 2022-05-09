@@ -14,6 +14,7 @@ class MarketDbHelper extends ChangeNotifier {
   String _progressDownload = "0%";
   String get progressDownload => _progressDownload;
   bool is_databaseExist = true;
+  bool is_has_connection = true;
 
   Future<void> init() async {
     var databasesPath = await getDatabasesPath();
@@ -51,12 +52,20 @@ class MarketDbHelper extends ChangeNotifier {
       print("Creating new copy from internet");
       is_databaseExist = false;
       notifyListeners();
-      await Dio().download(db_url, completepath,
-          onReceiveProgress: (rec, total) {
-        double progress = double.parse(((rec / total) * 100).toString());
-        _progressDownload = progress.toStringAsFixed(1) + "%";
+      try {
+        Dio dio = Dio(
+            BaseOptions(baseUrl: '$db_url', receiveDataWhenStatusError: true));
+        await dio.download(db_url, completepath,
+            onReceiveProgress: (rec, total) {
+          double progress = double.parse(((rec / total) * 100).toString());
+          _progressDownload = progress.toStringAsFixed(1) + "%";
+          notifyListeners();
+        });
+      } catch (e) {
+        print("check your network connection");
+        is_databaseExist = true;
         notifyListeners();
-      });
+      }
     } else {
       is_databaseExist = true;
       print("Reading Existing Database");
