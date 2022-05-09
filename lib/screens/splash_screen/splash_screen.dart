@@ -31,13 +31,14 @@ class _SplashScreenState extends State<SplashScreen> {
   Future _load_products() async {
     Future.delayed(Duration(seconds: 2)).then((value) async {
       await _loadUserData();
-      await MarketDbHelper.db.init().then((value) async {
+      await MarketDbHelper.db.init().then((isdatabaseexist) async {
         await getDatabasesPath().then((value) async {
           print(value + "/Market.db");
           databasepath = value + "/Market.db";
-          await Provider.of<ProductsController>(context, listen: false)
-              .getAllProduct()
-              .then((value) => Get.off(MarketLayout()));
+          if (isdatabaseexist == true)
+            await Provider.of<ProductsController>(context, listen: false)
+                .getAllProduct()
+                .then((value) => Get.off(MarketLayout()));
         });
       });
     });
@@ -81,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         color: Colors.white, letterSpacing: 1, fontSize: 30),
                   ),
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   Consumer<MarketDbHelper>(
                     builder: (BuildContext context, controller, Widget? child) {
@@ -90,8 +91,22 @@ class _SplashScreenState extends State<SplashScreen> {
                           color: Colors.white,
                           size: 35.0,
                         );
-                      return Container();
+                      else {
+                        return Container(
+                          color: Colors.redAccent,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "check your network connection and try again",
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      }
                     },
+                  ),
+                  SizedBox(
+                    height: 20,
                   ),
                   Consumer<MarketDbHelper>(
                     builder: (BuildContext context, controller, Widget? child) {
@@ -102,17 +117,6 @@ class _SplashScreenState extends State<SplashScreen> {
                               color: Colors.white,
                               letterSpacing: 1,
                               fontSize: 20),
-                        );
-                      if (controller.is_has_connection == false)
-                        return Container(
-                          color: Colors.redAccent,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(
-                              "check your network connection and try again",
-                              style: TextStyle(color: Colors.white),
-                            ),
-                          ),
                         );
                       return Container();
                     },

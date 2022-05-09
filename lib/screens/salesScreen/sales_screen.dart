@@ -122,6 +122,12 @@ class _SellScreenState extends State<SalesScreen> {
                                 ),
                               ],
                             )),
+                            Container(
+                                height: 80,
+                                child: VerticalDivider(
+                                  color: Colors.white,
+                                  thickness: 2,
+                                )),
                             Expanded(
                                 child: Column(
                               children: [
@@ -157,12 +163,12 @@ class _SellScreenState extends State<SalesScreen> {
                           ),
                         ),
                         SizedBox(height: 20),
-                        Text("Order Completed!",
+                        Text("Completed!",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white)),
                         Text(
-                          "Your Order was Completed successfully",
+                          "Transaction was Completed successfully",
                           style: TextStyle(color: Colors.white),
                         ),
                         SizedBox(
@@ -286,56 +292,21 @@ class _SellScreenState extends State<SalesScreen> {
                   //  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Cash",
                   onpress: () async {
-                    String total_price =
-                        controller.totalprice.toStringAsFixed(0).toString();
-                    String res =
-                        await Get.to(CashScreen(controller.totalprice));
-                    print("res :" + res.toString());
-                    setState(() {
-                      _change_amount = double.parse(res).toStringAsFixed(0);
-                      _total_paid = total_price;
-                      _received_cash =
-                          (double.parse(total_price) + double.parse(res))
-                              .toStringAsFixed(0);
-                      _iscashSuccess = true;
-                    });
-                    // if (controller.basket_products.length > 0)
-                    //   Alert(
-                    //       context: context,
-                    //       //  title: "Cash",
-                    //       content: Column(
-                    //         children: <Widget>[
-                    //           Text(
-                    //             '${controller.totalprice.toString()} LL',
-                    //             style: TextStyle(
-                    //                 fontSize: 20, fontWeight: FontWeight.bold),
-                    //           ),
-                    //           Text(
-                    //             'Total amount due',
-                    //             style: TextStyle(
-                    //                 fontSize: 15, color: Colors.grey.shade500),
-                    //           ),
-                    //         ],
-                    //       ),
-                    //       buttons: [
-                    //         DialogButton(
-                    //           onPressed: () {
-                    //             controller.addFacture();
-                    //             // controller.clearBasket();
-                    //             setState(() {
-                    //               barCode = null;
-                    //               _iscashSuccess = true;
-                    //             });
-
-                    //             Navigator.pop(context);
-                    //           },
-                    //           child: Text(
-                    //             "Enter",
-                    //             style: TextStyle(
-                    //                 color: Colors.white, fontSize: 20),
-                    //           ),
-                    //         )
-                    //       ]).show();
+                    if (controller.basket_products.length > 0) {
+                      String total_price =
+                          controller.totalprice.toStringAsFixed(0).toString();
+                      String res =
+                          await Get.to(CashScreen(controller.totalprice));
+                      print("res :" + res.toString());
+                      setState(() {
+                        _change_amount = double.parse(res).toStringAsFixed(0);
+                        _total_paid = total_price;
+                        _received_cash =
+                            (double.parse(total_price) + double.parse(res))
+                                .toStringAsFixed(0);
+                        _iscashSuccess = true;
+                      });
+                    }
                   }),
             ),
             SizedBox(
@@ -453,7 +424,7 @@ class _SellScreenState extends State<SalesScreen> {
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
             Text(
-              'Continue',
+              'New sale',
               style: TextStyle(color: defaultColor, letterSpacing: 2),
             ),
             Container(

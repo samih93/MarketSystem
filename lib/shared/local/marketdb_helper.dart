@@ -16,7 +16,7 @@ class MarketDbHelper extends ChangeNotifier {
   bool is_databaseExist = true;
   bool is_has_connection = true;
 
-  Future<void> init() async {
+  Future<bool?> init() async {
     var databasesPath = await getDatabasesPath();
     var completepath = path.join(databasesPath, "Market.db");
 
@@ -50,7 +50,10 @@ class MarketDbHelper extends ChangeNotifier {
       String db_url =
           'https://github.com/samih93/MarketSystem/raw/master/Market.db';
       print("Creating new copy from internet");
+      // NOTE to show progress download first and after download i set is_databaseExist to true
       is_databaseExist = false;
+      is_has_connection = true;
+
       notifyListeners();
       try {
         Dio dio = Dio(
@@ -60,12 +63,16 @@ class MarketDbHelper extends ChangeNotifier {
           double progress = double.parse(((rec / total) * 100).toString());
           _progressDownload = progress.toStringAsFixed(1) + "%";
           notifyListeners();
+          // after downloaded write to local storage in complete path
         });
       } catch (e) {
         print("check your network connection");
-        is_databaseExist = true;
+        is_has_connection = false;
         notifyListeners();
+        return is_databaseExist;
       }
+      is_databaseExist = true;
+      notifyListeners();
     } else {
       is_databaseExist = true;
       print("Reading Existing Database");
@@ -74,6 +81,7 @@ class MarketDbHelper extends ChangeNotifier {
 
     // open the database
     database = await openDatabase(completepath);
+    return is_databaseExist;
 
 //! old one without read database from assets
     // database = await openDatabase(
