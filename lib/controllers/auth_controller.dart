@@ -71,6 +71,7 @@ class AuthController extends ChangeNotifier {
       toastSignOutStatus = ToastStatus.Success;
       _userModel = null;
       CashHelper.removeDatabykey(key: "user");
+      isloadingSignOut = false;
       notifyListeners();
       // print(_user?.user?.displayName);
     }).catchError((error) {

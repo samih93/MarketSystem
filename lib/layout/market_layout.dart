@@ -34,7 +34,7 @@ class MarketLayout extends StatelessWidget {
     "Most profitable Products",
     "Low Qty In Store",
     "Spent / Earn by Item",
-    "DashBoard",
+    "Overview",
     "Delete Data",
     "Backup",
     "Restore",
@@ -283,7 +283,13 @@ class MarketLayout extends StatelessWidget {
                                                 10) &&
                                         _controller.userModel == null
                                     ? Colors.grey
-                                    : Colors.black),
+                                    : (_report_title.indexOf(element) == 9 ||
+                                                _report_title
+                                                        .indexOf(element) ==
+                                                    10) &&
+                                            _controller.userModel != null
+                                        ? Colors.green.shade400
+                                        : Colors.black),
                           ),
                           leading: Icon(
                               _report_icons[_report_title.indexOf(element)],
@@ -736,9 +742,9 @@ class MarketLayout extends StatelessWidget {
                                     style: alertStyle,
                                     context: context,
                                     type: AlertType.warning,
-                                    title: "Reload Data",
+                                    title: "Restore Data",
                                     desc:
-                                        "Are You Sure You Want To Reload cloud Data",
+                                        "Are You Sure You Want To Restore cloud Data",
                                     buttons: [
                                       DialogButton(
                                         child: Text(
