@@ -733,7 +733,7 @@ class MarketLayout extends StatelessWidget {
                                     status: ToastStatus.Warning);
                                 break;
                               case 10:
-                                if (_controller != null) {
+                                if (currentuser != null) {
                                   var alertStyle = AlertStyle(
                                       animationDuration:
                                           Duration(milliseconds: 1));
