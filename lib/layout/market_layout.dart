@@ -172,8 +172,7 @@ class MarketLayout extends StatelessWidget {
   }
 
   _myDrawer(AuthController _controller, BuildContext context) {
-    String? _userImage =
-        _controller.userModel != null ? _controller.userModel?.photoURL : null;
+    String? _userImage = currentuser != null ? currentuser?.photoURL : null;
 
     return Drawer(
       child: Column(
@@ -203,7 +202,7 @@ class MarketLayout extends StatelessWidget {
                         //whatever image you can put here
                       ),
                     ),
-                    _controller.userModel == null
+                    currentuser == null
                         ? Icon(
                             Icons.cloud_off,
                             color: Colors.grey.shade600,
@@ -221,7 +220,7 @@ class MarketLayout extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    if (_controller.userModel == null) {
+                    if (currentuser == null) {
                       await _controller.signInWithGoogle().then((value) {
                         showToast(
                             message: _controller.statusLoginMessage,
@@ -281,13 +280,13 @@ class MarketLayout extends StatelessWidget {
                                 color: (_report_title.indexOf(element) == 9 ||
                                             _report_title.indexOf(element) ==
                                                 10) &&
-                                        _controller.userModel == null
+                                        currentuser == null
                                     ? Colors.grey
                                     : (_report_title.indexOf(element) == 9 ||
                                                 _report_title
                                                         .indexOf(element) ==
                                                     10) &&
-                                            _controller.userModel != null
+                                            currentuser != null
                                         ? Colors.green.shade400
                                         : Colors.black),
                           ),
@@ -734,7 +733,7 @@ class MarketLayout extends StatelessWidget {
                                     status: ToastStatus.Warning);
                                 break;
                               case 10:
-                                if (_controller.userModel != null) {
+                                if (_controller != null) {
                                   var alertStyle = AlertStyle(
                                       animationDuration:
                                           Duration(milliseconds: 1));
@@ -789,7 +788,7 @@ class MarketLayout extends StatelessWidget {
               ],
             ),
           ),
-          if (_controller.userModel != null)
+          if (currentuser != null)
             _controller.isloadingSignOut
                 ? Center(child: CircularProgressIndicator())
                 : Padding(

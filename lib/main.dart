@@ -26,6 +26,8 @@ Future<void> main() async {
 
   await CashHelper.init();
 
+  currentuser = await CashHelper.getUser() ?? null;
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<LayoutController>(

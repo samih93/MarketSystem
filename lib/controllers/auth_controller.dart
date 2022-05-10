@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:marketsystem/models/user.dart';
+import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/cash_helper.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 
@@ -12,6 +13,9 @@ class AuthController extends ChangeNotifier {
   String statusLoginMessage = "";
   ToastStatus toastLoginStatus = ToastStatus.Error;
   bool isloadingLogin = false;
+  UserModel? _userModel = null;
+  // UserModel? get userModel => _userModel;
+
   Future<void> signInWithGoogle() async {
     UserCredential? _user = null;
     GoogleSignInAccount? googleUser;
@@ -46,6 +50,9 @@ class AuthController extends ChangeNotifier {
               photoURL: _user?.user!.photoURL,
               token: token);
 
+// NOTE constant
+          currentuser = _userModel;
+
           CashHelper.saveUser(_userModel!);
           isloadingLogin = false;
           notifyListeners();
@@ -70,6 +77,7 @@ class AuthController extends ChangeNotifier {
       statusLoginMessage = "You have been successfully logged out";
       toastSignOutStatus = ToastStatus.Success;
       _userModel = null;
+      currentuser = null;
       CashHelper.removeDatabykey(key: "user");
       isloadingSignOut = false;
       notifyListeners();
@@ -82,9 +90,6 @@ class AuthController extends ChangeNotifier {
       notifyListeners();
     });
   }
-
-  UserModel? _userModel = null;
-  UserModel? get userModel => _userModel;
 
   Future<void> getUserData() async {
     UserModel? user = await CashHelper.getUser() ?? null;

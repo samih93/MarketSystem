@@ -504,7 +504,7 @@ class ReportsScreen extends StatelessWidget {
 
             break;
           case 9:
-            if (authController.userModel != null) {
+            if (currentuser != null) {
               var alertStyle =
                   AlertStyle(animationDuration: Duration(milliseconds: 1));
               Alert(
@@ -550,7 +550,7 @@ class ReportsScreen extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.44,
         height: MediaQuery.of(context).size.width * 0.44,
         decoration: BoxDecoration(
-            gradient: authController.userModel == null && index == 9
+            gradient: currentuser == null && index == 9
                 ? myDisabledGradient
                 : myLinearGradient,
             borderRadius: BorderRadius.circular(8)),

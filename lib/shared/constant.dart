@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:marketsystem/models/user.dart';
 
 final defaultColor = Colors.blue;
 
@@ -32,3 +33,5 @@ getLastDayInCurrentMonth(DateTime date) =>
 getCurrentDayInMonth(int i) => i < 10 ? "0$i" : i;
 
 String databasepath = "";
+
+UserModel? currentuser;
