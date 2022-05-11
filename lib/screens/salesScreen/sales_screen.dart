@@ -187,11 +187,12 @@ class _SellScreenState extends State<SalesScreen> {
                     //   bottom: 10,
                     //   child: _buildResult(),
                     // ),
-                    Positioned(
-                      top: 10,
-                      child: _buildControlButton(),
-                    ),
-                    if (is_onScan == false)
+                    if (is_onScan)
+                      Positioned(
+                        top: 10,
+                        child: _buildControlButton(),
+                      ),
+                    if (!is_onScan)
                       Align(
                         alignment: Alignment.center,
                         child: Container(
@@ -376,11 +377,21 @@ class _SellScreenState extends State<SalesScreen> {
 
     qrViewcontroller?.scannedDataStream.listen((barcode) => setState(() {
           this.barCode = barcode;
-          qrViewcontroller?.pauseCamera();
           FlutterBeep.beep();
+          is_onScan = false;
+          qrViewcontroller?.pauseCamera();
+
           context
               .read<ProductsController>()
-              .fetchProductBybarCode(barcode.code.toString());
+              .fetchProductBybarCode(barcode.code.toString())
+              .then((value) {
+            print(value);
+            if (!value)
+              showToast(
+                  message: "Item Not found",
+                  status: ToastStatus.Error,
+                  time: 4);
+          });
         }));
   }
 

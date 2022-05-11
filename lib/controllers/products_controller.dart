@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/models/details_facture.dart';
@@ -177,24 +179,32 @@ class ProductsController extends ChangeNotifier {
   //NOTE fetch  product by barcode and then add to list of sell
   List<ProductModel> basket_products = [];
 
-  Future<void> fetchProductBybarCode(String barcode) async {
+  Future<bool> fetchProductBybarCode(String barcode) async {
     // isloadingGetProducts = true;
     var dbm = await marketdb.database;
+    bool _isExist = false;
 
     await dbm
         .rawQuery("select * from products where barcode = '$barcode'")
         .then((value) {
-      value.forEach((element) {
-        basket_products.add(ProductModel.fromJson(element));
-      });
+      if (value.length > 0) {
+        _isExist = true;
+        value.forEach((element) {
+          basket_products.add(ProductModel.fromJson(element));
+        });
+      } else {
+        _isExist = false;
+      }
+
       basket_products.forEach((element) {
-        element.qty = "1";
+        if (element.barcode == barcode) element.qty = "1";
       });
       //  isloadingGetProducts = false;
       gettotalPrice();
 
       notifyListeners();
     });
+    return _isExist;
   }
 
 //NOTE get Product by barcode

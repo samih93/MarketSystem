@@ -65,6 +65,8 @@ class CashScreen extends StatelessWidget {
           defaultButton(
               text: "Cash",
               onpress: () {
+                //NOTE close keyboard befor back cz keyboard dispay over previous screen and show an error
+                FocusScope.of(context).unfocus();
                 String change =
                     (double.parse(text_receivedController.text.toString()) -
                             total_amount)

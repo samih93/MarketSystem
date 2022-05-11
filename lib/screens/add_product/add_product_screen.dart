@@ -22,6 +22,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
   final qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? qrViewcontroller;
   Barcode? barCode = null;
+  bool is_onScan = false;
+  bool isflashOn = true;
 
 //For fields if has data
 
@@ -62,52 +64,33 @@ class _AddProductScreenState extends State<AddProductScreen> {
       body: Stack(
         alignment: Alignment.topCenter,
         children: [
-          _buildQr(context),
-          Positioned(
-            bottom: 10,
-            child: _buildResult(),
-          ),
-          Positioned(
-            top: 10,
-            child: _buildControlButton(),
-          ),
-          if (barCode != null)
-            Align(
-                alignment: Alignment.center,
-                child: Container(
-                  color: Colors.white,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      _build_Form(context),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildSubmitRow(context),
-                    ],
-                  ),
-                )),
+          if (is_onScan) _buildQr(context),
+          if (is_onScan)
+            Positioned(
+              top: 10,
+              child: _buildControlButton(),
+            ),
+          if (!is_onScan)
+            Container(
+              color: Colors.white,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _build_Form(context),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    _buildSubmitRow(context),
+                  ],
+                ),
+              ),
+            ),
         ],
       ),
     );
   }
-
-  _buildResult() => GestureDetector(
-        onTap: () {
-          setState(() {
-            this.barCode = Barcode(null, BarcodeFormat.codabar, []);
-          });
-        },
-        child: Container(
-          decoration: BoxDecoration(gradient: myLinearGradient),
-          padding: EdgeInsets.all(15),
-          child: Text(
-            "Continue Without Scan",
-            style: TextStyle(fontSize: 24, color: Colors.white),
-          ),
-        ),
-      );
 
   _buildQr(BuildContext context) => QRView(
         key: qrKey,
@@ -128,8 +111,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
     qrViewcontroller?.scannedDataStream.listen((barcode) {
       setState(() {
         this.barCode = barcode;
-        qrViewcontroller?.pauseCamera();
         FlutterBeep.beep();
+        is_onScan = false;
+        qrViewcontroller?.pauseCamera();
 
         productbarcodeController_text.text = barcode.code.toString();
       });
@@ -152,91 +136,95 @@ class _AddProductScreenState extends State<AddProductScreen> {
       });
     }
 
-    return SingleChildScrollView(
-      child: Form(
-          key: _formkey,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              children: [
-                TextFormField(
-                  validator: (value) {
+    return Form(
+        key: _formkey,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              defaultTextFormField(
+                  onvalidate: (value) {
                     if (value!.isEmpty) {
                       return "barcode must not be empty";
                     }
                     return null;
                   },
-                  controller: productbarcodeController_text,
-                  //initialValue: barCode!.code,
-                  readOnly: (barCode!.code != null) ? true : false,
-                  style: TextStyle(
-                    fontWeight: FontWeight.normal,
-                  ),
-                  decoration: InputDecoration(hintText: "Barcode..."),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                defaultTextFormField(
-                    onvalidate: (value) {
-                      if (value!.isEmpty) {
-                        return "Name must not be empty";
-                      }
-                      return null;
-                    },
-                    readonly: context.read<ProductsController>().isProductExist
-                        ? true
-                        : false,
-                    inputtype: TextInputType.name,
-                    border: UnderlineInputBorder(),
-                    hinttext: "Name...",
-                    controller: productNameController_text),
-                SizedBox(
-                  height: 5,
-                ),
-                defaultTextFormField(
-                    onvalidate: (value) {
-                      if (value!.isEmpty) {
-                        return "Price must not be empty";
-                      }
-                      return null;
-                    },
-                    inputtype: TextInputType.phone,
-                    border: UnderlineInputBorder(),
-                    hinttext: "Price per item...",
-                    controller: productPriceController_text),
-                SizedBox(
-                  height: 5,
-                ),
-                defaultTextFormField(
-                    onvalidate: (value) {
-                      if (value!.isEmpty) {
-                        return "Qty must not be empty";
-                      }
-                      return null;
-                    },
-                    inputtype: TextInputType.phone,
-                    border: UnderlineInputBorder(),
-                    hinttext: "qty...",
-                    controller: productQtyController),
-                SizedBox(
-                  height: 5,
-                ),
-                defaultTextFormField(
-                    onvalidate: (value) {
-                      if (value!.isEmpty) {
-                        return "Total Price must not be empty";
-                      }
-                      return null;
-                    },
-                    inputtype: TextInputType.phone,
-                    border: UnderlineInputBorder(),
-                    hinttext: "Total Price...",
-                    controller: productTotalPriceController_text),
-              ],
-            ),
-          )),
-    );
+                  readonly: context.read<ProductsController>().isProductExist
+                      ? true
+                      : false,
+                  inputtype: TextInputType.name,
+                  suffixIcon: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          is_onScan = true;
+                        });
+                      },
+                      icon: Icon(Icons.qr_code_scanner)),
+                  border: UnderlineInputBorder(),
+                  hinttext: "Barcode...",
+                  controller: productbarcodeController_text),
+              SizedBox(
+                height: 5,
+              ),
+              defaultTextFormField(
+                  onvalidate: (value) {
+                    if (value!.isEmpty) {
+                      return "Name must not be empty";
+                    }
+                    return null;
+                  },
+                  readonly: context.read<ProductsController>().isProductExist
+                      ? true
+                      : false,
+                  inputtype: TextInputType.name,
+                  border: UnderlineInputBorder(),
+                  hinttext: "Name...",
+                  controller: productNameController_text),
+              SizedBox(
+                height: 5,
+              ),
+              defaultTextFormField(
+                  onvalidate: (value) {
+                    if (value!.isEmpty) {
+                      return "Price must not be empty";
+                    }
+                    return null;
+                  },
+                  inputtype: TextInputType.phone,
+                  border: UnderlineInputBorder(),
+                  hinttext: "Price per item...",
+                  controller: productPriceController_text),
+              SizedBox(
+                height: 5,
+              ),
+              defaultTextFormField(
+                  onvalidate: (value) {
+                    if (value!.isEmpty) {
+                      return "Qty must not be empty";
+                    }
+                    return null;
+                  },
+                  inputtype: TextInputType.phone,
+                  border: UnderlineInputBorder(),
+                  hinttext: "qty...",
+                  controller: productQtyController),
+              SizedBox(
+                height: 5,
+              ),
+              defaultTextFormField(
+                  onvalidate: (value) {
+                    if (value!.isEmpty) {
+                      return "Total Price must not be empty";
+                    }
+                    return null;
+                  },
+                  inputtype: TextInputType.phone,
+                  border: UnderlineInputBorder(),
+                  hinttext: "Total Price...",
+                  controller: productTotalPriceController_text),
+            ],
+          ),
+        ));
   }
 
   _buildSubmitRow(BuildContext context) {
@@ -245,7 +233,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           child: defaultButton(
-              width: MediaQuery.of(context).size.width * 0.4,
+              //width: MediaQuery.of(context).size.width * 0.4,
               text: "Save",
               onpress: () async {
                 if (_formkey.currentState!.validate()) {
@@ -309,20 +297,6 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 }
               }),
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: defaultButton(
-              width: MediaQuery.of(context).size.width * 0.4,
-              text: "Rescan",
-              onpress: () {
-                productNameController_text.clear();
-                productPriceController_text.clear();
-                qrViewcontroller!.resumeCamera();
-                setState(() {
-                  barCode = null;
-                });
-              }),
-        ),
       ],
     );
   }
@@ -330,14 +304,41 @@ class _AddProductScreenState extends State<AddProductScreen> {
   _buildControlButton() => Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          //  qrViewcontroller!.getFlashStatus() == true
           IconButton(
               onPressed: () {
+                qrViewcontroller!.getFlashStatus().then((value) {
+                  setState(() {
+                    isflashOn = value!;
+                  });
+                });
                 qrViewcontroller!.toggleFlash();
               },
               icon: Icon(
-                Icons.flash_on,
+                isflashOn ? Icons.flash_on : Icons.flash_off,
                 color: defaultColor,
+                size: 35,
+              )),
+          IconButton(
+              onPressed: () async {
+                await qrViewcontroller?.pauseCamera();
+                setState(() {
+                  is_onScan = false;
+                });
+              },
+              icon: Icon(
+                Icons.close,
+                color: defaultColor,
+                size: 35,
               ))
+          // : IconButton(
+          //     onPressed: () {
+          //       qrViewcontroller!.toggleFlash();
+          //     },
+          //     icon: Icon(
+          //       Icons.flash_on,
+          //       color: defaultColor,
+          //     ))
         ],
       );
 }
