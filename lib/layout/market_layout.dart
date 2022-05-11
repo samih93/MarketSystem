@@ -728,18 +728,19 @@ class MarketLayout extends StatelessWidget {
                                 break;
 
                               case 9:
-                                showToast(
-                                    message: "Sign in to backup your Data",
-                                    status: ToastStatus.Warning);
+                                if (currentuser == null)
+                                  showToast(
+                                      message: "Sign in to backup your Data",
+                                      status: ToastStatus.Warning);
                                 break;
                               case 10:
                                 if (currentuser != null) {
                                   var alertStyle = AlertStyle(
                                       animationDuration:
                                           Duration(milliseconds: 1));
-                                  _controller
-                                      .listGoogleDriveFiles()
-                                      .then((value) {});
+                                  // _controller
+                                  //     .listGoogleDriveFiles()
+                                  //     .then((value) {});
 
                                   // Alert(
                                   //   style: alertStyle,
