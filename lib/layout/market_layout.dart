@@ -737,42 +737,46 @@ class MarketLayout extends StatelessWidget {
                                   var alertStyle = AlertStyle(
                                       animationDuration:
                                           Duration(milliseconds: 1));
-                                  Alert(
-                                    style: alertStyle,
-                                    context: context,
-                                    type: AlertType.warning,
-                                    title: "Restore Data",
-                                    desc:
-                                        "Are You Sure You Want To Restore cloud Data",
-                                    buttons: [
-                                      DialogButton(
-                                        child: Text(
-                                          "Cancel",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        color: Colors.blue.shade400,
-                                      ),
-                                      DialogButton(
-                                        child: Text(
-                                          "Delete",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 18),
-                                        ),
-                                        onPressed: () {
-                                          deleteDatabase().then((value) {
-                                            Restart.restartApp();
-                                          });
-                                        },
-                                        color: Colors.red.shade400,
-                                      ),
-                                    ],
-                                  ).show();
+                                  _controller
+                                      .listGoogleDriveFiles()
+                                      .then((value) {});
+
+                                  // Alert(
+                                  //   style: alertStyle,
+                                  //   context: context,
+                                  //   type: AlertType.warning,
+                                  //   title: "Restore Data",
+                                  //   desc:
+                                  //       "Are You Sure You Want To Restore cloud Data",
+                                  //   buttons: [
+                                  //     DialogButton(
+                                  //       child: Text(
+                                  //         "Cancel",
+                                  //         style: TextStyle(
+                                  //             color: Colors.white,
+                                  //             fontSize: 18),
+                                  //       ),
+                                  //       onPressed: () {
+                                  //         Navigator.pop(context);
+                                  //       },
+                                  //       color: Colors.blue.shade400,
+                                  //     ),
+                                  //     DialogButton(
+                                  //       child: Text(
+                                  //         "Delete",
+                                  //         style: TextStyle(
+                                  //             color: Colors.white,
+                                  //             fontSize: 18),
+                                  //       ),
+                                  //       onPressed: () {
+                                  //         deleteDatabase().then((value) {
+                                  //           Restart.restartApp();
+                                  //         });
+                                  //       },
+                                  //       color: Colors.red.shade400,
+                                  //     ),
+                                  //   ],
+                                  // ).show();
                                 } else {
                                   showToast(
                                       message: "Sign in to Restore Your Data",

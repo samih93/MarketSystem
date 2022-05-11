@@ -66,17 +66,18 @@ dependencies:
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.7.0
 
-  #google sign in
+  #google
   google_sign_in: ^5.3.0
+  googleapis: ^8.1.0
+  #googleapis_auth: ^0.2.11
+
   # firebase
   firebase_auth: ^3.2.0
   firebase_core: ^1.16.0
   firebase_storage: ^10.2.15
 
-
-  #lottie animation 
+  #lottie animation
   #lottie: ^1.3.0
-
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

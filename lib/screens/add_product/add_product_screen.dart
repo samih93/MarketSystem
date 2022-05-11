@@ -149,9 +149,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     }
                     return null;
                   },
-                  readonly: context.read<ProductsController>().isProductExist
-                      ? true
-                      : false,
+                  // readonly: context.read<ProductsController>().isProductExist
+                  //     ? true
+                  //     : false,
                   inputtype: TextInputType.name,
                   suffixIcon: IconButton(
                       onPressed: () {
