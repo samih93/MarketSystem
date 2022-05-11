@@ -5,13 +5,10 @@ import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/models/user.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/cash_helper.dart';
-import 'package:marketsystem/shared/local/marketdb_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
