@@ -65,6 +65,7 @@ dependencies:
   # Qr Code
   qr_flutter: ^4.0.0
   qr_code_scanner: ^0.7.0
+  # mobile_scanner: ^1.1.1
 
   #google
   google_sign_in: ^5.3.0
