@@ -813,7 +813,39 @@ class MarketLayout extends StatelessWidget {
                       //   color: Colors.red,
                       // ),
                       onTap: () async {
-                        await _controller.google_signOut();
+                        var alertStyle = AlertStyle(
+                            animationDuration: Duration(milliseconds: 1));
+                        Alert(
+                          style: alertStyle,
+                          context: context,
+                          type: AlertType.error,
+                          title: "Log out",
+                          desc: "Are you sure you want to exit",
+                          buttons: [
+                            DialogButton(
+                              child: Text(
+                                "Cancel",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              color: Colors.blue.shade400,
+                            ),
+                            DialogButton(
+                              child: Text(
+                                "confrim",
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 18),
+                              ),
+                              onPressed: () async {
+                                await _controller.google_signOut();
+                              },
+                              color: Colors.red.shade400,
+                            ),
+                          ],
+                        ).show();
                       },
                     ),
                   )
