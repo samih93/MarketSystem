@@ -305,10 +305,21 @@ class MarketLayout extends StatelessWidget {
                                     .then((value) {
                                   //Todo: handle date to string
                                   //print(DateFormat.yMMMd().format(value!));
-                                  var tdate = value.toString().split(' ');
+                                  var tdate = value != null
+                                      ? value.toString().split(' ')
+                                      : null;
+
+                                  if (tdate == null) {
+                                    showToast(
+                                        message:
+                                            "date must be not empty or null ",
+                                        status: ToastStatus.Error);
+                                    //  print(datecontroller.text);
+                                  } else {
+                                    Get.to(() =>
+                                        ReceiptsScreen(tdate[0].toString()));
+                                  }
                                   //datecontroller.text = tdate[0];
-                                  Get.to(() =>
-                                      ReceiptsScreen(tdate[0].toString()));
                                 });
                                 break;
                               case 1:

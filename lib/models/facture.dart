@@ -6,9 +6,10 @@ class FactureModel {
   FactureModel({required this.price, required this.facturedate});
 
   FactureModel.fromJson(Map<String, dynamic> map) {
-    id = map['id'];
-    price = map['price'];
-    facturedate = map['facturedate'];
+    id = map['id'] != null ? map['id'].toString() : '';
+    price = map['price'] != null ? map['price'].toString() : '';
+    facturedate =
+        map['facturedate'] != null ? map['facturedate'].toString() : '';
   }
 
   toJson() {
