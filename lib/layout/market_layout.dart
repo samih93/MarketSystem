@@ -796,26 +796,23 @@ class MarketLayout extends StatelessWidget {
           if (currentuser != null)
             _controller.isloadingSignOut
                 ? Center(child: CircularProgressIndicator())
-                : Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: ListTile(
-                      tileColor: Colors.red.shade300,
-                      title: Center(
-                        child: Text(
-                          "SIGN OUT",
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                : ListTile(
+                    tileColor: Colors.red.shade300,
+                    title: Center(
+                      child: Text(
+                        "SIGN OUT",
+                        style: TextStyle(
+                          color: Colors.white,
                         ),
                       ),
-                      // leading: Icon(
-                      //   Icons.power_settings_new_outlined,
-                      //   color: Colors.red,
-                      // ),
-                      onTap: () async {
-                        await _controller.google_signOut();
-                      },
                     ),
+                    // leading: Icon(
+                    //   Icons.power_settings_new_outlined,
+                    //   color: Colors.red,
+                    // ),
+                    onTap: () async {
+                      await _controller.google_signOut();
+                    },
                   )
         ],
       ),
