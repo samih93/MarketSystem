@@ -47,8 +47,7 @@ class MarketDbHelper extends ChangeNotifier {
 
       // link github https://github.com/samih93/MarketSystem/raw/master/Market.db
 
-      String db_url =
-          'https://github.com/samih93/MarketSystem/raw/master/Market.db';
+      String db_url = 'https://github.com/samih93/samih93/raw/main/Market.db';
       print("Creating new copy from internet");
       // NOTE to show progress download first and after download i set is_databaseExist to true
       is_databaseExist = false;
@@ -66,6 +65,7 @@ class MarketDbHelper extends ChangeNotifier {
           // after downloaded write to local storage in complete path
         });
       } catch (e) {
+        print("error : " + e.toString());
         print("check your network connection");
         is_has_connection = false;
         notifyListeners();
