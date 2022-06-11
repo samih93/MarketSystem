@@ -31,7 +31,6 @@ class DashBoardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-   
     return ChangeNotifierProvider<FactureController>(
       create: (_) => FactureController()
         ..getBestSelling(currentdate: currentdate)
@@ -39,7 +38,7 @@ class DashBoardScreen extends StatelessWidget {
         ..getDailysalesIn_month(currentdate!),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('DashBoard'),
+          title: const Text('OverView'),
           flexibleSpace: Container(
             decoration: BoxDecoration(
               gradient: myLinearGradient,
