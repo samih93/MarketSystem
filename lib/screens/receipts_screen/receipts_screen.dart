@@ -32,9 +32,20 @@ class ReceiptsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: 10),
-                Text(
-                  '${currentdate}',
-                  style: TextStyle(color: Colors.grey.shade600, fontSize: 30),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        "${currentdate}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          letterSpacing: 2,
+                          fontSize: 30,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 Expanded(
                   child: SingleChildScrollView(
