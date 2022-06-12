@@ -1,6 +1,7 @@
 import 'package:bluetooth_thermal_printer/bluetooth_thermal_printer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/printermodel.dart';
+import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/services/printer/printer_api.dart';
 
 class PrintManagementController extends ChangeNotifier {
@@ -38,12 +39,12 @@ class PrintManagementController extends ChangeNotifier {
     }
   }
 
-  Future<void> printTicket() async {
+  Future<void> printTicket(List<ProductModel> products) async {
     String? isConnected = await BluetoothThermalPrinter.connectionStatus;
     if (isConnected == "true") {
-      // List<int> bytes = await PrintApi.getTicket(products);
-      // final result = await BluetoothThermalPrinter.writeBytes(bytes);
-      // print("Print $result");
+      List<int> bytes = await PrintApi.getTicket(products);
+      final result = await BluetoothThermalPrinter.writeBytes(bytes);
+      print("Print $result");
     } else {
       //Hadnle Not Connected Senario
     }

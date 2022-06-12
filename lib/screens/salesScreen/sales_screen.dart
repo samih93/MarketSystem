@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_beep/flutter_beep.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:get/get.dart';
+import 'package:marketsystem/controllers/printManagementController.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/screens/cash_screen/cash_screen.dart';
@@ -299,6 +300,9 @@ class _SellScreenState extends State<SalesScreen> {
                       String res =
                           await Get.to(CashScreen(controller.totalprice));
                       print("res :" + res.toString());
+
+                      // Print Receipt
+
                       setState(() {
                         _change_amount = double.parse(res).toStringAsFixed(0);
                         _total_paid = total_price;
@@ -307,6 +311,9 @@ class _SellScreenState extends State<SalesScreen> {
                                 .toStringAsFixed(0);
                         _iscashSuccess = true;
                       });
+                      context
+                          .read<PrintManagementController>()
+                          .printTicket(controller.basket_products);
                     }
                   }),
             ),

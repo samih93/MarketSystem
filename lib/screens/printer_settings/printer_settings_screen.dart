@@ -23,14 +23,23 @@ class PrinterSettingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Search Paired Bluetooth"),
-            TextButton(
-              onPressed: () async {
-                await context.read<PrintManagementController>()
-                  ..getBluetooth();
-              },
-              child: Text("Search"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Search Paired Bluetooth",
+                  style: TextStyle(color: Colors.grey.shade800, fontSize: 20),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await context.read<PrintManagementController>()
+                      ..getBluetooth();
+                  },
+                  child: Text("Search"),
+                ),
+              ],
             ),
+
             Consumer<PrintManagementController>(
                 builder: (context, printcontroller, child) {
               return Container(
