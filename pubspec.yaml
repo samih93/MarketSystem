@@ -71,6 +71,10 @@ dependencies:
   #     ref: fix_break_changes_platform
   # mobile_scanner: ^1.1.1
 
+  # for printer 
+  bluetooth_thermal_printer: ^0.0.6
+  esc_pos_utils: ^1.1.0  
+
   #google
   google_sign_in: ^5.3.0
   googleapis: ^8.1.0

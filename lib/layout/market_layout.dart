@@ -12,6 +12,7 @@ import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
 import 'package:marketsystem/screens/dashboard/dashboard_screen.dart';
+import 'package:marketsystem/screens/printer_settings/printer_settings_screen.dart';
 import 'package:marketsystem/screens/receipts_screen/receipts_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
@@ -35,7 +36,8 @@ class MarketLayout extends StatelessWidget {
     "Low Qty In Store",
     "Spent / Earn by Item",
     "Overview",
-    "Delete Data",
+    "Printer"
+        "Delete Data",
     "Backup",
     "Restore",
     "Pos System",
@@ -56,6 +58,7 @@ class MarketLayout extends StatelessWidget {
     Icons.delete_forever_outlined,
     Icons.backup_outlined,
     Icons.settings_backup_restore_sharp,
+    Icons.print,
     Icons.info_outline,
     Icons.star,
     Icons.email,
@@ -73,6 +76,8 @@ class MarketLayout extends StatelessWidget {
     Colors.grey,
     Colors.purple.shade500,
     Colors.red.shade500,
+    Colors.grey,
+
     //Cloud
     Colors.grey,
     Colors.grey,
@@ -739,12 +744,16 @@ class MarketLayout extends StatelessWidget {
                                 break;
 
                               case 9:
+                                Get.to(PrinterSettingScreen());
+                                break;
+
+                              case 10:
                                 if (currentuser == null)
                                   showToast(
                                       message: "Sign in to backup your Data",
                                       status: ToastStatus.Warning);
                                 break;
-                              case 10:
+                              case 11:
                                 if (currentuser != null) {
                                   var alertStyle = AlertStyle(
                                       animationDuration:

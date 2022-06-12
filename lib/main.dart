@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
+import 'package:marketsystem/controllers/printManagementController.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/screens/splash_screen/splash_screen.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -34,6 +35,8 @@ Future<void> main() async {
       ChangeNotifierProvider<FactureController>(
           create: (_) => FactureController()),
       ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
+      ChangeNotifierProvider<PrintManagementController>(
+          create: (_) => PrintManagementController()),
     ],
     child: MyApp(),
   ));
