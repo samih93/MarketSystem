@@ -4,7 +4,8 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:marketsystem/models/product.dart';
 
 class PrintApi {
-  static Future<List<int>> getTicket(List<ProductModel> products) async {
+  static Future<List<int>> getTicket(List<ProductModel> products,
+      {String? cash, String? change}) async {
     double total_receipt_price = 0;
     List<int> bytes = [];
     CapabilityProfile profile = await CapabilityProfile.load();
@@ -28,21 +29,18 @@ class PrintApi {
     bytes += generator.row([
       PosColumn(
           text: 'Item',
-          width: 6,
+          width: 7,
           styles: PosStyles(align: PosAlign.left, bold: true)),
       PosColumn(
           text: 'Price',
-          width: 2,
+          width: 3,
           styles: PosStyles(align: PosAlign.center, bold: true)),
       PosColumn(
           text: 'Qty',
           width: 2,
           styles: PosStyles(align: PosAlign.center, bold: true)),
-      PosColumn(
-          text: 'Total',
-          width: 2,
-          styles: PosStyles(align: PosAlign.right, bold: true)),
     ]);
+    bytes += generator.hr();
 
     products.forEach((element) {
       double totalprice_per_item = double.parse(element.qty.toString()) *
@@ -51,13 +49,13 @@ class PrintApi {
       bytes += generator.row([
         PosColumn(
             text: "${element.name}",
-            width: 6,
+            width: 7,
             styles: PosStyles(
               align: PosAlign.left,
             )),
         PosColumn(
             text: "${element.price}",
-            width: 2,
+            width: 3,
             styles: PosStyles(
               align: PosAlign.center,
             )),
@@ -65,15 +63,12 @@ class PrintApi {
             text: "${element.qty}",
             width: 2,
             styles: PosStyles(align: PosAlign.center)),
-        PosColumn(
-            text: "${totalprice_per_item}",
-            width: 2,
-            styles: PosStyles(align: PosAlign.right)),
       ]);
     });
 
     bytes += generator.hr();
 
+    // NOTE TOTAL
     bytes += generator.row([
       PosColumn(
           text: 'TOTAL',
@@ -87,8 +82,44 @@ class PrintApi {
           text: "${total_receipt_price} LL",
           width: 8,
           styles: PosStyles(
+              align: PosAlign.right, bold: true, height: PosTextSize.size2)),
+    ]);
+    // NOTE CASH
+    bytes += generator.row([
+      PosColumn(
+          text: 'cash',
+          width: 4,
+          styles: PosStyles(
+            align: PosAlign.left,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "$cash LL",
+          width: 8,
+          styles: PosStyles(
             align: PosAlign.right,
-            height: PosTextSize.size2,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+    ]);
+
+    // NOTE CASH
+    bytes += generator.row([
+      PosColumn(
+          text: 'change',
+          width: 4,
+          styles: PosStyles(
+            align: PosAlign.left,
+            height: PosTextSize.size1,
+            width: PosTextSize.size1,
+          )),
+      PosColumn(
+          text: "$change LL",
+          width: 8,
+          styles: PosStyles(
+            align: PosAlign.right,
+            height: PosTextSize.size1,
             width: PosTextSize.size1,
           )),
     ]);

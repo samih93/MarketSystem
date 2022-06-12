@@ -42,33 +42,48 @@ class PrinterSettingScreen extends StatelessWidget {
 
             Consumer<PrintManagementController>(
                 builder: (context, printcontroller, child) {
-              return Container(
-                height: 200,
-                child: ListView.builder(
-                  itemCount:
-                      printcontroller.availableBluetoothDevices.length > 0
-                          ? printcontroller.availableBluetoothDevices.length
-                          : 0,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      onTap: () {
-                        // connect to mac address
-                        printcontroller.setConnect(printcontroller
-                            .availableBluetoothDevices[index].macAddress
-                            .toString());
-                      },
-                      title: Text(
-                          '${printcontroller.availableBluetoothDevices[index].name}'),
-                      subtitle: printcontroller.availableBluetoothDevices[index]
-                                  .isconnected ==
-                              true
-                          ? Text("Connected",
-                              style: TextStyle(
-                                color: Colors.green,
-                              ))
-                          : Text("Click to connect"),
-                    );
-                  },
+              return Expanded(
+                child: Container(
+                  height: 200,
+                  child: printcontroller.isloadingsearch_for_device
+                      ? Center(child: CircularProgressIndicator())
+                      : printcontroller.availableBluetoothDevices.length == 0
+                          ? Center(
+                              child: Text(
+                              "devices not found",
+                              style: TextStyle(color: Colors.grey),
+                            ))
+                          : ListView.builder(
+                              itemCount: printcontroller
+                                          .availableBluetoothDevices.length >
+                                      0
+                                  ? printcontroller
+                                      .availableBluetoothDevices.length
+                                  : 0,
+                              itemBuilder: (context, index) {
+                                return ListTile(
+                                  onTap: () async {
+                                    // connect to mac address
+                                    await printcontroller.setConnect(
+                                        printcontroller
+                                            .availableBluetoothDevices[index]
+                                            .macAddress
+                                            .toString());
+                                  },
+                                  title: Text(
+                                      '${printcontroller.availableBluetoothDevices[index].name}'),
+                                  subtitle: printcontroller
+                                              .availableBluetoothDevices[index]
+                                              .isconnected ==
+                                          true
+                                      ? Text("Connected",
+                                          style: TextStyle(
+                                            color: Colors.green,
+                                          ))
+                                      : Text("Click to connect"),
+                                );
+                              },
+                            ),
                 ),
               );
             }),

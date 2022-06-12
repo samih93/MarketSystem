@@ -311,9 +311,10 @@ class _SellScreenState extends State<SalesScreen> {
                                 .toStringAsFixed(0);
                         _iscashSuccess = true;
                       });
-                      context
-                          .read<PrintManagementController>()
-                          .printTicket(controller.basket_products);
+                      context.read<PrintManagementController>().printTicket(
+                          controller.basket_products,
+                          cash: _received_cash,
+                          change: _change_amount);
                     }
                   }),
             ),

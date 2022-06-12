@@ -5,48 +5,72 @@ import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/services/printer/printer_api.dart';
 
 class PrintManagementController extends ChangeNotifier {
-  bool connected = false;
   List<PrinterModel> availableBluetoothDevices = [];
 
+  bool isloadingsearch_for_device = false;
   Future<void> getBluetooth() async {
     availableBluetoothDevices = [];
-    final List? bluetooths = await BluetoothThermalPrinter.getBluetooths;
-    print("Print $bluetooths");
-    if (bluetooths != null) {
-      bluetooths.forEach((element) {
-        List list = element.toString().split('#');
-        String name = list[0];
-        String mac = list[1];
-        availableBluetoothDevices
-            .add(PrinterModel(name: name, macAddress: mac));
-      });
-    }
-    // String name = list[0];
-    notifyListeners();
-  }
-
-  Future<void> setConnect(String mac) async {
-    final String? result = await BluetoothThermalPrinter.connect(mac);
-
-    print("state conneected $result");
-    if (result == "true") {
-      availableBluetoothDevices.forEach((element) {
-        if (element.macAddress == mac) {
-          element.isconnected = true;
-        }
-      });
+    isloadingsearch_for_device = true;
+    await BluetoothThermalPrinter.getBluetooths.then((value) {
+      print("value :" + value.toString());
+      if (value != null) {
+        value.forEach((element) {
+          List list = element.toString().split('#');
+          String name = list[0];
+          String mac = list[1];
+          availableBluetoothDevices
+              .add(PrinterModel(name: name, macAddress: mac));
+        });
+      }
+      isloadingsearch_for_device = false;
       notifyListeners();
-    }
+    }).catchError((error) {
+      print(error.toString());
+      isloadingsearch_for_device = false;
+      notifyListeners();
+    });
   }
 
-  Future<void> printTicket(List<ProductModel> products) async {
+  bool isloadingconnect = false;
+  Future<void> setConnect(String mac) async {
+    print(mac.toString() + " to connect");
+    isloadingconnect = true;
+    notifyListeners();
+    await BluetoothThermalPrinter.connect(mac).then((value) {
+      print("state connected $value");
+      if (value == "true") {
+        availableBluetoothDevices.forEach((element) {
+          if (element.macAddress == mac) {
+            element.isconnected = true;
+          }
+        });
+        isloadingconnect = false;
+        notifyListeners();
+      }
+    }).catchError((error) {
+      print("error :" + error.toString());
+      isloadingconnect = false;
+      notifyListeners();
+    });
+    print(isloadingconnect);
+  }
+
+  bool connected = false;
+
+  Future<void> printTicket(List<ProductModel> products,
+      {String? cash, String? change}) async {
     String? isConnected = await BluetoothThermalPrinter.connectionStatus;
     if (isConnected == "true") {
-      List<int> bytes = await PrintApi.getTicket(products);
+      List<int> bytes = await PrintApi.getTicket(products,
+           cash: cash, change: change);
       final result = await BluetoothThermalPrinter.writeBytes(bytes);
       print("Print $result");
+      connected = true;
+      notifyListeners();
     } else {
       //Hadnle Not Connected Senario
+      connected = false;
+      notifyListeners();
     }
   }
 }
