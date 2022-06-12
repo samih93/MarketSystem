@@ -11,7 +11,7 @@ class ReceiptsScreen extends StatelessWidget {
   String? currentdate;
   ReceiptsScreen(this.currentdate);
 
-  List<String> headertitles = ['Receipt number', 'Price', 'Details'];
+  List<String> headertitles = ['Receipt Nb', 'Price', 'Details'];
 
   @override
   Widget build(BuildContext context) {
@@ -31,44 +31,52 @@ class ReceiptsScreen extends StatelessWidget {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        "${currentdate}",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.white,
-                          letterSpacing: 2,
-                          fontSize: 30,
+                Container(
+                  color: Colors.grey.shade600,
+                  height: 60,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          "${currentdate}",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 2,
+                            fontSize: 30,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: DataTable(
-                          headingTextStyle: TextStyle(color: defaultColor),
-                          border: TableBorder.all(width: 1, color: Colors.grey),
-                          columns: [
-                            ...headertitles.map((e) => _build_header_item(e))
-                          ],
-                          rows: [
-                            ...controller.list_of_receipts
-                                .map((e) => _build_Row(e, context)),
-                          ],
-                        ),
-                      ),
-                    ),
+                    ],
                   ),
                 ),
+                controller.list_of_receipts.length > 0
+                    ? Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: DataTable(
+                            headingTextStyle: TextStyle(color: defaultColor),
+                            border:
+                                TableBorder.all(width: 1, color: Colors.grey),
+                            columns: [
+                              ...headertitles.map((e) => _build_header_item(e))
+                            ],
+                            rows: [
+                              ...controller.list_of_receipts
+                                  .map((e) => _build_Row(e, context)),
+                            ],
+                          ),
+                        ),
+                      )
+                    : Expanded(
+                        child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("No Receipts yet",
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 25)),
+                        ],
+                      ))
               ],
             );
           }),
@@ -77,7 +85,7 @@ class ReceiptsScreen extends StatelessWidget {
 
   _build_Row(FactureModel model, BuildContext context) {
     return DataRow(cells: [
-      DataCell(Center(child: Text(model.id.toString()))),
+      DataCell(Center(child: Text('#1-${model.id.toString()}'))),
       DataCell(Text(model.price.toString())),
       DataCell(Row(
         children: [
