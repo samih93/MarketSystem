@@ -36,8 +36,8 @@ class MarketLayout extends StatelessWidget {
     "Low Qty In Store",
     "Spent / Earn by Item",
     "Overview",
-    "Printer"
-        "Delete Data",
+    "Delete Data",
+    "Printer",
     "Backup",
     "Restore",
     "Pos System",
@@ -56,9 +56,9 @@ class MarketLayout extends StatelessWidget {
     Icons.currency_exchange_outlined,
     Icons.bar_chart_outlined,
     Icons.delete_forever_outlined,
+    Icons.print,
     Icons.backup_outlined,
     Icons.settings_backup_restore_sharp,
-    Icons.print,
     Icons.info_outline,
     Icons.star,
     Icons.email,
@@ -274,23 +274,23 @@ class MarketLayout extends StatelessWidget {
                 ..._report_title.map(
                   (element) => Column(
                     children: [
-                      if (_report_title.indexOf(element) == 9)
+                      if (_report_title.indexOf(element) == 10)
                         _listtileTitle("Cloud", context),
-                      if (_report_title.indexOf(element) == 11)
+                      if (_report_title.indexOf(element) == 12)
                         _listtileTitle("About", context),
                       ListTile(
                           title: Text(
                             element,
                             style: TextStyle(
-                                color: (_report_title.indexOf(element) == 9 ||
+                                color: (_report_title.indexOf(element) == 10 ||
                                             _report_title.indexOf(element) ==
-                                                10) &&
+                                                11) &&
                                         currentuser == null
                                     ? Colors.grey
-                                    : (_report_title.indexOf(element) == 9 ||
+                                    : (_report_title.indexOf(element) == 10 ||
                                                 _report_title
                                                         .indexOf(element) ==
-                                                    10) &&
+                                                    11) &&
                                             currentuser != null
                                         ? Colors.green.shade400
                                         : Colors.black),
@@ -806,7 +806,7 @@ class MarketLayout extends StatelessWidget {
                                 }
                             }
                           }),
-                      if (_report_title.indexOf(element) == 8) Divider(),
+                      if (_report_title.indexOf(element) == 9) Divider(),
                     ],
                   ),
                 ),
@@ -859,6 +859,7 @@ class MarketLayout extends StatelessWidget {
                             ),
                             onPressed: () async {
                               await _controller.google_signOut();
+                              Navigator.pop(context);
                             },
                             color: Colors.red.shade400,
                           ),

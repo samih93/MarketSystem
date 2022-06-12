@@ -49,7 +49,7 @@ class PrinterSettingScreen extends StatelessWidget {
                             .toString());
                       },
                       title: Text(
-                          '${printcontroller.availableBluetoothDevices[index]}'),
+                          '${printcontroller.availableBluetoothDevices[index].name}'),
                       subtitle: printcontroller.availableBluetoothDevices[index]
                                   .isconnected ==
                               true
