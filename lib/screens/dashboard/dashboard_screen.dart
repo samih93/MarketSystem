@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
-import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/daily_sales.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
@@ -8,7 +7,6 @@ import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import 'package:syncfusion_flutter_charts/sparkcharts.dart';
 
 class DashBoardScreen extends StatelessWidget {
   DateTime? currentdate;

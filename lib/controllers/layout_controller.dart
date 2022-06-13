@@ -13,7 +13,7 @@ class LayoutController extends ChangeNotifier {
   ];
 
   //NOTE: ---------------------------Screens and Titles----------------------------
-  final screens = [ManageProductsScreen(), SalesScreen(), ReportsScreen()];
+  final screens = [ManageProductsScreen(), SalesScreen()]; // ReportsScreen()
 
   final appbar_title = [
     'Manage Products',

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:marketsystem/controllers/printManagementController.dart';
-import 'package:marketsystem/services/printer/printer_api.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:provider/provider.dart';
 

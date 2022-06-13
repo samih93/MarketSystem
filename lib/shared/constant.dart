@@ -35,3 +35,4 @@ getCurrentDayInMonth(int i) => i < 10 ? "0$i" : i;
 String databasepath = "";
 
 UserModel? currentuser;
+String? device_mac;

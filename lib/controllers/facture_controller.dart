@@ -6,7 +6,6 @@ import 'package:marketsystem/models/viewmodel/daily_sales.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
 import 'package:marketsystem/models/viewmodel/profitable_vmodel.dart';
-import 'package:marketsystem/models/viewmodel/transactions_vmodel.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/marketdb_helper.dart';
 

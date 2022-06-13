@@ -1,11 +1,8 @@
-import 'dart:ffi';
-import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart' as path;
-import 'dart:io' as io;
 
 class MarketDbHelper extends ChangeNotifier {
   MarketDbHelper._();

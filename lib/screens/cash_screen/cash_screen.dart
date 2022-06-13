@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
-import 'package:marketsystem/screens/salesScreen/sales_screen.dart';
 import 'package:marketsystem/shared/components/default_button.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:provider/provider.dart';
