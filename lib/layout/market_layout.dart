@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
 import 'package:marketsystem/controllers/facture_controller.dart';
 import 'package:marketsystem/controllers/layout_controller.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/models/details_facture.dart';
-import 'package:marketsystem/models/user.dart';
 import 'package:marketsystem/models/viewmodel/best_selling.dart';
 import 'package:marketsystem/models/viewmodel/earn_spent_vmodel.dart';
 import 'package:marketsystem/models/viewmodel/low_qty_model.dart';
@@ -17,12 +15,11 @@ import 'package:marketsystem/screens/receipts_screen/receipts_screen.dart';
 import 'package:marketsystem/services/api/pdf_api.dart';
 import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
-import 'package:marketsystem/shared/local/cash_helper.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+//import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
-import 'package:restart_app/restart_app.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -499,11 +496,9 @@ class MarketLayout extends StatelessWidget {
                                     buttons: [
                                       DialogButton(
                                         onPressed: () async {
-                                          if (nbOfProductsController.text ==
-                                                  null ||
-                                              nbOfProductsController.text
-                                                      .trim() ==
-                                                  "")
+                                          if (nbOfProductsController.text
+                                                  .trim() ==
+                                              "")
                                             showToast(
                                                 message: "Enter nb of products",
                                                 status: ToastStatus.Error);
@@ -561,11 +556,9 @@ class MarketLayout extends StatelessWidget {
                                     buttons: [
                                       DialogButton(
                                         onPressed: () async {
-                                          if (nbOfProductsController.text ==
-                                                  null ||
-                                              nbOfProductsController.text
-                                                      .trim() ==
-                                                  "")
+                                          if (nbOfProductsController.text
+                                                  .trim() ==
+                                              "")
                                             showToast(
                                                 message: "Enter nb of products",
                                                 status: ToastStatus.Error);
@@ -623,11 +616,9 @@ class MarketLayout extends StatelessWidget {
                                     buttons: [
                                       DialogButton(
                                         onPressed: () async {
-                                          if (nbOfProductsController.text ==
-                                                  null ||
-                                              nbOfProductsController.text
-                                                      .trim() ==
-                                                  "")
+                                          if (nbOfProductsController.text
+                                                  .trim() ==
+                                              "")
                                             showToast(
                                                 message: "Enter nb of products",
                                                 status: ToastStatus.Error);
@@ -677,24 +668,24 @@ class MarketLayout extends StatelessWidget {
                                         });
                                 break;
                               case 7:
-                                showMonthPicker(
-                                  context: context,
-                                  firstDate:
-                                      DateTime(DateTime.now().year - 1, 5),
-                                  lastDate:
-                                      DateTime(DateTime.now().year + 1, 9),
-                                  initialDate: DateTime.now(),
-                                  locale: Locale("en"),
-                                ).then((date) {
-                                  if (date != null) {
-                                    print(date.toString());
-                                    print("--------");
+                                // showMonthPicker(
+                                //   context: context,
+                                //   firstDate:
+                                //       DateTime(DateTime.now().year - 1, 5),
+                                //   lastDate:
+                                //       DateTime(DateTime.now().year + 1, 9),
+                                //   initialDate: DateTime.now(),
+                                //   locale: Locale("en"),
+                                // ).then((date) {
+                                //   if (date != null) {
+                                //     print(date.toString());
+                                //     print("--------");
 
-                                    //print(latestday_inCurrentMonth);
+                                //     //print(latestday_inCurrentMonth);
 
-                                    Get.to(DashBoardScreen(date));
-                                  }
-                                });
+                                //     Get.to(DashBoardScreen(date));
+                                //   }
+                                // });
                                 break;
                               case 8:
                                 var alertStyle = AlertStyle(
