@@ -86,22 +86,50 @@ class PrinterSettingScreen extends StatelessWidget {
                 ),
               );
             }),
-            SizedBox(
-              height: 30,
-            ),
+
+            Text("Page Size"),
             ListTile(
-              leading: Text("Automatically print receipt"),
-              trailing: Switch(
-                onChanged: (bool value) {
+              title: const Text('58 mm'),
+              leading: Radio(
+                value: PageSize.mm58,
+                groupValue: context.read<PrintManagementController>().pageSize,
+                onChanged: (PageSize? value) {
                   context
                       .read<PrintManagementController>()
-                      .onsetprintautomatically(value);
+                      .onchagePageSize(value);
                 },
-                value: context
-                    .watch<PrintManagementController>()
-                    .isprintautomatically,
               ),
             ),
+            ListTile(
+              title: const Text('82 mm'),
+              leading: Radio(
+                value: PageSize.mm80,
+                groupValue: context.read<PrintManagementController>().pageSize,
+                onChanged: (PageSize? value) {
+                  context
+                      .read<PrintManagementController>()
+                      .onchagePageSize(value);
+                },
+              ),
+            ),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Automatically print receipt"),
+                Switch(
+                  onChanged: (bool value) {
+                    context
+                        .read<PrintManagementController>()
+                        .onsetprintautomatically(value);
+                  },
+                  value: context
+                      .watch<PrintManagementController>()
+                      .isprintautomatically,
+                ),
+              ],
+            ),
+
             // TextButton(
             //   onPressed: connected ? this.printGraphics : null,
             //   child: Text("Print"),

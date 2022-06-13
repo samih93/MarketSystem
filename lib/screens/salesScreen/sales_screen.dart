@@ -318,10 +318,9 @@ class _SellScreenState extends State<SalesScreen> {
                             change: _change_amount);
                       } else {
                         showToast(
-                            message:
-                                "enable switch button in printer screen to print receipt",
-                            status: ToastStatus.Warning,
-                            time: 4);
+                          message: "enable switch button to print receipt",
+                          status: ToastStatus.Warning,
+                        );
                       }
                     }
                   }),
