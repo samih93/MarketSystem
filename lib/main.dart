@@ -26,6 +26,9 @@ Future<void> main() async {
 
   currentuser = await CashHelper.getUser() ?? null;
 
+  device_mac = await CashHelper.getData(key: "device_mac") ?? null;
+  print("device_mac " + device_mac.toString());
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<LayoutController>(
