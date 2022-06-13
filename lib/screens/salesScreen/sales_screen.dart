@@ -309,10 +309,20 @@ class _SellScreenState extends State<SalesScreen> {
                                 .toStringAsFixed(0);
                         _iscashSuccess = true;
                       });
-                      context.read<PrintManagementController>().printTicket(
-                          controller.basket_products,
-                          cash: _received_cash,
-                          change: _change_amount);
+                      if (context
+                          .read<PrintManagementController>()
+                          .isprintautomatically) {
+                        context.read<PrintManagementController>().printTicket(
+                            controller.basket_products,
+                            cash: _received_cash,
+                            change: _change_amount);
+                      } else {
+                        showToast(
+                            message:
+                                "enable switch button in printer screen to print receipt",
+                            status: ToastStatus.Warning,
+                            time: 4);
+                      }
                     }
                   }),
             ),

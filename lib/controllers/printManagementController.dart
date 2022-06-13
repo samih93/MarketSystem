@@ -3,9 +3,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/printermodel.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/services/printer/printer_api.dart';
+import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/local/cash_helper.dart';
+import 'package:marketsystem/shared/toast_message.dart';
 
 class PrintManagementController extends ChangeNotifier {
+  bool isprintautomatically = false;
+  PrintManagementController() {
+    isprintautomatically =
+        CashHelper.getData(key: 'isprintautomatically') ?? false;
+    notifyListeners();
+  }
+
+  onsetprintautomatically(bool value) {
+    isprintautomatically = value;
+    CashHelper.saveData(key: "isprintautomatically", value: value);
+    if (value) {
+      showToast(message: "enabled", status: ToastStatus.Success);
+    } else {
+      showToast(message: "disabled", status: ToastStatus.Success);
+    }
+    notifyListeners();
+  }
+
   List<PrinterModel> availableBluetoothDevices = [];
 
   bool isloadingsearch_for_device = false;
@@ -19,8 +39,10 @@ class PrintManagementController extends ChangeNotifier {
           List list = element.toString().split('#');
           String name = list[0];
           String mac = list[1];
-          availableBluetoothDevices
-              .add(PrinterModel(name: name, macAddress: mac));
+          bool isconnected = false;
+          if (mac == device_mac) isconnected = true;
+          availableBluetoothDevices.add(PrinterModel(
+              name: name, macAddress: mac, isconnected: isconnected));
         });
       }
       isloadingsearch_for_device = false;
@@ -33,28 +55,28 @@ class PrintManagementController extends ChangeNotifier {
   }
 
   bool isloadingconnect = false;
-  Future<void> setConnect(String mac) async {
-    print(mac.toString() + " to connect");
-    isloadingconnect = true;
-    notifyListeners();
-    await BluetoothThermalPrinter.connect(mac).then((value) {
-      print("state connected $value");
-      if (value == "true") {
-        availableBluetoothDevices.forEach((element) {
-          if (element.macAddress == mac) {
-            element.isconnected = true;
-          }
-        });
-        CashHelper.saveData(key: "device_mac", value: mac);
+  Future<void> setConnect(String? mac) async {
+    if (mac != null) {
+      isloadingconnect = true;
+      notifyListeners();
+      await BluetoothThermalPrinter.connect(mac).then((value) {
+        print("state connected $value");
+        if (value == "true") {
+          availableBluetoothDevices.forEach((element) {
+            if (element.macAddress == mac) {
+              element.isconnected = true;
+            }
+          });
+          CashHelper.saveData(key: "device_mac", value: mac);
+          isloadingconnect = false;
+          notifyListeners();
+        }
+      }).catchError((error) {
+        print("error :" + error.toString());
         isloadingconnect = false;
         notifyListeners();
-      }
-    }).catchError((error) {
-      print("error :" + error.toString());
-      isloadingconnect = false;
-      notifyListeners();
-    });
-    print(isloadingconnect);
+      });
+    }
   }
 
   bool connected = false;

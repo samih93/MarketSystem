@@ -89,6 +89,19 @@ class PrinterSettingScreen extends StatelessWidget {
             SizedBox(
               height: 30,
             ),
+            ListTile(
+              leading: Text("Automatically print receipt"),
+              trailing: Switch(
+                onChanged: (bool value) {
+                  context
+                      .read<PrintManagementController>()
+                      .onsetprintautomatically(value);
+                },
+                value: context
+                    .watch<PrintManagementController>()
+                    .isprintautomatically,
+              ),
+            ),
             // TextButton(
             //   onPressed: connected ? this.printGraphics : null,
             //   child: Text("Print"),
