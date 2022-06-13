@@ -39,8 +39,7 @@ Future<void> main() async {
           create: (_) => FactureController()),
       ChangeNotifierProvider<AuthController>(create: (_) => AuthController()),
       ChangeNotifierProvider<PrintManagementController>(
-          create: (_) =>
-              PrintManagementController()..setConnect(device_mac ?? null)),
+          create: (_) => PrintManagementController()),
     ],
     child: MyApp(),
   ));

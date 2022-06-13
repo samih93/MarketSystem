@@ -17,6 +17,7 @@ import 'package:marketsystem/shared/components/default_text_form.dart';
 import 'package:marketsystem/shared/constant.dart';
 import 'package:marketsystem/shared/styles.dart';
 import 'package:marketsystem/shared/toast_message.dart';
+import 'package:month_picker_dialog/month_picker_dialog.dart';
 //import 'package:month_picker_dialog/month_picker_dialog.dart';
 import 'package:provider/provider.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
@@ -667,24 +668,24 @@ class MarketLayout extends StatelessWidget {
                                         });
                                 break;
                               case 7:
-                                // showMonthPicker(
-                                //   context: context,
-                                //   firstDate:
-                                //       DateTime(DateTime.now().year - 1, 5),
-                                //   lastDate:
-                                //       DateTime(DateTime.now().year + 1, 9),
-                                //   initialDate: DateTime.now(),
-                                //   locale: Locale("en"),
-                                // ).then((date) {
-                                //   if (date != null) {
-                                //     print(date.toString());
-                                //     print("--------");
+                                showMonthPicker(
+                                  context: context,
+                                  firstDate:
+                                      DateTime(DateTime.now().year - 1, 5),
+                                  lastDate:
+                                      DateTime(DateTime.now().year + 1, 9),
+                                  initialDate: DateTime.now(),
+                                  locale: Locale("en"),
+                                ).then((date) {
+                                  if (date != null) {
+                                    print(date.toString());
+                                    print("--------");
 
-                                //     //print(latestday_inCurrentMonth);
+                                    //print(latestday_inCurrentMonth);
 
-                                //     Get.to(DashBoardScreen(date));
-                                //   }
-                                // });
+                                    Get.to(DashBoardScreen(date));
+                                  }
+                                });
                                 break;
                               case 8:
                                 var alertStyle = AlertStyle(

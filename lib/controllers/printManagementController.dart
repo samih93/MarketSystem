@@ -67,6 +67,7 @@ class PrintManagementController extends ChangeNotifier {
 
   bool isloadingconnect = false;
   Future<void> setConnect(String? mac) async {
+    print("mac :" + mac.toString());
     if (mac != null) {
       isloadingconnect = true;
       notifyListeners();
@@ -79,9 +80,9 @@ class PrintManagementController extends ChangeNotifier {
               element.isconnected = true;
             }
           });
-          CashHelper.saveData(key: "device_mac", value: mac);
           isloadingconnect = false;
           notifyListeners();
+          CashHelper.saveData(key: "device_mac", value: mac);
         }
       }).catchError((error) {
         print("error :" + error.toString());
@@ -91,8 +92,6 @@ class PrintManagementController extends ChangeNotifier {
     }
   }
 
-  bool connected = false;
-
   Future<void> printTicket(List<ProductModel> products,
       {String? cash, String? change}) async {
     String? isConnected = await BluetoothThermalPrinter.connectionStatus;
@@ -101,12 +100,9 @@ class PrintManagementController extends ChangeNotifier {
           cash: cash, change: change, pageSize: pageSize);
       final result = await BluetoothThermalPrinter.writeBytes(bytes);
       print("Print $result");
-      connected = true;
-      notifyListeners();
     } else {
-      //Hadnle Not Connected Senario
-      connected = false;
-      notifyListeners();
+      if (isprintautomatically == true)
+        showToast(message: "Printer not connected", status: ToastStatus.Error);
     }
   }
 }

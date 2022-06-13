@@ -3,6 +3,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/controllers/auth_controller.dart';
+import 'package:marketsystem/controllers/printManagementController.dart';
 import 'package:marketsystem/controllers/products_controller.dart';
 import 'package:marketsystem/layout/market_layout.dart';
 import 'package:marketsystem/shared/constant.dart';
@@ -22,6 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     SchedulerBinding.instance?.addPostFrameCallback((_) {
+      _connectPrinter_IfAvailable();
       _load_products().then((value) {
         print('getting products');
       });
@@ -42,6 +44,25 @@ class _SplashScreenState extends State<SplashScreen> {
         });
       });
     });
+  }
+
+  Future _connectPrinter_IfAvailable() async {
+    if (device_mac != null) {
+      await context
+          .read<PrintManagementController>()
+          .getBluetooth()
+          .then((value) async {
+        if (context
+                .read<PrintManagementController>()
+                .availableBluetoothDevices
+                .length >
+            0)
+          // if device available conntect to saved mac address
+          await context
+              .read<PrintManagementController>()
+              .setConnect(device_mac);
+      });
+    }
   }
 
   Future _loadUserData() async {

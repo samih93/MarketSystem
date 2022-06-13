@@ -52,36 +52,46 @@ class PrinterSettingScreen extends StatelessWidget {
                               "devices not found",
                               style: TextStyle(color: Colors.grey),
                             ))
-                          : ListView.builder(
-                              itemCount: printcontroller
-                                          .availableBluetoothDevices.length >
-                                      0
-                                  ? printcontroller
-                                      .availableBluetoothDevices.length
-                                  : 0,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  onTap: () async {
-                                    // connect to mac address
-                                    await printcontroller.setConnect(
-                                        printcontroller
-                                            .availableBluetoothDevices[index]
-                                            .macAddress
-                                            .toString());
+                          : Stack(
+                              alignment: AlignmentDirectional.center,
+                              children: [
+                                if (printcontroller.isloadingconnect == true)
+                                  CircularProgressIndicator(),
+                                ListView.builder(
+                                  itemCount: printcontroller
+                                              .availableBluetoothDevices
+                                              .length >
+                                          0
+                                      ? printcontroller
+                                          .availableBluetoothDevices.length
+                                      : 0,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      onTap: () async {
+                                        // connect to mac address
+                                        await printcontroller.setConnect(
+                                            printcontroller
+                                                .availableBluetoothDevices[
+                                                    index]
+                                                .macAddress
+                                                .toString());
+                                      },
+                                      title: Text(
+                                          '${printcontroller.availableBluetoothDevices[index].name}'),
+                                      subtitle: printcontroller
+                                                  .availableBluetoothDevices[
+                                                      index]
+                                                  .isconnected ==
+                                              true
+                                          ? Text("Connected",
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                              ))
+                                          : Text("Click to connect"),
+                                    );
                                   },
-                                  title: Text(
-                                      '${printcontroller.availableBluetoothDevices[index].name}'),
-                                  subtitle: printcontroller
-                                              .availableBluetoothDevices[index]
-                                              .isconnected ==
-                                          true
-                                      ? Text("Connected",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                          ))
-                                      : Text("Click to connect"),
-                                );
-                              },
+                                ),
+                              ],
                             ),
                 ),
               );
