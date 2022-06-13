@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:marketsystem/models/printermodel.dart';
 import 'package:marketsystem/models/product.dart';
 import 'package:marketsystem/services/printer/printer_api.dart';
+import 'package:marketsystem/shared/local/cash_helper.dart';
 
 class PrintManagementController extends ChangeNotifier {
   List<PrinterModel> availableBluetoothDevices = [];
@@ -44,6 +45,7 @@ class PrintManagementController extends ChangeNotifier {
             element.isconnected = true;
           }
         });
+        CashHelper.saveData(key: "device_mac", value: mac);
         isloadingconnect = false;
         notifyListeners();
       }
@@ -61,8 +63,8 @@ class PrintManagementController extends ChangeNotifier {
       {String? cash, String? change}) async {
     String? isConnected = await BluetoothThermalPrinter.connectionStatus;
     if (isConnected == "true") {
-      List<int> bytes = await PrintApi.getTicket(products,
-           cash: cash, change: change);
+      List<int> bytes =
+          await PrintApi.getTicket(products, cash: cash, change: change);
       final result = await BluetoothThermalPrinter.writeBytes(bytes);
       print("Print $result");
       connected = true;
