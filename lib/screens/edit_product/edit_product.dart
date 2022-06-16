@@ -15,6 +15,7 @@ class EditProductScreen extends StatelessWidget {
   var productPriceController_text = TextEditingController();
   var productTotalPriceController_text = TextEditingController();
   var productQtyController_text = TextEditingController();
+  var profitperitemcontroller_text = TextEditingController();
   GlobalKey<FormState> _formkey = GlobalKey<FormState>();
 
   @override
@@ -23,6 +24,7 @@ class EditProductScreen extends StatelessWidget {
     productbarcodeController_text.text = model.barcode.toString();
     productPriceController_text.text = model.price.toString();
     productQtyController_text.text = model.qty.toString();
+    profitperitemcontroller_text.text = model.profit_per_item.toString();
     var prod_controller = Provider.of<ProductsController>(context);
     return Scaffold(
       appBar: AppBar(
@@ -83,7 +85,7 @@ class EditProductScreen extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.normal,
                     ),
-                    decoration: InputDecoration(hintText: "Barcode..."),
+                    decoration: InputDecoration(label: Text("Barcode...")),
                   ),
                   SizedBox(
                     height: 5,
@@ -97,7 +99,7 @@ class EditProductScreen extends StatelessWidget {
                       },
                       inputtype: TextInputType.name,
                       border: UnderlineInputBorder(),
-                      hinttext: "Name...",
+                      text: "Name...",
                       controller: productNameController_text),
                   SizedBox(
                     height: 5,
@@ -111,7 +113,7 @@ class EditProductScreen extends StatelessWidget {
                       },
                       inputtype: TextInputType.phone,
                       border: UnderlineInputBorder(),
-                      hinttext: "Price...",
+                      text: "Price...",
                       controller: productPriceController_text),
                   SizedBox(
                     height: 5,
@@ -125,8 +127,14 @@ class EditProductScreen extends StatelessWidget {
                       },
                       inputtype: TextInputType.phone,
                       border: UnderlineInputBorder(),
-                      hinttext: "Qty...",
+                      text: "Qty...",
                       controller: productQtyController_text),
+                  defaultTextFormField(
+                      readonly: true,
+                      inputtype: TextInputType.phone,
+                      border: UnderlineInputBorder(),
+                      text: "current profit per item...",
+                      controller: profitperitemcontroller_text),
                 ],
               ),
             )),

@@ -135,6 +135,7 @@ class ProductsController extends ChangeNotifier {
         element.name = model.name;
         element.price = model.price;
         element.qty = model.qty;
+        element.profit_per_item = model.profit_per_item;
       }
     });
     notifyListeners();
