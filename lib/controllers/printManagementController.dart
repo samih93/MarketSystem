@@ -55,15 +55,17 @@ class PrintManagementController extends ChangeNotifier {
 
             availableBluetoothDevices.add(PrinterModel(
                 name: name, macAddress: mac, isconnected: isconnected));
-            isloadingsearch_for_device = false;
-            notifyListeners();
           }).catchError((error) {
             print(error.toString());
             isloadingsearch_for_device = false;
             notifyListeners();
           });
         });
+      } else {
+        showToast(message: "enable bluetooth", status: ToastStatus.Error);
       }
+      isloadingsearch_for_device = false;
+      notifyListeners();
     }).catchError((error) {
       print(error.toString());
       isloadingsearch_for_device = false;

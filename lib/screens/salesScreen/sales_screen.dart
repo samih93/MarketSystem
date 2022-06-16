@@ -60,6 +60,7 @@ class _SellScreenState extends State<SalesScreen> {
   @override
   Widget build(BuildContext context) {
     var prod_controller = Provider.of<ProductsController>(context);
+
     return Scaffold(
       body: prod_controller.isloadingGetProducts
           ? Center(child: CircularProgressIndicator())

@@ -23,7 +23,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     SchedulerBinding.instance?.addPostFrameCallback((_) {
-      //_connectPrinter_IfAvailable();
+      _connectPrinter_IfAvailable();
       _load_products().then((value) {
         print('getting products');
       });
