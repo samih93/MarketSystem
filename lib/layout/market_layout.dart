@@ -481,7 +481,7 @@ class MarketLayout extends StatelessWidget {
                               case 3:
                                 Alert(
                                     context: context,
-                                    title: "Enter nb of products",
+                                    title: "Nb of Displayed Product",
                                     content: Column(
                                       children: <Widget>[
                                         TextField(
@@ -500,7 +500,8 @@ class MarketLayout extends StatelessWidget {
                                                   .trim() ==
                                               "")
                                             showToast(
-                                                message: "Enter nb of products",
+                                                message:
+                                                    "Nb of Displayed Product",
                                                 status: ToastStatus.Error);
                                           else {
                                             Navigator.pop(context);
@@ -541,7 +542,7 @@ class MarketLayout extends StatelessWidget {
                               case 4:
                                 Alert(
                                     context: context,
-                                    title: "Enter nb of products",
+                                    title: "Nb of Displayed Product",
                                     content: Column(
                                       children: <Widget>[
                                         TextField(
@@ -560,7 +561,8 @@ class MarketLayout extends StatelessWidget {
                                                   .trim() ==
                                               "")
                                             showToast(
-                                                message: "Enter nb of products",
+                                                message:
+                                                    "Nb of Displayed Product",
                                                 status: ToastStatus.Error);
                                           else {
                                             int? nbofproduct = int.tryParse(
@@ -601,7 +603,7 @@ class MarketLayout extends StatelessWidget {
                               case 5:
                                 Alert(
                                     context: context,
-                                    title: "Enter nb of products",
+                                    title: "Nb of Displayed Product",
                                     content: Column(
                                       children: <Widget>[
                                         TextField(
@@ -620,7 +622,8 @@ class MarketLayout extends StatelessWidget {
                                                   .trim() ==
                                               "")
                                             showToast(
-                                                message: "Enter nb of products",
+                                                message:
+                                                    "Nb of Displayed Product",
                                                 status: ToastStatus.Error);
                                           else {
                                             int? nbofproduct = int.tryParse(

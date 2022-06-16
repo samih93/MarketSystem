@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:sqflite/sqflite.dart';
@@ -40,36 +39,68 @@ class MarketDbHelper extends ChangeNotifier {
       // // Write and flush the bytes written
       // await File(completepath).writeAsBytes(bytes, flush: true);
 
-      // NOTE  -----------------Start Copy Db From Internet
+      // NOTE  -----------------Start Copy Db From Internet-----------------
 
-      // link github https://github.com/samih93/MarketSystem/raw/master/Market.db
+      // String db_url = 'https://github.com/samih93/samih93/raw/main/Market.db';
+      // print("Creating new copy from internet");
+      // // NOTE to show progress download first and after download i set is_databaseExist to true
+      // is_databaseExist = false;
+      // is_has_connection = true;
 
-      String db_url = 'https://github.com/samih93/samih93/raw/main/Market.db';
-      print("Creating new copy from internet");
-      // NOTE to show progress download first and after download i set is_databaseExist to true
-      is_databaseExist = false;
-      is_has_connection = true;
+      // notifyListeners();
+      // try {
+      //   Dio dio = Dio(
+      //       BaseOptions(baseUrl: '$db_url', receiveDataWhenStatusError: true));
+      //   await dio.download(db_url, completepath,
+      //       onReceiveProgress: (rec, total) {
+      //     double progress = double.parse(((rec / total) * 100).toString());
+      //     _progressDownload = progress.toStringAsFixed(1) + "%";
+      //     notifyListeners();
+      //     // after downloaded write to local storage in complete path
+      //   });
+      // } catch (e) {
+      //   print("error : " + e.toString());
+      //   print("check your network connection");
+      //   is_has_connection = false;
+      //   notifyListeners();
+      //   return is_databaseExist;
+      // }
+      // is_databaseExist = true;
+      // notifyListeners();
 
-      notifyListeners();
-      try {
-        Dio dio = Dio(
-            BaseOptions(baseUrl: '$db_url', receiveDataWhenStatusError: true));
-        await dio.download(db_url, completepath,
-            onReceiveProgress: (rec, total) {
-          double progress = double.parse(((rec / total) * 100).toString());
-          _progressDownload = progress.toStringAsFixed(1) + "%";
-          notifyListeners();
-          // after downloaded write to local storage in complete path
-        });
-      } catch (e) {
-        print("error : " + e.toString());
-        print("check your network connection");
-        is_has_connection = false;
-        notifyListeners();
-        return is_databaseExist;
-      }
-      is_databaseExist = true;
-      notifyListeners();
+      // NOTE  -----------------end Copy Db From Internet---------------------
+
+      //NOTE //!  without read database from assets
+      print("creating database manualy");
+      database = await openDatabase(
+        'Market.db',
+        version: 1,
+        onCreate: (db, version) {
+          print("database created");
+          // NOTE create table product
+          db
+              .execute(
+                  "Create Table products(barcode TEXT ,name TEXT,price INTEGER,totalprice INTEGER,qty INTEGER,profit_per_item INTEGER)")
+              .then((value) => print('products table created'))
+              .catchError((onError) => print(onError.toString()));
+
+          // NOTE create table factures
+          db
+              .execute(
+                  "Create Table factures(id INTEGER PRIMARY KEY AUTOINCREMENT ,price INTEGER,facturedate TEXT)")
+              .then((value) => print('factures table created'))
+              .catchError((onError) => print(onError.toString()));
+
+          db
+              .execute(
+                  "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,price INTEGER,profit_per_item_on_sale INTEGER, facture_id INTEGER)")
+              .then((value) => print('detailsfactures table created'))
+              .catchError((onError) => print(onError.toString()));
+        },
+        onOpen: (database) {
+          print('database opened');
+        },
+      );
     } else {
       is_databaseExist = true;
       print("Reading Existing Database");
@@ -79,36 +110,5 @@ class MarketDbHelper extends ChangeNotifier {
     // open the database
     database = await openDatabase(completepath);
     return is_databaseExist;
-
-//! old one without read database from assets
-    // database = await openDatabase(
-    //   'Market.db',
-    //   version: 1,
-    //   onCreate: (db, version) {
-    //     print("database created");
-    //     // NOTE create table product
-    //     db
-    //         .execute(
-    //             "Create Table products(barcode TEXT ,name TEXT,price INTEGER,totalprice INTEGER,qty INTEGER)")
-    //         .then((value) => print('products table created'))
-    //         .catchError((onError) => print(onError.toString()));
-
-    //     // NOTE create table factures
-    //     db
-    //         .execute(
-    //             "Create Table factures(id INTEGER PRIMARY KEY AUTOINCREMENT ,price INTEGER,facturedate TEXT)")
-    //         .then((value) => print('factures table created'))
-    //         .catchError((onError) => print(onError.toString()));
-
-    //     db
-    //         .execute(
-    //             "Create Table detailsfacture(id INTEGER PRIMARY KEY AUTOINCREMENT ,barcode TEXT ,name TEXT,qty INTEGER,price INTEGER,facture_id INTEGER)")
-    //         .then((value) => print('detailsfactures table created'))
-    //         .catchError((onError) => print(onError.toString()));
-    //   },
-    //   onOpen: (database) {
-    //     print('database opened');
-    //   },
-    // );
   }
 }

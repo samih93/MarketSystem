@@ -275,7 +275,7 @@
 //           case 3:
 //             Alert(
 //                 context: context,
-//                 title: "Enter nb of products",
+//                 title: "Nb of Displayed Product",
 //                 content: Column(
 //                   children: <Widget>[
 //                     TextField(
@@ -292,7 +292,7 @@
 //                     onPressed: () async {
 //                       if (nbOfProductsController.text.trim() == "")
 //                         showToast(
-//                             message: "Enter nb of products",
+//                             message: "Nb of Displayed Product",
 //                             status: ToastStatus.Error);
 //                       else {
 //                         Navigator.pop(context);
@@ -328,7 +328,7 @@
 //           case 4:
 //             Alert(
 //                 context: context,
-//                 title: "Enter nb of products",
+//                 title: "Nb of Displayed Product",
 //                 content: Column(
 //                   children: <Widget>[
 //                     TextField(
@@ -345,7 +345,7 @@
 //                     onPressed: () async {
 //                       if (nbOfProductsController.text.trim() == "")
 //                         showToast(
-//                             message: "Enter nb of products",
+//                             message: "Nb of Displayed Product",
 //                             status: ToastStatus.Error);
 //                       else {
 //                         int? nbofproduct =
@@ -381,7 +381,7 @@
 //           case 5:
 //             Alert(
 //                 context: context,
-//                 title: "Enter nb of products",
+//                 title: "Nb of Displayed Product",
 //                 content: Column(
 //                   children: <Widget>[
 //                     TextField(
@@ -398,7 +398,7 @@
 //                     onPressed: () async {
 //                       if (nbOfProductsController.text.trim() == "")
 //                         showToast(
-//                             message: "Enter nb of products",
+//                             message: "Nb of Displayed Product",
 //                             status: ToastStatus.Error);
 //                       else {
 //                         int? nbofproduct =

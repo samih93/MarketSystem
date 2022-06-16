@@ -6,6 +6,7 @@ class DetailsFactureModel {
   String? price;
   String? totalprice;
   int? facture_id;
+  String? profit_per_item_on_sale;
   String? facturedate;
   // For most profitable product
 
@@ -14,6 +15,7 @@ class DetailsFactureModel {
       required this.name,
       required this.qty,
       required this.price,
+      required this.profit_per_item_on_sale,
       required this.facture_id});
 
   DetailsFactureModel.fromJson(Map<String, dynamic> map) {
@@ -25,6 +27,9 @@ class DetailsFactureModel {
     totalprice = map['totalprice'] != null ? map['totalprice'].toString() : "";
 
     facture_id = map['facture_id'];
+    profit_per_item_on_sale = map['profit_per_item_on_sale'] != null
+        ? map['profit_per_item_on_sale'].toString()
+        : "";
     facturedate = map['facturedate'];
   }
 
@@ -36,6 +41,7 @@ class DetailsFactureModel {
       'price': price,
       //  'totalprice': totalprice,
       'facture_id': facture_id,
+      'profit_per_item_on_sale': profit_per_item_on_sale
     };
   }
 }

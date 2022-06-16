@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:marketsystem/models/details_facture.dart';
@@ -80,6 +79,14 @@ class ProductsController extends ChangeNotifier {
         productModel.qty = newqty.toString();
         productModel.price = model.price;
         productModel.totalprice = totalprice.toString();
+        //profit depends on new data
+        productModel.profit_per_item = (((int.parse(model.qty.toString()) *
+                        int.parse(model.price.toString())) -
+                    int.parse(model.totalprice.toString())) /
+                int.parse(model.qty.toString()))
+            .toString();
+        print('updated');
+
         await updateProduct(productModel).then((value) {
           statusInsertBodyMessage = " ${model.name} updated Successfully";
           statusInsertMessage = ToastStatus.Success;
@@ -96,8 +103,8 @@ class ProductsController extends ChangeNotifier {
 
         //NOTE Add new product to list
         _list_ofProduct.add(model);
+        print('inserted');
       }
-      print('inserted');
       //isProductExist = false;
       notifyListeners();
     });
@@ -110,7 +117,7 @@ class ProductsController extends ChangeNotifier {
     var dbm = await marketdb.database;
     await dbm
         .rawUpdate(
-            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}', qty='${model.qty}' , totalprice='${model.totalprice}' where  barcode='${model.barcode}'")
+            "UPDATE products SET barcode= '${model.barcode}', name= '${model.name}' , price= '${model.price}', qty='${model.qty}' , totalprice='${model.totalprice}' ,profit_per_item='${model.profit_per_item}' where  barcode='${model.barcode}'")
         .then((value) async {
       statusUpdateBodyMessage = " ${model.name} updated Successfully";
       statusUpdateMessage = ToastStatus.Success;
@@ -206,6 +213,9 @@ class ProductsController extends ChangeNotifier {
     return _isExist;
   }
 
+// when
+  void setisproductExistTofalse() {}
+
 //NOTE get Product by barcode
 
   bool isProductExist = false;
@@ -299,10 +309,15 @@ class ProductsController extends ChangeNotifier {
           name: element.name,
           qty: element.qty,
           price: totalprice.toString(),
-          facture_id: facture_id);
+          facture_id: facture_id,
+          profit_per_item_on_sale: element.profit_per_item);
+      print(detailsFactureModel.toJson());
 
       ProductModel? productModel =
           await getProductbyBarcode(element.barcode.toString());
+      // when i enter  next time without fetch to make field is enabled
+      isProductExist = false;
+      notifyListeners();
       int newqty = 0;
       if (productModel != null)
         newqty = int.parse(productModel.qty.toString()) -

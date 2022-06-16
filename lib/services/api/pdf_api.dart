@@ -226,6 +226,7 @@ class PdfApi {
     list.forEach((element) {
       finalprice += double.parse(element.total_profit.toString());
     });
+    //finalprice = double.parse(finalprice.toStringAsFixed(2));
     final pdf = Document();
 
     final customfont =
@@ -252,11 +253,6 @@ class PdfApi {
                     ]),
                     Column(children: [
                       Text('Qty',
-                          style: TextStyle(
-                              fontSize: 25.0, fontWeight: FontWeight.bold))
-                    ]),
-                    Column(children: [
-                      Text('Profit per item',
                           style: TextStyle(
                               fontSize: 25.0, fontWeight: FontWeight.bold))
                     ]),
@@ -294,17 +290,9 @@ class PdfApi {
                           children: [
                             Directionality(
                               textDirection: TextDirection.rtl,
-                              child: Text(e.profit_per_item.toString(),
-                                  style: TextStyle(
-                                      font: customfont, fontSize: 20)),
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Directionality(
-                              textDirection: TextDirection.rtl,
-                              child: Text(e.total_profit.toString(),
+                              child: Text(
+                                  double.parse(e.total_profit.toString())
+                                      .toStringAsFixed(2),
                                   style: TextStyle(
                                       font: customfont, fontSize: 20)),
                             ),
@@ -322,7 +310,7 @@ class PdfApi {
                     style: TextStyle(color: PdfColors.red, fontSize: 30),
                   ),
                   SizedBox(width: 5),
-                  Text("${finalprice} LL",
+                  Text("${finalprice}  LL",
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 30)),
                 ],
