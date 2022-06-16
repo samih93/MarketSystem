@@ -74,8 +74,11 @@ class ProductsController extends ChangeNotifier {
         int newqty = int.parse(model.qty.toString()) +
             int.parse(productModel.qty.toString());
 
-        int totalprice = int.parse(model.totalprice.toString()) +
-            int.parse(productModel.totalprice.toString());
+        print("total price " + productModel.totalprice.toString());
+        int totalprice = int.parse(model.totalprice.toString().trim()) == ""
+            ? 0
+            : int.parse(model.totalprice.toString()) +
+                int.parse(productModel.totalprice.toString());
         productModel.qty = newqty.toString();
         productModel.price = model.price;
         productModel.totalprice = totalprice.toString();

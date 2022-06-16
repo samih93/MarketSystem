@@ -43,21 +43,27 @@ class PrintManagementController extends ChangeNotifier {
     notifyListeners();
     await BluetoothThermalPrinter.getBluetooths.then((value) {
       print("value :" + value.toString());
-      if (value != null) {
+      if (value!.length > 0) {
         value.forEach((element) async {
           List list = element.toString().split('#');
           String name = list[0];
           String mac = list[1];
           bool isconnected = false;
+
           await BluetoothThermalPrinter.connectionStatus.then((value) {
             if (value == "true" && mac == device_mac) isconnected = true;
+
+            availableBluetoothDevices.add(PrinterModel(
+                name: name, macAddress: mac, isconnected: isconnected));
+            isloadingsearch_for_device = false;
+            notifyListeners();
+          }).catchError((error) {
+            print(error.toString());
+            isloadingsearch_for_device = false;
+            notifyListeners();
           });
-          availableBluetoothDevices.add(PrinterModel(
-              name: name, macAddress: mac, isconnected: isconnected));
         });
       }
-      isloadingsearch_for_device = false;
-      notifyListeners();
     }).catchError((error) {
       print(error.toString());
       isloadingsearch_for_device = false;
@@ -71,19 +77,22 @@ class PrintManagementController extends ChangeNotifier {
     if (mac != null) {
       isloadingconnect = true;
       notifyListeners();
+
       await BluetoothThermalPrinter.connect(mac).then((value) {
         print("state connected $value");
         if (value == "true") {
           // change text to connected when this device is connected
-          availableBluetoothDevices.forEach((element) {
-            if (element.macAddress == mac) {
-              element.isconnected = true;
-            }
-          });
-          isloadingconnect = false;
-          notifyListeners();
+          if (availableBluetoothDevices.length > 0)
+            availableBluetoothDevices.forEach((element) {
+              if (element.macAddress == mac) {
+                element.isconnected = true;
+              }
+            });
+
           CashHelper.saveData(key: "device_mac", value: mac);
         }
+        isloadingconnect = false;
+        notifyListeners();
       }).catchError((error) {
         print("error :" + error.toString());
         isloadingconnect = false;

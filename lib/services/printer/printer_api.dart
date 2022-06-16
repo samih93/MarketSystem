@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +54,7 @@ class PrintApi {
       total_receipt_price += totalprice_per_item;
       bytes += generator.row([
         PosColumn(
-            text: "${element.name}",
+            text: element.name.toString(),
             width: 7,
             styles: PosStyles(
               align: PosAlign.left,
