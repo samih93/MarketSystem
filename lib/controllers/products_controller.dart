@@ -82,12 +82,13 @@ class ProductsController extends ChangeNotifier {
         productModel.qty = newqty.toString();
         productModel.price = model.price;
         productModel.totalprice = totalprice.toString();
+        productModel.profit_per_item = model.profit_per_item;
         //profit depends on new data
-        productModel.profit_per_item = (((int.parse(model.qty.toString()) *
-                        int.parse(model.price.toString())) -
-                    int.parse(model.totalprice.toString())) /
-                int.parse(model.qty.toString()))
-            .toString();
+        // productModel.profit_per_item = (((int.parse(model.qty.toString()) *
+        //                 int.parse(model.price.toString())) -
+        //             int.parse(model.totalprice.toString())) /
+        //         int.parse(model.qty.toString()))
+        //     .toString();
         print('updated');
 
         await updateProduct(productModel).then((value) {
