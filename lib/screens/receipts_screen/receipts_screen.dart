@@ -199,7 +199,7 @@ class ReceiptsScreen extends StatelessWidget {
   _buildResult(String price) {
     return Row(
       children: [
-        Expanded(child: Container(), flex: 2),
+        Expanded(child: Container(), flex: 1),
         Expanded(child: Container(), flex: 1),
         Expanded(
             child: Text(
