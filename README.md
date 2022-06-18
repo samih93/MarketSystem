@@ -1,5 +1,19 @@
-# flutter Pos system 
-### complete pos system From A to Z compatible with  bluetooth printer 
+# flutter Pos system  From A to Z
+
+- sqlite database 
+- provider state management
+
+# for printer
+-  bluetooth_thermal_printer: ^0.0.6
+-  esc_pos_utils: ^1.1.0
+# google sign 
+- google_sign_in: ^5.3.0
+-  googleapis: ^8.1.0
+# create pdf 
+-  pdf package
+# charts 
+- syncfusion flutter charts
+
 ![pos system 1](https://user-images.githubusercontent.com/78031951/174441858-c21db5f1-854c-45ef-b91d-25e0d8c593a7.png)
 
 ### reports
