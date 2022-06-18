@@ -1,5 +1,5 @@
 # flutter Pos system 
-### complete pos system From A to Z 
+### complete pos system From A to Z compatible with  bluetooth printer 
 ![pos system 1](https://user-images.githubusercontent.com/78031951/174441858-c21db5f1-854c-45ef-b91d-25e0d8c593a7.png)
 
 ### reports
