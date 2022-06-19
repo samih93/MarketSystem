@@ -9,6 +9,10 @@
 # for Qr_code 
 - qr_flutter: ^4.0.0
 - qr_code_scanner: ^0.7.0 #// got an error after flutter 3.
+<!-- -  qr_code_scanner: // worked with flutter 3 
+   git:
+     url: https://github.com/xeinebiu/qr_code_scanner.git
+       ref: fix_break_changes_platform -->
 # google sign 
 - google_sign_in: ^5.3.0
 -  googleapis: ^8.1.0
