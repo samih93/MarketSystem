@@ -25,7 +25,7 @@ class PdfApi {
     return saveDocument(name: 'my_example.pdf', doc: pdf);
   }
 
-// startdate!=null && endDate==null ==> report by date
+// startdate!=null && endDate==null ==> report by date ...
 // startdate!=null && endDate!=null ==> report between two dates
 // startdate==null && endDate==null ==> generate report Best Selling
   static Future<File> generateReport(List<DetailsFactureModel> list,
