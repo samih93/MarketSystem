@@ -6,6 +6,9 @@
 # for printer
 -  bluetooth_thermal_printer: ^0.0.6
 -  esc_pos_utils: ^1.1.0
+# for Qr_code 
+- qr_flutter: ^4.0.0
+- qr_code_scanner: ^0.7.0 #// got an error after flutter 3.
 # google sign 
 - google_sign_in: ^5.3.0
 -  googleapis: ^8.1.0
